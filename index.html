@@ -1676,9 +1676,51 @@ class Component extends DCLogic {
           data: { name: this.state.name, mode: this.state.mode, language: this.state.language, workspaces: this.state.workspaces },
           updated_at: new Date().toISOString()
         }).then(({ error }) => { if (error) console.error('Supabase save error', error); });
-        if (this.state.householdId) this.persistShared();
+        if (this.state.householdId) this.syncMyMirrorsToShared(() => this.persistShared());
       }, 700);
     }
+  }
+
+  syncMyMirrorsToShared(cb) {
+    if (!this.state.session || !this.state.householdId) { if (cb) cb(); return; }
+    const myId = this.state.session.user.id;
+    const personalWs = this.state.workspaces.personal;
+    const kinds = ['calcIncomeItems', 'calcFixedItems', 'calcVariableItems'];
+    this.setWsKey('shared', sharedWs => {
+      const patch = {};
+      kinds.forEach(listKey => {
+        const keep = (sharedWs[listKey] || []).filter(it => it.mirrorOwner !== myId);
+        const mine = (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, id: 'mirror_' + it.id, mirrorOwner: myId, mirrorSourceId: it.id }));
+        patch[listKey] = [...keep, ...mine];
+      });
+      const avgMirrors = this.getOtherCatEntries(personalWs).filter(e => e.joint).map(e => {
+        const cat = (personalWs.categoryOptions || []).find(c => c.id === e.id) || { id: e.id, label: e.id };
+        return { id: 'mirror_avgcat_' + e.id, name: cat.label, amount: this.avgSpendLast3Months(personalWs, e.id), mirrorOwner: myId, mirrorSourceId: e.id, isAvgMirror: true };
+      });
+      patch.calcVariableItems = [...patch.calcVariableItems.filter(it => !it.isAvgMirror || it.mirrorOwner !== myId), ...avgMirrors];
+      return patch;
+    }, cb);
+  }
+
+  buildCalcVariableSharedAutoRows(sharedWs, jointLabel) {
+    return this.getOtherCatEntries(sharedWs).map(e => {
+      const cat = (sharedWs.categoryOptions || []).find(c => c.id === e.id) || { id: e.id, label: e.id };
+      const amount = this.avgSpendLast3Months(sharedWs, e.id);
+      const meAmt = amount / 2, partnerAmt = amount / 2;
+      return {
+        id: e.id, name: cat.label, total: amount, me: meAmt, partner: partnerAmt,
+        totalStr: this.fmt(amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
+        ownerLabel: jointLabel, ownerBg: '#3A2A1F', ownerColor: '#EDE4D9', editable: false, notEditable: true, setName: null, setAmount: null,
+        cycleOwner: null,
+        remove: () => this.removeCalcOtherCategory(e.id, 'shared')
+      };
+    });
+  }
+  unshareCalcItem(kind, sourceId, isAvgMirror) {
+    if (isAvgMirror) this.toggleCalcOtherCategoryJoint(sourceId, 'personal');
+    else if (kind === 'income') this.toggleCalcIncomeItemJoint(sourceId, 'personal');
+    else if (kind === 'fixed') this.toggleCalcFixedItemJoint(sourceId, 'personal');
+    else if (kind === 'variable') this.toggleCalcVariableItemJoint(sourceId, 'personal');
   }
 
   persistShared() {
@@ -1698,6 +1740,7 @@ class Component extends DCLogic {
       this.loadSharedData(data.household_id);
       this.loadHouseholdMembers(data.household_id);
       this.syncDisplayNameToHousehold();
+      this.syncMyMirrorsToShared(() => this.persistShared());
     });
   }
 
@@ -1735,7 +1778,7 @@ class Component extends DCLogic {
       if (error || !data) { this.setState({ householdBusy: false, householdError: error ? error.message : 'Error' }); return; }
       supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
-        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false }, () => this.persistShared());
+        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false }, () => this.syncMyMirrorsToShared(() => this.persistShared()));
       });
     });
   }
@@ -2080,7 +2123,7 @@ class Component extends DCLogic {
   addCalcOtherCategory() {
     const id = this.state.newCalcOtherCategory;
     if (!id) return;
-    this.setWsKey('personal', ws => ({ calcOtherCategories: [...this.getOtherCatEntries(ws), { id, joint: this.state.newCalcOtherJoint }] }), () => this.persist());
+    this.setWs(ws => ({ calcOtherCategories: [...this.getOtherCatEntries(ws), { id, joint: this.state.newCalcOtherJoint }] }), () => this.persist());
     this.setState({ newCalcOtherCategory: '', newCalcOtherJoint: false });
   }
   removeCalcOtherCategory(id, key) {
@@ -2190,20 +2233,41 @@ class Component extends DCLogic {
   }
   toggleCalcSectionAdd(section) { this.setState(s => ({ ['showCalc' + section + 'Add']: !s['showCalc' + section + 'Add'] })); }
   toggleCalcBulkEdit() { this.setState(s => ({ showCalcBulkEdit: !s.showCalcBulkEdit })); }
-  buildCalcTableRows(kind, personalWs, sharedWs, meLabel, jointLabel, partnerLabel) {
+  buildCalcTableRows(kind, personalWs, sharedWs, meLabel, jointLabel, partnerLabel, myUserId) {
     const listKey = 'calc' + this.capKind(kind) + 'Items';
-    const personalItems = (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, __source: 'personal' }));
-    const sharedItems = (sharedWs[listKey] || []).map(it => ({ ...it, __source: 'shared' }));
+    const includeDirectPersonal = !myUserId;
+    const personalItems = includeDirectPersonal ? (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, __direct: true })) : [];
+    const sharedItems = (sharedWs[listKey] || []).map(it => ({ ...it }));
     return [...personalItems, ...sharedItems].map(it => {
-      const meAmt = it.amount / 2, partnerAmt = it.amount / 2;
+      let ownerLabel, ownerBg, meAmt, partnerAmt;
+      if (it.mirrorOwner) {
+        const isMine = it.mirrorOwner === myUserId;
+        ownerLabel = isMine ? meLabel : partnerLabel;
+        ownerBg = isMine ? '#8A9A72' : '#8B4A42';
+        meAmt = isMine ? it.amount : 0;
+        partnerAmt = isMine ? 0 : it.amount;
+      } else if (it.__direct) {
+        ownerLabel = meLabel; ownerBg = '#8A9A72';
+        meAmt = it.amount; partnerAmt = 0;
+      } else {
+        ownerLabel = jointLabel; ownerBg = '#3A2A1F';
+        meAmt = it.amount / 2; partnerAmt = it.amount / 2;
+      }
+      const canEdit = !it.mirrorOwner || it.mirrorOwner === myUserId;
+      const editId = it.mirrorSourceId || it.id;
+      const editSource = (it.mirrorOwner || it.__direct) ? 'personal' : 'shared';
+      const removeFn = it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false)
+        : it.mirrorOwner ? null
+        : it.__direct ? () => this.unshareCalcItem(kind, it.id, false)
+        : () => this.removeCalcTableItem(kind, it.id, 'shared');
       return {
         id: it.id, name: it.name, total: it.amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(it.amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
-        ownerLabel: jointLabel, ownerBg: '#3A2A1F', ownerColor: '#EDE4D9', editable: true, notEditable: false,
-        setName: (e) => this.updateCalcTableItem(kind, it.id, it.__source, 'name', e),
-        setAmount: (e) => this.updateCalcTableItem(kind, it.id, it.__source, 'amount', e),
+        ownerLabel, ownerBg, ownerColor: '#EDE4D9', editable: canEdit, notEditable: !canEdit,
+        setName: canEdit ? (e) => this.updateCalcTableItem(kind, editId, editSource, 'name', e) : null,
+        setAmount: canEdit ? (e) => this.updateCalcTableItem(kind, editId, editSource, 'amount', e) : null,
         cycleOwner: null,
-        remove: () => this.removeCalcTableItem(kind, it.id, it.__source)
+        remove: removeFn
       };
     });
   }
@@ -2211,13 +2275,12 @@ class Component extends DCLogic {
     return this.getOtherCatEntries(personalWs).filter(e => e.joint).map(e => {
       const cat = (personalWs.categoryOptions || []).find(c => c.id === e.id) || { id: e.id, label: e.id };
       const amount = this.avgSpendLast3Months(personalWs, e.id);
-      const meAmt = amount / 2, partnerAmt = amount / 2;
       return {
-        id: e.id, name: cat.label, total: amount, me: meAmt, partner: partnerAmt,
-        totalStr: this.fmt(amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
-        ownerLabel: jointLabel, ownerBg: '#3A2A1F', ownerColor: '#EDE4D9', editable: false, notEditable: true, setName: null, setAmount: null,
+        id: e.id, name: cat.label, total: amount, me: amount, partner: 0,
+        totalStr: this.fmt(amount), meStr: this.fmt(amount), partnerStr: this.fmt(0),
+        ownerLabel: meLabel, ownerBg: '#8A9A72', ownerColor: '#EDE4D9', editable: false, notEditable: true, setName: null, setAmount: null,
         cycleOwner: null,
-        remove: () => this.removeCalcOtherCategory(e.id, 'personal')
+        remove: () => this.unshareCalcItem('variable', e.id, true)
       };
     });
   }
@@ -3139,7 +3202,7 @@ class Component extends DCLogic {
         remove: () => this.removeCalcOtherCategory(e.id)
       };
     });
-    const calcOtherCategoryOptions = calcIsSharedMode ? this.state.workspaces.personal.categoryOptions.filter(c => !this.getOtherCatEntries(this.state.workspaces.personal).some(e => e.id === c.id)) : ws.categoryOptions.filter(c => !this.getOtherCatEntries(ws).some(e => e.id === c.id));
+    const calcOtherCategoryOptions = ws.categoryOptions.filter(c => !this.getOtherCatEntries(ws).some(e => e.id === c.id));
     const calcVariableAvgTotalStr = this.fmt(this.getOtherCatEntries(ws).filter(e => !e.joint).reduce((s, e) => s + this.avgSpendLast3Months(ws, e.id), 0));
     const calcFixedCategoryChips = (ws.calcFixedCategories || []).map(c => ({
       ...c,
@@ -3195,11 +3258,13 @@ class Component extends DCLogic {
     const calcTablePartnerLabel = this.state.householdPartnerName || ws.calcPartnerName || t.calcPartnerColumnHeader;
     if (calcIsSharedMode) {
       const personalWsRef = this.state.workspaces.personal;
-      calcTableIncomeRows = this.buildCalcTableRows('income', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel);
-      calcTableFixedRows = this.buildCalcTableRows('fixed', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel);
-      const calcTableVariableManualRows = this.buildCalcTableRows('variable', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel);
-      const calcTableVariableAutoRows = this.buildCalcVariableAutoRows(personalWsRef, calcTableMeLabel, t.calcJointLabel);
-      calcTableVariableRows = [...calcTableVariableAutoRows, ...calcTableVariableManualRows];
+      const myUserId = (this.state.session && this.state.householdId) ? this.state.session.user.id : null;
+      calcTableIncomeRows = this.buildCalcTableRows('income', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
+      calcTableFixedRows = this.buildCalcTableRows('fixed', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
+      const calcTableVariableManualRows = this.buildCalcTableRows('variable', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
+      const calcTableVariableAutoRows = myUserId ? [] : this.buildCalcVariableAutoRows(personalWsRef, calcTableMeLabel, t.calcJointLabel);
+      const calcTableVariableSharedAutoRows = this.buildCalcVariableSharedAutoRows(ws, t.calcJointLabel);
+      calcTableVariableRows = [...calcTableVariableAutoRows, ...calcTableVariableSharedAutoRows, ...calcTableVariableManualRows];
       const sumRows = (rows) => rows.reduce((a, r) => ({ total: a.total + r.total, me: a.me + r.me, partner: a.partner + r.partner }), { total: 0, me: 0, partner: 0 });
       calcTableIncomeSums = sumRows(calcTableIncomeRows);
       calcTableFixedSums = sumRows(calcTableFixedRows);
