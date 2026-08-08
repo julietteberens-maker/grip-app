@@ -2434,7 +2434,7 @@ class Component extends DCLogic {
     return incomeTotal + futureRecurringIncomeThisMonth;
   }
   calcSummaryFor(ws, variableMode) {
-    const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, false) : 0;
+    const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws) : 0;
     const incomeAutoJoint = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, true) : 0;
     const incomeItems = ws.calcIncomeItems || [];
     const incomeNonJoint = incomeAuto + incomeItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
@@ -3245,7 +3245,7 @@ class Component extends DCLogic {
         };
       })
     ];
-    const calcIncomeAutoAmount = calcIsPersonalMode ? this.monthIncomeAutoTotal(ws, false) : 0;
+    const calcIncomeAutoAmount = calcIsPersonalMode ? this.monthIncomeAutoTotal(ws) : 0;
     const calcIncomeItemsView = (ws.calcIncomeItems || []).filter(it => !it.joint).map(it => ({
       ...it,
       amountStr: this.fmt(it.amount),
