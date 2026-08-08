@@ -1056,7 +1056,12 @@
       <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}">
         <div style="background:#DDCEB4;border-radius:16px;padding:20px 22px;margin-bottom:20px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-            <input type="text" placeholder="{{ t.calcPartnerNamePlaceholder }}" value="{{ calcPartnerNameValue }}" onChange="{{ setCalcPartnerName }}" style="font-size:14px;font-weight:700;border:none;background:transparent;outline:none;padding:0;color:#3A2A1F">
+            <sc-if value="{{ hasHousehold }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:14px;font-weight:700;color:#3A2A1F">{{ calcTableMeLabel }} &amp; {{ calcTablePartnerLabel }}</div>
+            </sc-if>
+            <sc-if value="{{ noHousehold }}" hint-placeholder-val="{{ true }}">
+              <input type="text" placeholder="{{ t.calcPartnerNamePlaceholder }}" value="{{ calcPartnerNameValue }}" onChange="{{ setCalcPartnerName }}" style="font-size:14px;font-weight:700;border:none;background:transparent;outline:none;padding:0;color:#3A2A1F">
+            </sc-if>
             <button onClick="{{ toggleCalcBulkEdit }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;background:transparent;color:#3A2A1F">{{ t.calcEditAllLabel }}</button>
           </div>
 
@@ -1078,11 +1083,6 @@
                 <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcIncomeAdd }}" style="border:none;background:transparent;color:#3A2A1F;font-size:14px;padding:2px 4px">✕</button></div>
                 <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newCalcIncomeName }}" onChange="{{ setNewCalcIncomeName }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onChange="{{ setNewCalcIncomeAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
-                <select value="{{ newCalcIncomeOwnerVal }}" onChange="{{ setNewCalcIncomeOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
-                  <option value="me">{{ calcTableMeLabel }}</option>
-                  <option value="joint">{{ t.calcJointLabel }}</option>
-                  <option value="partner">{{ calcTablePartnerLabel }}</option>
-                </select>
                 <button onClick="{{ addCalcTableIncomeItem }}" disabled="{{ addCalcTableIncomeItemDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addShort }}</button>
               </div>
             </sc-if>
@@ -1125,11 +1125,6 @@
                   <sc-for list="{{ calcFixedCategoryChips }}" as="fco2" hint-placeholder-count="3">
                     <option value="{{ fco2.id }}">{{ fco2.label }}</option>
                   </sc-for>
-                </select>
-                <select value="{{ newCalcFixedOwnerVal }}" onChange="{{ setNewCalcFixedOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
-                  <option value="me">{{ calcTableMeLabel }}</option>
-                  <option value="joint">{{ t.calcJointLabel }}</option>
-                  <option value="partner">{{ calcTablePartnerLabel }}</option>
                 </select>
                 <button onClick="{{ addCalcTableFixedItem }}" disabled="{{ addCalcTableFixedItemDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addFixedCost }}</button>
               </div>
@@ -1177,11 +1172,6 @@
                 <div style="height:1px;background:#C7B08A;margin:4px 0"></div>
                 <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newCalcVariableName }}" onChange="{{ setNewCalcVariableName }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcVariableAmount }}" onChange="{{ setNewCalcVariableAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
-                <select value="{{ newCalcVariableOwnerVal }}" onChange="{{ setNewCalcVariableOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
-                  <option value="me">{{ calcTableMeLabel }}</option>
-                  <option value="joint">{{ t.calcJointLabel }}</option>
-                  <option value="partner">{{ calcTablePartnerLabel }}</option>
-                </select>
                 <button onClick="{{ addCalcTableVariableItem }}" disabled="{{ addCalcTableVariableItemDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addShort }}</button>
               </div>
             </sc-if>
@@ -1411,11 +1401,13 @@ const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 //    create table household_members (
 //      household_id uuid references households(id) on delete cascade,
 //      user_id uuid primary key references auth.users(id) on delete cascade,
+//      display_name text,
 //      joined_at timestamptz default now()
 //    );
 //    alter table household_members enable row level security;
-//    create policy "select own" on household_members for select using (user_id = auth.uid());
+//    create policy "select household" on household_members for select using (household_id in (select household_id from household_members hm2 where hm2.user_id = auth.uid()));
 //    create policy "insert own" on household_members for insert with check (user_id = auth.uid());
+//    create policy "update own" on household_members for update using (user_id = auth.uid()) with check (user_id = auth.uid());
 //
 //    create table grip_shared_dashboards (
 //      household_id uuid primary key references households(id) on delete cascade,
@@ -1574,6 +1566,7 @@ class Component extends DCLogic {
     joinCodeInput: '',
     householdBusy: false,
     householdError: '',
+    householdPartnerName: '',
     newCalcJointFixedName: '',
     newCalcJointFixedAmount: '',
     newCalcJointIncomeName: '',
@@ -1703,7 +1696,22 @@ class Component extends DCLogic {
       if (error || !data) return;
       this.setState({ householdId: data.household_id, householdInviteCode: data.households ? data.households.invite_code : '' });
       this.loadSharedData(data.household_id);
+      this.loadHouseholdMembers(data.household_id);
+      this.syncDisplayNameToHousehold();
     });
+  }
+
+  loadHouseholdMembers(householdId) {
+    supabaseClient.from('household_members').select('user_id, display_name').eq('household_id', householdId).then(({ data, error }) => {
+      if (error || !data) return;
+      const partner = data.find(m => m.user_id !== this.state.session.user.id);
+      this.setState({ householdPartnerName: partner && partner.display_name ? partner.display_name : '' });
+    });
+  }
+
+  syncDisplayNameToHousehold() {
+    if (!supabaseClient || !this.state.householdId || !this.state.session) return;
+    supabaseClient.from('household_members').update({ display_name: this.state.name }).eq('user_id', this.state.session.user.id).then(({ error }) => { if (error) console.error('Name sync error', error); });
   }
 
   loadSharedData(householdId) {
@@ -1725,7 +1733,7 @@ class Component extends DCLogic {
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
     supabaseClient.from('households').insert({ invite_code: code, owner_id: this.state.session.user.id }).select('id, invite_code').single().then(({ data, error }) => {
       if (error || !data) { this.setState({ householdBusy: false, householdError: error ? error.message : 'Error' }); return; }
-      supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id }).then(({ error: memErr }) => {
+      supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
         this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false }, () => this.persistShared());
       });
@@ -1738,9 +1746,9 @@ class Component extends DCLogic {
     this.setState({ householdBusy: true, householdError: '' });
     supabaseClient.from('households').select('id, invite_code').eq('invite_code', code).maybeSingle().then(({ data, error }) => {
       if (error || !data) { this.setState({ householdBusy: false, householdError: this.tf('Code not found.', 'Code niet gevonden.', 'Code nicht gefunden.', 'Code introuvable.', 'Código no encontrado.') }); return; }
-      supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id }).then(({ error: memErr }) => {
+      supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
-        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false, joinCodeInput: '' }, () => this.loadSharedData(data.id));
+        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false, joinCodeInput: '' }, () => { this.loadSharedData(data.id); this.loadHouseholdMembers(data.id); });
       });
     });
   }
@@ -2027,7 +2035,7 @@ class Component extends DCLogic {
   }
   dismissAlert(id) { this.setState(s => ({ dismissed: [...s.dismissed, id] })); }
 
-  setName(e) { this.setState({ name: e.target.value }, () => this.persist()); }
+  setName(e) { this.setState({ name: e.target.value }, () => { this.persist(); this.syncDisplayNameToHousehold(); }); }
   setBalance(e) { this.setWs({ balance: this.parseAmt(e.target.value) || 0 }, () => this.persist()); }
   setBudget(e) { this.setWs({ budgetMonthly: this.parseAmt(e.target.value) || 0, budgetManuallySet: true }, () => this.persist()); }
 
@@ -2072,7 +2080,7 @@ class Component extends DCLogic {
   addCalcOtherCategory() {
     const id = this.state.newCalcOtherCategory;
     if (!id) return;
-    this.setWs(ws => ({ calcOtherCategories: [...this.getOtherCatEntries(ws), { id, joint: this.state.newCalcOtherJoint }] }), () => this.persist());
+    this.setWsKey('personal', ws => ({ calcOtherCategories: [...this.getOtherCatEntries(ws), { id, joint: this.state.newCalcOtherJoint }] }), () => this.persist());
     this.setState({ newCalcOtherCategory: '', newCalcOtherJoint: false });
   }
   removeCalcOtherCategory(id, key) {
@@ -2158,10 +2166,9 @@ class Component extends DCLogic {
     const name = (this.state[nameField] || '').trim();
     const amount = this.parseAmt(this.state[amountField]);
     if (!name || !amount) return;
-    const owner = this.state[ownerField] || 'joint';
-    const targetKey = owner === 'me' ? 'personal' : 'shared';
+    const targetKey = 'shared';
     const listKey = 'calc' + cap + 'Items';
-    const item = { id: 'c' + kind[0] + 'i' + Date.now(), name, amount, joint: owner === 'joint' };
+    const item = { id: 'c' + kind[0] + 'i' + Date.now(), name, amount, joint: true };
     if (kind === 'fixed') item.categoryId = this.state.newCalcFixedCategory || '';
     this.setState(s => {
       const workspaces = { ...s.workspaces };
@@ -2185,37 +2192,31 @@ class Component extends DCLogic {
   toggleCalcBulkEdit() { this.setState(s => ({ showCalcBulkEdit: !s.showCalcBulkEdit })); }
   buildCalcTableRows(kind, personalWs, sharedWs, meLabel, jointLabel, partnerLabel) {
     const listKey = 'calc' + this.capKind(kind) + 'Items';
-    const personalItems = (personalWs[listKey] || []).map(it => ({ ...it, __source: 'personal' }));
+    const personalItems = (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, __source: 'personal' }));
     const sharedItems = (sharedWs[listKey] || []).map(it => ({ ...it, __source: 'shared' }));
     return [...personalItems, ...sharedItems].map(it => {
-      const owner = it.joint ? 'joint' : (it.__source === 'personal' ? 'me' : 'partner');
-      const meAmt = owner === 'me' ? it.amount : owner === 'joint' ? it.amount / 2 : 0;
-      const partnerAmt = owner === 'partner' ? it.amount : owner === 'joint' ? it.amount / 2 : 0;
-      const meta = owner === 'me' ? { label: meLabel, bg: '#8A9A72' } : owner === 'partner' ? { label: partnerLabel, bg: '#8B4A42' } : { label: jointLabel, bg: '#3A2A1F' };
+      const meAmt = it.amount / 2, partnerAmt = it.amount / 2;
       return {
         id: it.id, name: it.name, total: it.amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(it.amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
-        ownerLabel: meta.label, ownerBg: meta.bg, ownerColor: '#EDE4D9', editable: true, notEditable: false,
+        ownerLabel: jointLabel, ownerBg: '#3A2A1F', ownerColor: '#EDE4D9', editable: true, notEditable: false,
         setName: (e) => this.updateCalcTableItem(kind, it.id, it.__source, 'name', e),
         setAmount: (e) => this.updateCalcTableItem(kind, it.id, it.__source, 'amount', e),
-        cycleOwner: () => this.cycleCalcItemOwner(kind, it.id, it.__source),
+        cycleOwner: null,
         remove: () => this.removeCalcTableItem(kind, it.id, it.__source)
       };
     });
   }
   buildCalcVariableAutoRows(personalWs, meLabel, jointLabel) {
-    return this.getOtherCatEntries(personalWs).map(e => {
+    return this.getOtherCatEntries(personalWs).filter(e => e.joint).map(e => {
       const cat = (personalWs.categoryOptions || []).find(c => c.id === e.id) || { id: e.id, label: e.id };
       const amount = this.avgSpendLast3Months(personalWs, e.id);
-      const owner = e.joint ? 'joint' : 'me';
-      const meAmt = owner === 'me' ? amount : amount / 2;
-      const partnerAmt = owner === 'joint' ? amount / 2 : 0;
-      const meta = owner === 'joint' ? { label: jointLabel, bg: '#3A2A1F' } : { label: meLabel, bg: '#8A9A72' };
+      const meAmt = amount / 2, partnerAmt = amount / 2;
       return {
         id: e.id, name: cat.label, total: amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
-        ownerLabel: meta.label, ownerBg: meta.bg, ownerColor: '#EDE4D9', editable: false, notEditable: true, setName: null, setAmount: null,
-        cycleOwner: () => this.toggleCalcOtherCategoryJoint(e.id, 'personal'),
+        ownerLabel: jointLabel, ownerBg: '#3A2A1F', ownerColor: '#EDE4D9', editable: false, notEditable: true, setName: null, setAmount: null,
+        cycleOwner: null,
         remove: () => this.removeCalcOtherCategory(e.id, 'personal')
       };
     });
@@ -3117,7 +3118,7 @@ class Component extends DCLogic {
         name: it.name,
         amountStr: this.fmt(it.amount),
         dateStr: this.formatDateShort(it.date),
-        kindLabel: it.kind === 'income' ? t.calcIncomeLabel : t.calcExpenseLabel,
+        kindLabel: it.kind === 'income' ? t.calcIncomeLabel : ((ws.categoryOptions.find(c => c.id === it.category) || {}).label || t.calcExpenseLabel),
         kindColor: it.kind === 'income' ? '#5F6F45' : '#B5654A'
       }));
     const jointPill = (joint) => ({
@@ -3138,7 +3139,7 @@ class Component extends DCLogic {
         remove: () => this.removeCalcOtherCategory(e.id)
       };
     });
-    const calcOtherCategoryOptions = ws.categoryOptions.filter(c => !this.getOtherCatEntries(ws).some(e => e.id === c.id));
+    const calcOtherCategoryOptions = calcIsSharedMode ? this.state.workspaces.personal.categoryOptions.filter(c => !this.getOtherCatEntries(this.state.workspaces.personal).some(e => e.id === c.id)) : ws.categoryOptions.filter(c => !this.getOtherCatEntries(ws).some(e => e.id === c.id));
     const calcVariableAvgTotalStr = this.fmt(this.getOtherCatEntries(ws).filter(e => !e.joint).reduce((s, e) => s + this.avgSpendLast3Months(ws, e.id), 0));
     const calcFixedCategoryChips = (ws.calcFixedCategories || []).map(c => ({
       ...c,
@@ -3191,7 +3192,7 @@ class Component extends DCLogic {
     let calcTableIncomeRows = [], calcTableFixedRows = [], calcTableVariableRows = [];
     let calcTableIncomeSums = { total: 0, me: 0, partner: 0 }, calcTableFixedSums = { total: 0, me: 0, partner: 0 }, calcTableVariableSums = { total: 0, me: 0, partner: 0 }, calcTableExpenseSums = { total: 0, me: 0, partner: 0 }, calcTableOverSums = { total: 0, me: 0, partner: 0 };
     const calcTableMeLabel = this.state.name || t.calcMeLabel;
-    const calcTablePartnerLabel = ws.calcPartnerName || t.calcPartnerColumnHeader;
+    const calcTablePartnerLabel = this.state.householdPartnerName || ws.calcPartnerName || t.calcPartnerColumnHeader;
     if (calcIsSharedMode) {
       const personalWsRef = this.state.workspaces.personal;
       calcTableIncomeRows = this.buildCalcTableRows('income', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel);
