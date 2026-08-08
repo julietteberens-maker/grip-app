@@ -354,7 +354,9 @@
               <div style="display:flex;align-items:center;gap:10px;background:#4F3A2B;border-radius:8px;padding:7px 10px">
                 <span style="font-size:12.5px;flex:1">{{ sri.name }}</span>
                 <span style="font-size:11px;color:#C7B7A6">{{ sri.ownerLabel }}</span>
-                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600">€ {{ sri.totalStr }}</span>
+                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B7A6;width:56px;text-align:right">€ {{ sri.meStr }}</span>
+                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B7A6;width:56px;text-align:right">€ {{ sri.partnerStr }}</span>
+                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600;width:60px;text-align:right">€ {{ sri.totalStr }}</span>
               </div>
             </sc-for>
             <sc-if value="{{ noCalcTableIncomeRows }}" hint-placeholder-val="{{ false }}">
@@ -375,6 +377,7 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newIncomeSource }}" onChange="{{ setNewIncomeSource }}" style="width:120px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
           <input type="text" inputmode="decimal" placeholder="{{ t.amountPlaceholder }}" value="{{ newIncomeAmount }}" onChange="{{ setNewIncomeAmount }}" style="width:90px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newIncomeJoint }}" onChange="{{ setNewIncomeJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
           <button onClick="{{ addIncome }}" disabled="{{ addIncomeDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addPlus }}</button>
         </div>
       </div>
@@ -387,6 +390,7 @@
               <div style="width:52px;flex:none;color:#3A2A1F;font-size:11.5px">{{ inc.dateLabel }}</div>
               <div style="flex:1;font-weight:600">{{ inc.source }}</div>
               <div style="width:80px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:#5F6F45">+€ {{ inc.amountStr }}</div>
+              <span onClick="{{ inc.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ inc.jointBg }};color:{{ inc.jointColor }}">{{ inc.jointLabel }}</span>
               <button onClick="{{ inc.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:12px">✕</button>
             </div>
           </sc-for>
@@ -492,14 +496,18 @@
               <div style="display:flex;align-items:center;gap:10px;background:#4F3A2B;border-radius:8px;padding:7px 10px">
                 <span style="font-size:12.5px;flex:1">{{ srf.name }}</span>
                 <span style="font-size:11px;color:#C7B7A6">{{ srf.ownerLabel }}</span>
-                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600">€ {{ srf.totalStr }}</span>
+                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B7A6;width:56px;text-align:right">€ {{ srf.meStr }}</span>
+                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B7A6;width:56px;text-align:right">€ {{ srf.partnerStr }}</span>
+                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600;width:60px;text-align:right">€ {{ srf.totalStr }}</span>
               </div>
             </sc-for>
             <sc-for list="{{ calcTableVariableRows }}" as="srv" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:10px;background:#4F3A2B;border-radius:8px;padding:7px 10px">
                 <span style="font-size:12.5px;flex:1">{{ srv.name }}</span>
                 <span style="font-size:11px;color:#C7B7A6">{{ srv.ownerLabel }}</span>
-                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600">€ {{ srv.totalStr }}</span>
+                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B7A6;width:56px;text-align:right">€ {{ srv.meStr }}</span>
+                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B7A6;width:56px;text-align:right">€ {{ srv.partnerStr }}</span>
+                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600;width:60px;text-align:right">€ {{ srv.totalStr }}</span>
               </div>
             </sc-for>
             <sc-if value="{{ noCalcTableFixedRows }}" hint-placeholder-val="{{ false }}">
@@ -1120,12 +1128,7 @@
       <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}">
         <div style="background:#DDCEB4;border-radius:16px;padding:20px 22px;margin-bottom:20px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-            <sc-if value="{{ hasHousehold }}" hint-placeholder-val="{{ false }}">
-              <div style="font-size:14px;font-weight:700;color:#3A2A1F">{{ calcTableMeLabel }} &amp; {{ calcTablePartnerLabel }}</div>
-            </sc-if>
-            <sc-if value="{{ noHousehold }}" hint-placeholder-val="{{ true }}">
-              <input type="text" placeholder="{{ t.calcPartnerNamePlaceholder }}" value="{{ calcPartnerNameValue }}" onChange="{{ setCalcPartnerName }}" style="font-size:14px;font-weight:700;border:none;background:transparent;outline:none;padding:0;color:#3A2A1F">
-            </sc-if>
+            <div style="font-size:14px;font-weight:700;color:#3A2A1F">{{ calcTableMeLabel }} &amp; {{ calcTablePartnerLabel }}</div>
             <button onClick="{{ toggleCalcBulkEdit }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;background:transparent;color:#3A2A1F">{{ t.calcEditAllLabel }}</button>
           </div>
 
@@ -1147,6 +1150,11 @@
                 <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcIncomeAdd }}" style="border:none;background:transparent;color:#3A2A1F;font-size:14px;padding:2px 4px">✕</button></div>
                 <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newCalcIncomeName }}" onChange="{{ setNewCalcIncomeName }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onChange="{{ setNewCalcIncomeAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+                <select value="{{ newCalcIncomeOwnerVal }}" onChange="{{ setNewCalcIncomeOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+                  <option value="joint">{{ t.calcJointLabel }}</option>
+                  <option value="me">{{ calcTableMeLabel }}</option>
+                  <option value="partner">{{ calcTablePartnerLabel }}</option>
+                </select>
                 <button onClick="{{ addCalcTableIncomeItem }}" disabled="{{ addCalcTableIncomeItemDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addShort }}</button>
               </div>
             </sc-if>
@@ -1189,6 +1197,11 @@
                   <sc-for list="{{ calcFixedCategoryChips }}" as="fco2" hint-placeholder-count="3">
                     <option value="{{ fco2.id }}">{{ fco2.label }}</option>
                   </sc-for>
+                </select>
+                <select value="{{ newCalcFixedOwnerVal }}" onChange="{{ setNewCalcFixedOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+                  <option value="joint">{{ t.calcJointLabel }}</option>
+                  <option value="me">{{ calcTableMeLabel }}</option>
+                  <option value="partner">{{ calcTablePartnerLabel }}</option>
                 </select>
                 <button onClick="{{ addCalcTableFixedItem }}" disabled="{{ addCalcTableFixedItemDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addFixedCost }}</button>
               </div>
@@ -1236,6 +1249,11 @@
                 <div style="height:1px;background:#C7B08A;margin:4px 0"></div>
                 <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newCalcVariableName }}" onChange="{{ setNewCalcVariableName }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcVariableAmount }}" onChange="{{ setNewCalcVariableAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+                <select value="{{ newCalcVariableOwnerVal }}" onChange="{{ setNewCalcVariableOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+                  <option value="joint">{{ t.calcJointLabel }}</option>
+                  <option value="me">{{ calcTableMeLabel }}</option>
+                  <option value="partner">{{ calcTablePartnerLabel }}</option>
+                </select>
                 <button onClick="{{ addCalcTableVariableItem }}" disabled="{{ addCalcTableVariableItemDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addShort }}</button>
               </div>
             </sc-if>
@@ -1631,6 +1649,7 @@ class Component extends DCLogic {
     householdBusy: false,
     householdError: '',
     householdPartnerName: '',
+    householdPartnerUserId: null,
     newCalcJointFixedName: '',
     newCalcJointFixedAmount: '',
     newCalcJointIncomeName: '',
@@ -1678,6 +1697,7 @@ class Component extends DCLogic {
     scheduleOpenFor: null,
     newIncomeSource: '',
     newIncomeAmount: '',
+    newIncomeJoint: false,
     newRecIncomeName: '',
     newRecIncomeAmount: '',
     newRecIncomeFrequency: 'monthly',
@@ -1732,13 +1752,13 @@ class Component extends DCLogic {
   }
 
   persist() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: this.state.name, mode: this.state.mode, language: this.state.language, workspaces: this.state.workspaces }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces }));
     if (supabaseClient && this.state.session) {
       clearTimeout(this._persistTimer);
       this._persistTimer = setTimeout(() => {
         supabaseClient.from('grip_dashboards').upsert({
           user_id: this.state.session.user.id,
-          data: { name: this.state.name, mode: this.state.mode, language: this.state.language, workspaces: this.state.workspaces },
+          data: { name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces },
           updated_at: new Date().toISOString()
         }).then(({ error }) => { if (error) console.error('Supabase save error', error); });
         if (this.state.householdId) this.syncMyMirrorsToShared(() => this.persistShared());
@@ -1767,7 +1787,11 @@ class Component extends DCLogic {
         id: 'mirror_ri_' + ri.id, name: ri.name, amount: ri.frequency === 'every4weeks' ? ri.amount * 13 / 12 : ri.amount,
         mirrorOwner: myId, mirrorSourceId: ri.id, isIncomeMirror: true
       }));
-      patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors];
+      const oneOffIncomeMirrors = (personalWs.incomeEntries || []).filter(ie => ie.joint).map(ie => ({
+        id: 'mirror_inc_' + ie.id, name: ie.source, amount: ie.amount,
+        mirrorOwner: myId, mirrorSourceId: ie.id, isOneOffIncomeMirror: true
+      }));
+      patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors, ...oneOffIncomeMirrors];
       return patch;
     }, cb);
   }
@@ -1786,8 +1810,9 @@ class Component extends DCLogic {
       };
     });
   }
-  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror) {
-    if (isIncomeMirror) this.toggleRecurringIncomeJoint(sourceId);
+  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror, isOneOffIncomeMirror) {
+    if (isOneOffIncomeMirror) this.toggleIncomeEntryJoint(sourceId);
+    else if (isIncomeMirror) this.toggleRecurringIncomeJoint(sourceId);
     else if (isAvgMirror) this.toggleCalcOtherCategoryJoint(sourceId, 'personal');
     else if (kind === 'income') this.toggleCalcIncomeItemJoint(sourceId, 'personal');
     else if (kind === 'fixed') this.toggleCalcFixedItemJoint(sourceId, 'personal');
@@ -1819,7 +1844,7 @@ class Component extends DCLogic {
     supabaseClient.from('household_members').select('user_id, display_name').eq('household_id', householdId).then(({ data, error }) => {
       if (error || !data) return;
       const partner = data.find(m => m.user_id !== this.state.session.user.id);
-      this.setState({ householdPartnerName: partner && partner.display_name ? partner.display_name : '' });
+      this.setState({ householdPartnerName: partner && partner.display_name ? partner.display_name : '', householdPartnerUserId: partner ? partner.user_id : null });
     });
   }
 
@@ -1873,7 +1898,7 @@ class Component extends DCLogic {
       if (error) { console.error('Supabase load error', error); return; }
       if (data && data.data) {
         const saved = data.data;
-        this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', language: saved.language || this.state.language, workspaces: saved.workspaces ? this.fillWorkspaceDefaults(saved.workspaces) : this.state.workspaces }, () => {
+        this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', view: saved.view || 'overview', language: saved.language || this.state.language, workspaces: saved.workspaces ? this.fillWorkspaceDefaults(saved.workspaces) : this.state.workspaces }, () => {
           this.processDueRecurring(); this.scheduleAlertDismiss();
         });
       } else {
@@ -1964,7 +1989,7 @@ class Component extends DCLogic {
       try {
         const saved = JSON.parse(raw);
         if (saved.workspaces) {
-          this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', language: saved.language || this.state.language, workspaces: this.fillWorkspaceDefaults(saved.workspaces) }, () => { this.processDueRecurring(); this.scheduleAlertDismiss(); });
+          this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', view: saved.view || 'overview', language: saved.language || this.state.language, workspaces: this.fillWorkspaceDefaults(saved.workspaces) }, () => { this.processDueRecurring(); this.scheduleAlertDismiss(); });
           return;
         }
         const migrated = this.migrateLegacyFlat(saved);
@@ -2273,6 +2298,23 @@ class Component extends DCLogic {
       return { workspaces };
     }, () => this.persist());
   }
+  cycleNativeItemOwner(kind, id) {
+    const listKey = 'calc' + this.capKind(kind) + 'Items';
+    const myId = this.state.session ? this.state.session.user.id : null;
+    const partnerId = this.state.householdPartnerUserId;
+    this.setWsKey('shared', ws => ({
+      [listKey]: (ws[listKey] || []).map(it => {
+        if (it.id !== id) return it;
+        const current = it.mirrorOwner === myId ? 'me' : it.mirrorOwner === partnerId ? 'partner' : 'joint';
+        const order = ['joint', 'me', 'partner'];
+        const next = order[(order.indexOf(current) + 1) % 3];
+        const rest = { ...it };
+        delete rest.mirrorOwner;
+        if (next === 'joint') return rest;
+        return { ...rest, mirrorOwner: next === 'me' ? myId : partnerId };
+      })
+    }), () => this.persist());
+  }
   setNewCalcTableOwner(kind, e) { this.setState({ ['newCalc' + this.capKind(kind) + 'Owner']: e.target.value }); }
   addCalcTableItem(kind) {
     const cap = this.capKind(kind);
@@ -2280,17 +2322,14 @@ class Component extends DCLogic {
     const name = (this.state[nameField] || '').trim();
     const amount = this.parseAmt(this.state[amountField]);
     if (!name || !amount) return;
-    const targetKey = 'shared';
+    const owner = this.state[ownerField] || 'joint';
     const listKey = 'calc' + cap + 'Items';
-    const item = { id: 'c' + kind[0] + 'i' + Date.now(), name, amount, joint: true };
+    const item = { id: 'c' + kind[0] + 'i' + Date.now(), name, amount };
     if (kind === 'fixed') item.categoryId = this.state.newCalcFixedCategory || '';
-    this.setState(s => {
-      const workspaces = { ...s.workspaces };
-      const tw = { ...workspaces[targetKey] };
-      tw[listKey] = [...(tw[listKey] || []), item];
-      workspaces[targetKey] = tw;
-      return { workspaces, [nameField]: '', [amountField]: '' };
-    }, () => this.persist());
+    if (owner === 'me') item.mirrorOwner = this.state.session ? this.state.session.user.id : null;
+    else if (owner === 'partner') item.mirrorOwner = this.state.householdPartnerUserId;
+    this.setWsKey('shared', ws => ({ [listKey]: [...(ws[listKey] || []), item] }), () => this.persist());
+    this.setState({ [nameField]: '', [amountField]: '' });
   }
   removeCalcTableItem(kind, id, sourceKey) {
     const listKey = 'calc' + this.capKind(kind) + 'Items';
@@ -2310,6 +2349,7 @@ class Component extends DCLogic {
     const personalItems = includeDirectPersonal ? (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, __direct: true })) : [];
     const sharedItems = (sharedWs[listKey] || []).map(it => ({ ...it }));
     return [...personalItems, ...sharedItems].map(it => {
+      const isTrueMirror = !!it.mirrorSourceId;
       let ownerLabel, ownerBg, meAmt, partnerAmt;
       if (it.mirrorOwner) {
         const isMine = it.mirrorOwner === myUserId;
@@ -2324,20 +2364,19 @@ class Component extends DCLogic {
         ownerLabel = jointLabel; ownerBg = '#3A2A1F';
         meAmt = it.amount / 2; partnerAmt = it.amount / 2;
       }
-      const canEdit = (!it.mirrorOwner || it.mirrorOwner === myUserId) && !it.isAvgMirror && !it.isIncomeMirror;
-      const editId = it.mirrorSourceId || it.id;
-      const editSource = (it.mirrorOwner || it.__direct) ? 'personal' : 'shared';
-      const removeFn = it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror)
-        : it.mirrorOwner ? null
-        : it.__direct ? () => this.unshareCalcItem(kind, it.id, false, it.isIncomeMirror)
+      const canEdit = !isTrueMirror && !it.__direct && !it.isAvgMirror;
+      const removeFn = isTrueMirror
+        ? (it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror, it.isOneOffIncomeMirror) : null)
+        : it.__direct ? () => this.unshareCalcItem(kind, it.id, false, false, false)
         : () => this.removeCalcTableItem(kind, it.id, 'shared');
+      const cycleOwner = (!isTrueMirror && !it.__direct) ? () => this.cycleNativeItemOwner(kind, it.id) : null;
       return {
         id: it.id, name: it.name, total: it.amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(it.amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
         ownerLabel, ownerBg, ownerColor: '#EDE4D9', editable: canEdit, notEditable: !canEdit,
-        setName: canEdit ? (e) => this.updateCalcTableItem(kind, editId, editSource, 'name', e) : null,
-        setAmount: canEdit ? (e) => this.updateCalcTableItem(kind, editId, editSource, 'amount', e) : null,
-        cycleOwner: null,
+        setName: canEdit ? (e) => this.updateCalcTableItem(kind, it.id, 'shared', 'name', e) : null,
+        setAmount: canEdit ? (e) => this.updateCalcTableItem(kind, it.id, 'shared', 'amount', e) : null,
+        cycleOwner,
         remove: removeFn
       };
     });
@@ -2987,6 +3026,10 @@ class Component extends DCLogic {
 
   setNewIncomeSource(e) { this.setState({ newIncomeSource: e.target.value }); }
   setNewIncomeAmount(e) { this.setState({ newIncomeAmount: e.target.value }); }
+  setNewIncomeJoint(e) { this.setState({ newIncomeJoint: e.target.checked }); }
+  toggleIncomeEntryJoint(id) {
+    this.setWs(ws => ({ incomeEntries: ws.incomeEntries.map(i => i.id === id ? { ...i, joint: !i.joint } : i) }), () => this.persist());
+  }
 
   addIncome() {
     const amount = this.parseAmt(this.state.newIncomeAmount);
@@ -2996,13 +3039,14 @@ class Component extends DCLogic {
       id: 'inc' + Date.now(),
       source: this.state.newIncomeSource || 'Income',
       amount,
+      joint: this.state.newIncomeJoint,
       date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     };
     this.setWs(ws => ({
       incomeEntries: [...ws.incomeEntries, entry],
       balance: ws.balance + amount
     }), () => this.persist());
-    this.setState({ newIncomeSource: '', newIncomeAmount: '' });
+    this.setState({ newIncomeSource: '', newIncomeAmount: '', newIncomeJoint: false });
   }
   removeIncome(id) {
     this.setWs(ws => {
@@ -3179,6 +3223,10 @@ class Component extends DCLogic {
         ...inc,
         dateLabel: `${MONTHS_SHORT[dt.getMonth()]} ${dt.getDate()}`,
         amountStr: this.fmt(inc.amount),
+        jointLabel: inc.joint ? t.calcJointLabel : t.solo,
+        jointBg: inc.joint ? '#3A2A1F' : 'transparent',
+        jointColor: inc.joint ? '#EDE4D9' : '#7A5233',
+        toggleJoint: () => this.toggleIncomeEntryJoint(inc.id),
         remove: () => this.removeIncome(inc.id)
       };
     });
@@ -3332,7 +3380,7 @@ class Component extends DCLogic {
     let calcTableIncomeRows = [], calcTableFixedRows = [], calcTableVariableRows = [];
     let calcTableIncomeSums = { total: 0, me: 0, partner: 0 }, calcTableFixedSums = { total: 0, me: 0, partner: 0 }, calcTableVariableSums = { total: 0, me: 0, partner: 0 }, calcTableExpenseSums = { total: 0, me: 0, partner: 0 }, calcTableOverSums = { total: 0, me: 0, partner: 0 };
     const calcTableMeLabel = this.state.name || t.calcMeLabel;
-    const calcTablePartnerLabel = this.state.householdPartnerName || ws.calcPartnerName || t.calcPartnerColumnHeader;
+    const calcTablePartnerLabel = this.state.householdPartnerName || 'Partner';
     if (calcIsSharedMode) {
       const personalWsRef = this.state.workspaces.personal;
       const myUserId = (this.state.session && this.state.householdId) ? this.state.session.user.id : null;
@@ -3937,6 +3985,8 @@ class Component extends DCLogic {
       incomeTotalStr: this.fmt(incomeTotal),
       newIncomeSource: this.state.newIncomeSource,
       newIncomeAmount: this.state.newIncomeAmount,
+      newIncomeJoint: this.state.newIncomeJoint,
+      setNewIncomeJoint: (e) => this.setNewIncomeJoint(e),
       setNewIncomeSource: (e) => this.setNewIncomeSource(e),
       setNewIncomeAmount: (e) => this.setNewIncomeAmount(e),
       addIncome: () => this.addIncome(),
