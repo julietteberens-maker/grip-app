@@ -382,6 +382,7 @@
             <div><div style="font-weight:600">{{ ri.name }}</div><div style="color:#3A2A1F;font-size:11px;margin-top:2px">{{ t.next }} {{ ri.nextLabel }} · {{ ri.freqLabel }}</div></div>
             <div style="display:flex;align-items:center;gap:8px">
               <div style="font-variant-numeric:tabular-nums;font-weight:600;color:#5F6F45">+€ {{ ri.amountStr }}</div>
+              <span onClick="{{ ri.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ ri.jointBg }};color:{{ ri.jointColor }}">{{ ri.jointLabel }}</span>
               <button onClick="{{ ri.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:12px">✕</button>
             </div>
           </div>
@@ -405,6 +406,7 @@
               <span style="font-size:12px;color:#3A2A1F">{{ t.firstDateLabel }}</span>
               <input type="date" value="{{ newRecIncomeStartDate }}" onChange="{{ setNewRecIncomeStartDate }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             </sc-if>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecIncomeJoint }}" onChange="{{ setNewRecIncomeJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
             <button onClick="{{ addRecurringIncome }}" disabled="{{ addRecIncomeDisabled }}" style="margin-left:auto;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addIncomeSourceBtn }}</button>
           </div>
         </div>
@@ -928,7 +930,6 @@
             <div style="display:flex;align-items:center;gap:8px;background:#EDE2CC;border-radius:8px;padding:8px 10px">
               <span style="font-size:12.5px;font-weight:600;flex:1">{{ t.calcAutoIncomeRowLabel }}</span>
               <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ calcIncomeAutoAmountStr }}</span>
-              <span onClick="{{ toggleCalcIncomeAutoJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ calcIncomeAutoJointBg }};color:{{ calcIncomeAutoJointColor }}">{{ calcIncomeAutoJointLabel }}</span>
             </div>
             </sc-if>
             <sc-for list="{{ calcIncomeItemsView }}" as="ii" hint-placeholder-count="2">
@@ -1619,6 +1620,7 @@ class Component extends DCLogic {
     newRecIncomeFrequency: 'monthly',
     newRecIncomeDay: '',
     newRecIncomeStartDate: '',
+    newRecIncomeJoint: false,
     savingsCategories: [],
     showSavingsCategoryForm: false,
     savingsColorPickerFor: null,
@@ -1698,6 +1700,11 @@ class Component extends DCLogic {
         return { id: 'mirror_avgcat_' + e.id, name: cat.label, amount: this.avgSpendLast3Months(personalWs, e.id), mirrorOwner: myId, mirrorSourceId: e.id, isAvgMirror: true };
       });
       patch.calcVariableItems = [...patch.calcVariableItems.filter(it => !it.isAvgMirror || it.mirrorOwner !== myId), ...avgMirrors];
+      const incomeMirrors = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => ({
+        id: 'mirror_ri_' + ri.id, name: ri.name, amount: ri.frequency === 'every4weeks' ? ri.amount * 13 / 12 : ri.amount,
+        mirrorOwner: myId, mirrorSourceId: ri.id, isIncomeMirror: true
+      }));
+      patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors];
       return patch;
     }, cb);
   }
@@ -1716,8 +1723,9 @@ class Component extends DCLogic {
       };
     });
   }
-  unshareCalcItem(kind, sourceId, isAvgMirror) {
-    if (isAvgMirror) this.toggleCalcOtherCategoryJoint(sourceId, 'personal');
+  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror) {
+    if (isIncomeMirror) this.toggleRecurringIncomeJoint(sourceId);
+    else if (isAvgMirror) this.toggleCalcOtherCategoryJoint(sourceId, 'personal');
     else if (kind === 'income') this.toggleCalcIncomeItemJoint(sourceId, 'personal');
     else if (kind === 'fixed') this.toggleCalcFixedItemJoint(sourceId, 'personal');
     else if (kind === 'variable') this.toggleCalcVariableItemJoint(sourceId, 'personal');
@@ -2253,12 +2261,12 @@ class Component extends DCLogic {
         ownerLabel = jointLabel; ownerBg = '#3A2A1F';
         meAmt = it.amount / 2; partnerAmt = it.amount / 2;
       }
-      const canEdit = !it.mirrorOwner || it.mirrorOwner === myUserId;
+      const canEdit = (!it.mirrorOwner || it.mirrorOwner === myUserId) && !it.isAvgMirror && !it.isIncomeMirror;
       const editId = it.mirrorSourceId || it.id;
       const editSource = (it.mirrorOwner || it.__direct) ? 'personal' : 'shared';
-      const removeFn = it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false)
+      const removeFn = it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror)
         : it.mirrorOwner ? null
-        : it.__direct ? () => this.unshareCalcItem(kind, it.id, false)
+        : it.__direct ? () => this.unshareCalcItem(kind, it.id, false, it.isIncomeMirror)
         : () => this.removeCalcTableItem(kind, it.id, 'shared');
       return {
         id: it.id, name: it.name, total: it.amount, me: meAmt, partner: partnerAmt,
@@ -2409,12 +2417,14 @@ class Component extends DCLogic {
     this.setWs(ws => ({ calcVariableItems: [...(ws.calcVariableItems || []), item] }), () => this.persist());
     this.setState({ newCalcJointVariableName: '', newCalcJointVariableAmount: '' });
   }
-  monthIncomeAutoTotal(ws) {
+  monthIncomeAutoTotal(ws, jointFilter) {
     const now = new Date(); const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
+    const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
     const incomeTotal = ws.incomeEntries
       .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
+      .filter(inc => matchJoint(inc.joint))
       .reduce((s, i) => s + i.amount, 0);
-    const futureRecurringIncomeThisMonth = ws.recurringIncome.reduce((sum, ri) => {
+    const futureRecurringIncomeThisMonth = ws.recurringIncome.filter(ri => matchJoint(ri.joint)).reduce((sum, ri) => {
       if (ri.frequency === 'every4weeks' && ri.startDate) {
         const nd = this.nextOccurrence(ri);
         return (nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today) ? sum + ri.amount : sum;
@@ -2424,11 +2434,11 @@ class Component extends DCLogic {
     return incomeTotal + futureRecurringIncomeThisMonth;
   }
   calcSummaryFor(ws, variableMode) {
-    const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws) : 0;
-    const incomeAutoJoint = !!ws.calcIncomeAutoJoint;
+    const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, false) : 0;
+    const incomeAutoJoint = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, true) : 0;
     const incomeItems = ws.calcIncomeItems || [];
-    const incomeNonJoint = (incomeAutoJoint ? 0 : incomeAuto) + incomeItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
-    const incomeJoint = (incomeAutoJoint ? incomeAuto : 0) + incomeItems.filter(it => it.joint).reduce((s, it) => s + it.amount, 0);
+    const incomeNonJoint = incomeAuto + incomeItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
+    const incomeJoint = incomeAutoJoint + incomeItems.filter(it => it.joint).reduce((s, it) => s + it.amount, 0);
     const fixedItems = ws.calcFixedItems || [];
     const fixedNonJoint = fixedItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
     const fixedJoint = fixedItems.filter(it => it.joint).reduce((s, it) => s + it.amount, 0);
@@ -2946,6 +2956,10 @@ class Component extends DCLogic {
   setNewRecIncomeFrequency(e) { this.setState({ newRecIncomeFrequency: e.target.value }); }
   setNewRecIncomeDay(e) { this.setState({ newRecIncomeDay: e.target.value }); }
   setNewRecIncomeStartDate(e) { this.setState({ newRecIncomeStartDate: e.target.value }); }
+  setNewRecIncomeJoint(e) { this.setState({ newRecIncomeJoint: e.target.checked }); }
+  toggleRecurringIncomeJoint(id) {
+    this.setWs(ws => ({ recurringIncome: ws.recurringIncome.map(r => r.id === id ? { ...r, joint: !r.joint } : r) }), () => this.persist());
+  }
 
   addRecurringIncome() {
     const amount = this.parseAmt(this.state.newRecIncomeAmount);
@@ -2955,15 +2969,15 @@ class Component extends DCLogic {
     let ri;
     if (frequency === 'every4weeks') {
       if (!this.state.newRecIncomeStartDate) return;
-      ri = { id: 'ri' + Date.now(), name: this.state.newRecIncomeName, amount, frequency, startDate: this.state.newRecIncomeStartDate };
+      ri = { id: 'ri' + Date.now(), name: this.state.newRecIncomeName, amount, frequency, startDate: this.state.newRecIncomeStartDate, joint: this.state.newRecIncomeJoint };
     } else {
       const day = parseInt(this.state.newRecIncomeDay, 10);
       if (!day || day < 1 || day > 31) return;
-      ri = { id: 'ri' + Date.now(), name: this.state.newRecIncomeName, amount, frequency: 'monthly', day };
+      ri = { id: 'ri' + Date.now(), name: this.state.newRecIncomeName, amount, frequency: 'monthly', day, joint: this.state.newRecIncomeJoint };
     }
 
     this.setWs(ws => ({ recurringIncome: [...ws.recurringIncome, ri] }), () => this.persist());
-    this.setState({ newRecIncomeName: '', newRecIncomeAmount: '', newRecIncomeDay: '', newRecIncomeStartDate: '' });
+    this.setState({ newRecIncomeName: '', newRecIncomeAmount: '', newRecIncomeDay: '', newRecIncomeStartDate: '', newRecIncomeJoint: false });
   }
   removeRecurringIncome(id) {
     this.setWs(ws => ({ recurringIncome: ws.recurringIncome.filter(r => r.id !== id) }), () => this.persist());
@@ -3231,7 +3245,7 @@ class Component extends DCLogic {
         };
       })
     ];
-    const calcIncomeAutoAmount = calcIsPersonalMode ? (ws.calcIncomeAutoJoint ? 0 : this.monthIncomeAutoTotal(ws)) : 0;
+    const calcIncomeAutoAmount = calcIsPersonalMode ? this.monthIncomeAutoTotal(ws, false) : 0;
     const calcIncomeItemsView = (ws.calcIncomeItems || []).filter(it => !it.joint).map(it => ({
       ...it,
       amountStr: this.fmt(it.amount),
@@ -3358,6 +3372,10 @@ class Component extends DCLogic {
           nextDate: target,
           nextLabel: `${MONTHS_SHORT[target.getMonth()]} ${target.getDate()}`,
           freqLabel: this.tf(ri.frequency === 'every4weeks' ? 'every 4 weeks' : 'monthly', ri.frequency === 'every4weeks' ? 'elke 4 weken' : 'maandelijks', ri.frequency === 'every4weeks' ? 'alle 4 Wochen' : 'monatlich', ri.frequency === 'every4weeks' ? 'toutes les 4 semaines' : 'mensuel', ri.frequency === 'every4weeks' ? 'cada 4 semanas' : 'mensual'),
+          jointLabel: ri.joint ? t.calcJointLabel : t.solo,
+          jointBg: ri.joint ? '#3A2A1F' : 'transparent',
+          jointColor: ri.joint ? '#EDE4D9' : '#7A5233',
+          toggleJoint: () => this.toggleRecurringIncomeJoint(ri.id),
           remove: () => this.removeRecurringIncome(ri.id)
         };
       })
@@ -3504,7 +3522,7 @@ class Component extends DCLogic {
       calcIsSharedMode,
       recentLoggedItems: recentLoggedItemsList,
       noRecentLoggedItems: recentLoggedItemsList.length === 0,
-      calcShowIncomeAutoRow: calcIsPersonalMode && !ws.calcIncomeAutoJoint,
+      calcShowIncomeAutoRow: calcIsPersonalMode,
       calcIncomeAutoAmountStr: this.fmt(calcIncomeAutoAmount),
       calcIncomeAutoJoint: !!ws.calcIncomeAutoJoint,
       calcIncomeAutoJointLabel: ws.calcIncomeAutoJoint ? t.calcJointLabel : t.solo,
@@ -3866,6 +3884,8 @@ class Component extends DCLogic {
       newRecIncomeFrequency: this.state.newRecIncomeFrequency,
       newRecIncomeDay: this.state.newRecIncomeDay,
       newRecIncomeStartDate: this.state.newRecIncomeStartDate,
+      newRecIncomeJoint: this.state.newRecIncomeJoint,
+      setNewRecIncomeJoint: (e) => this.setNewRecIncomeJoint(e),
       setNewRecIncomeName: (e) => this.setNewRecIncomeName(e),
       setNewRecIncomeAmount: (e) => this.setNewRecIncomeAmount(e),
       setNewRecIncomeFrequency: (e) => this.setNewRecIncomeFrequency(e),
