@@ -663,6 +663,9 @@
                   <sc-for list="{{ sh.items }}" as="shi" hint-placeholder-count="2">
                     <div style="display:flex;align-items:center;gap:8px;background:#F2EAD9;border-radius:8px;padding:6px 10px">
                       <span style="font-size:12px;font-weight:600;flex:1">{{ shi.name }}</span>
+                      <sc-if value="{{ shi.categoryLabel }}" hint-placeholder-val="{{ false }}">
+                        <span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:{{ shi.categoryColor }};color:#EDE4D9">{{ shi.categoryLabel }}</span>
+                      </sc-if>
                       <span style="font-size:11px;color:#7A5233;font-variant-numeric:tabular-nums">{{ shi.dateStr }}</span>
                       <span style="font-size:12px;font-variant-numeric:tabular-nums">€ {{ shi.amountStr }}</span>
                       <button onClick="{{ shi.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:11px">✕</button>
@@ -673,6 +676,12 @@
                   </sc-if>
                   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
                     <input type="text" placeholder="{{ t.historyItemNamePlaceholder }}" value="{{ newSpendHistoryItemName }}" onChange="{{ setNewSpendHistoryItemName }}" onKeyDown="{{ onSpendHistoryItemKeyDown }}" style="flex:1;min-width:90px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#F2EAD9;color:#3A2A1F">
+                    <select value="{{ newSpendHistoryItemCategory }}" onChange="{{ setNewSpendHistoryItemCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#F2EAD9;color:#3A2A1F">
+                      <option value="">{{ t.calcPickCategory }}</option>
+                      <sc-for list="{{ categoryOptions }}" as="shcat" hint-placeholder-count="3">
+                        <option value="{{ shcat.id }}">{{ shcat.label }}</option>
+                      </sc-for>
+                    </select>
                     <input type="date" title="{{ t.dateLabel }}" value="{{ newSpendHistoryItemDate }}" onChange="{{ setNewSpendHistoryItemDate }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#F2EAD9;color:#3A2A1F">
                     <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newSpendHistoryItemAmount }}" onChange="{{ setNewSpendHistoryItemAmount }}" onKeyDown="{{ onSpendHistoryItemKeyDown }}" style="width:90px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#F2EAD9;color:#3A2A1F">
                     <button onClick="{{ addSpendHistoryItem }}" disabled="{{ addSpendHistoryItemDisabled }}" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">+</button>
@@ -1064,7 +1073,9 @@
             <span style="font-size:12.5px;font-weight:700">{{ t.calcIncomeLabel }}</span>
             <button onClick="{{ toggleCalcIncomeAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#3A2A1F;color:#EDE4D9;line-height:1">+</button>
             <sc-if value="{{ showCalcIncomeAdd }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ toggleCalcIncomeAdd }}" style="position:fixed;inset:0;z-index:19"></div>
               <div style="position:absolute;top:30px;right:0;z-index:20;width:260px;background:#F2EAD9;border-radius:12px;padding:12px;box-shadow:0 10px 26px rgba(58,42,31,.22);display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcIncomeAdd }}" style="border:none;background:transparent;color:#3A2A1F;font-size:14px;padding:2px 4px">✕</button></div>
                 <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newCalcIncomeName }}" onChange="{{ setNewCalcIncomeName }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onChange="{{ setNewCalcIncomeAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <select value="{{ newCalcIncomeOwnerVal }}" onChange="{{ setNewCalcIncomeOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
@@ -1104,7 +1115,9 @@
             <span style="font-size:12.5px;font-weight:700">{{ t.calcFixedHeader }}</span>
             <button onClick="{{ toggleCalcFixedAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#3A2A1F;color:#EDE4D9;line-height:1">+</button>
             <sc-if value="{{ showCalcFixedAdd }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ toggleCalcFixedAdd }}" style="position:fixed;inset:0;z-index:19"></div>
               <div style="position:absolute;top:30px;right:0;z-index:20;width:260px;background:#F2EAD9;border-radius:12px;padding:12px;box-shadow:0 10px 26px rgba(58,42,31,.22);display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcFixedAdd }}" style="border:none;background:transparent;color:#3A2A1F;font-size:14px;padding:2px 4px">✕</button></div>
                 <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newCalcFixedName }}" onChange="{{ setNewCalcFixedName }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onChange="{{ setNewCalcFixedAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <select value="{{ newCalcFixedCategory }}" onChange="{{ setNewCalcFixedCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
@@ -1150,7 +1163,9 @@
             <span style="font-size:12.5px;font-weight:700">{{ t.calcExpenseLabel }}</span>
             <button onClick="{{ toggleCalcVariableAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#3A2A1F;color:#EDE4D9;line-height:1">+</button>
             <sc-if value="{{ showCalcVariableAdd }}" hint-placeholder-val="{{ false }}">
+              <div onClick="{{ toggleCalcVariableAdd }}" style="position:fixed;inset:0;z-index:19"></div>
               <div style="position:absolute;top:30px;right:0;z-index:20;width:260px;background:#F2EAD9;border-radius:12px;padding:12px;box-shadow:0 10px 26px rgba(58,42,31,.22);display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcVariableAdd }}" style="border:none;background:transparent;color:#3A2A1F;font-size:14px;padding:2px 4px">✕</button></div>
                 <div style="font-size:10.5px;color:#7A5233">{{ t.calcOtherIntro }}</div>
                 <select value="{{ newCalcOtherCategory }}" onChange="{{ setNewCalcOtherCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                   <option value="">{{ t.calcPickCategory }}</option>
@@ -1571,6 +1586,7 @@ class Component extends DCLogic {
     newSpendHistoryItemTag: '',
     newSpendHistoryItemAmount: '',
     newSpendHistoryItemDate: '',
+    newSpendHistoryItemCategory: '',
     newIncomeHistoryMonth: '',
     expandedIncomeHistoryKey: null,
     newIncomeHistoryItemName: '',
@@ -2248,15 +2264,16 @@ class Component extends DCLogic {
   setNewSpendHistoryItemTag(e) { this.setState({ newSpendHistoryItemTag: e.target.value }); }
   setNewSpendHistoryItemAmount(e) { this.setState({ newSpendHistoryItemAmount: e.target.value }); }
   setNewSpendHistoryItemDate(e) { this.setState({ newSpendHistoryItemDate: e.target.value }); }
+  setNewSpendHistoryItemCategory(e) { this.setState({ newSpendHistoryItemCategory: e.target.value }); }
   addSpendHistoryItem() {
     const key = this.state.expandedSpendHistoryKey;
     const name = this.state.newSpendHistoryItemName.trim();
     const amount = this.parseAmt(this.state.newSpendHistoryItemAmount);
     if (!key || !name || !amount) return;
     const date = this.state.newSpendHistoryItemDate || (key + '-01');
-    const item = { id: 'sh' + Date.now(), name, tag: '', amount, date };
+    const item = { id: 'sh' + Date.now(), name, tag: '', amount, date, category: this.state.newSpendHistoryItemCategory || '' };
     this.setWs(ws => ({ spendHistory: (ws.spendHistory || []).map(h => h.key === key ? { ...h, items: [...(h.items || []), item] } : h) }), () => this.persist());
-    this.setState({ newSpendHistoryItemName: '', newSpendHistoryItemTag: '', newSpendHistoryItemAmount: '', newSpendHistoryItemDate: '' });
+    this.setState({ newSpendHistoryItemName: '', newSpendHistoryItemTag: '', newSpendHistoryItemAmount: '', newSpendHistoryItemDate: '', newSpendHistoryItemCategory: '' });
   }
   onSpendHistoryItemKeyDown(e) { if (e.key === 'Enter') this.addSpendHistoryItem(); }
   removeSpendHistoryItem(key, id) {
@@ -2376,7 +2393,14 @@ class Component extends DCLogic {
         .filter(t => t.category === categoryId)
         .filter(t => { const d = new Date(t.date); return d.getFullYear() === target.getFullYear() && d.getMonth() === target.getMonth(); })
         .reduce((s, t) => s + t.amount, 0);
-      total += sum;
+      if (sum > 0) {
+        total += sum;
+      } else {
+        const key = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}`;
+        const historyMonth = (ws.spendHistory || []).find(h => h.key === key);
+        const historySum = historyMonth ? (historyMonth.items || []).filter(it => it.category === categoryId).reduce((s, it) => s + it.amount, 0) : 0;
+        total += historySum;
+      }
     }
     return total / 3;
   }
@@ -3166,7 +3190,7 @@ class Component extends DCLogic {
     let calcJointItemsIncome = [], calcJointItemsFixed = [], calcJointItemsVariable = [];
     let calcTableIncomeRows = [], calcTableFixedRows = [], calcTableVariableRows = [];
     let calcTableIncomeSums = { total: 0, me: 0, partner: 0 }, calcTableFixedSums = { total: 0, me: 0, partner: 0 }, calcTableVariableSums = { total: 0, me: 0, partner: 0 }, calcTableExpenseSums = { total: 0, me: 0, partner: 0 }, calcTableOverSums = { total: 0, me: 0, partner: 0 };
-    const calcTableMeLabel = t.calcMeLabel;
+    const calcTableMeLabel = this.state.name || t.calcMeLabel;
     const calcTablePartnerLabel = ws.calcPartnerName || t.calcPartnerColumnHeader;
     if (calcIsSharedMode) {
       const personalWsRef = this.state.workspaces.personal;
@@ -3712,9 +3736,14 @@ class Component extends DCLogic {
         toggle: () => this.toggleSpendHistoryMonth(h.key),
         remove: (e) => { e.stopPropagation(); this.removeSpendHistoryEntry(h.key); },
         noItems: (h.items || []).length === 0,
-        items: (h.items || []).map(it => ({ ...it, amountStr: this.fmt(it.amount), dateStr: this.formatDateShort(it.date), remove: () => this.removeSpendHistoryItem(h.key, it.id) }))
+        items: (h.items || []).map(it => {
+          const cat = it.category ? ws.categoryOptions.find(c => c.id === it.category) : null;
+          return { ...it, amountStr: this.fmt(it.amount), dateStr: this.formatDateShort(it.date), categoryLabel: cat ? cat.label : '', categoryColor: cat ? cat.color : '#7A5233', remove: () => this.removeSpendHistoryItem(h.key, it.id) };
+        })
       })),
       noSpendHistoryRows: (ws.spendHistory || []).length === 0,
+      newSpendHistoryItemCategory: this.state.newSpendHistoryItemCategory,
+      setNewSpendHistoryItemCategory: (e) => this.setNewSpendHistoryItemCategory(e),
       newSpendHistoryMonth: this.state.newSpendHistoryMonth,
       setNewSpendHistoryMonth: (e) => this.setNewSpendHistoryMonth(e),
       newSpendHistoryItemDate: this.state.newSpendHistoryItemDate,
