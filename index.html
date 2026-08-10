@@ -685,6 +685,7 @@
             <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newRecName }}" onChange="{{ setNewRecName }}" style="width:110px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newRecAmount }}" onChange="{{ setNewRecAmount }}" style="width:74px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             <select value="{{ newRecCategory }}" onChange="{{ setNewRecCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
+              <option value="">{{ t.calcGeneralGroup }}</option>
               <sc-for list="{{ fixedCostCategories }}" as="fc" hint-placeholder-count="7">
                 <option value="{{ fc.id }}">{{ fc.label }}</option>
               </sc-for>
@@ -3200,7 +3201,7 @@ class Component extends DCLogic {
     const recurring = ws.recurring
       .map(r => {
         const target = this.nextOccurrence(r);
-        const cat = fixedCatMap[r.category] || fixedCatMap.other;
+        const cat = fixedCatMap[r.category] || fixedCatMap.other || { label: t.calcGeneralGroup, color: '#3A2A1F' };
         return {
           ...r,
           amountStr: this.fmt(r.amount),
