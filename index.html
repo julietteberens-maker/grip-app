@@ -1798,6 +1798,17 @@ class Component extends DCLogic {
         mirrorOwner: myId, mirrorSourceId: ie.id, isOneOffIncomeMirror: true
       }));
       patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors, ...oneOffIncomeMirrors];
+
+      // Also mirror joint income into the plain "Inkomen" tab (incomeEntries / recurringIncome).
+      // This is separate from the calcIncomeItems mirrors above, which only feed the Budgetcalculator.
+      const keepIncomeEntries = (sharedWs.incomeEntries || []).filter(it => it.mirrorOwner !== myId);
+      const mineIncomeEntries = (personalWs.incomeEntries || []).filter(ie => ie.joint).map(ie => ({ ...ie, id: 'mirror_incentry_' + ie.id, mirrorOwner: myId, mirrorSourceId: ie.id }));
+      patch.incomeEntries = [...keepIncomeEntries, ...mineIncomeEntries];
+
+      const keepRecurringIncome = (sharedWs.recurringIncome || []).filter(it => it.mirrorOwner !== myId);
+      const mineRecurringIncome = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => ({ ...ri, id: 'mirror_recinc_' + ri.id, mirrorOwner: myId, mirrorSourceId: ri.id }));
+      patch.recurringIncome = [...keepRecurringIncome, ...mineRecurringIncome];
+
       return patch;
     }, cb);
   }
@@ -3242,21 +3253,25 @@ class Component extends DCLogic {
     });
     const spendingTotal = filteredTxRaw.reduce((s, t) => s + t.amount, 0);
 
+    const myUserIdForIncome = this.state.session ? this.state.session.user.id : null;
+    const ownerLabelFor = (mirrorOwner) => mirrorOwner === myUserIdForIncome ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader);
+
     const monthIncomeRaw = ws.incomeEntries
       .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
       .slice()
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const monthIncome = monthIncomeRaw.map(inc => {
       const dt = new Date(inc.date + 'T00:00:00');
+      const isMirror = !!inc.mirrorOwner;
       return {
         ...inc,
         dateLabel: `${MONTHS_SHORT[dt.getMonth()]} ${dt.getDate()}`,
         amountStr: this.fmt(inc.amount),
-        jointLabel: inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel,
-        jointBg: inc.joint ? '#3A2A1F' : 'transparent',
-        jointColor: inc.joint ? '#EDE4D9' : '#7A5233',
-        toggleJoint: () => this.toggleIncomeEntryJoint(inc.id),
-        remove: () => this.removeIncome(inc.id)
+        jointLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
+        jointBg: isMirror ? '#7A5233' : (inc.joint ? '#3A2A1F' : 'transparent'),
+        jointColor: '#EDE4D9',
+        toggleJoint: isMirror ? () => {} : () => this.toggleIncomeEntryJoint(inc.id),
+        remove: isMirror ? () => {} : () => this.removeIncome(inc.id)
       };
     });
     const incomeTotal = monthIncomeRaw.reduce((s, inc) => s + inc.amount, 0);
@@ -3514,17 +3529,18 @@ class Component extends DCLogic {
     const recurringIncome = ws.recurringIncome
       .map(ri => {
         const target = this.nextOccurrence(ri);
+        const isMirror = !!ri.mirrorOwner;
         return {
           ...ri,
           amountStr: this.fmt(ri.amount),
           nextDate: target,
           nextLabel: `${MONTHS_SHORT[target.getMonth()]} ${target.getDate()}`,
           freqLabel: this.tf(ri.frequency === 'every4weeks' ? 'every 4 weeks' : 'monthly', ri.frequency === 'every4weeks' ? 'elke 4 weken' : 'maandelijks', ri.frequency === 'every4weeks' ? 'alle 4 Wochen' : 'monatlich', ri.frequency === 'every4weeks' ? 'toutes les 4 semaines' : 'mensuel', ri.frequency === 'every4weeks' ? 'cada 4 semanas' : 'mensual'),
-          jointLabel: ri.joint ? t.shareVisibleLabel : t.sharePrivateLabel,
-          jointBg: ri.joint ? '#3A2A1F' : 'transparent',
-          jointColor: ri.joint ? '#EDE4D9' : '#7A5233',
-          toggleJoint: () => this.toggleRecurringIncomeJoint(ri.id),
-          remove: () => this.removeRecurringIncome(ri.id)
+          jointLabel: isMirror ? ownerLabelFor(ri.mirrorOwner) : (ri.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
+          jointBg: isMirror ? '#7A5233' : (ri.joint ? '#3A2A1F' : 'transparent'),
+          jointColor: '#EDE4D9',
+          toggleJoint: isMirror ? () => {} : () => this.toggleRecurringIncomeJoint(ri.id),
+          remove: isMirror ? () => {} : () => this.removeRecurringIncome(ri.id)
         };
       })
       .sort((a, b) => a.nextDate - b.nextDate);
