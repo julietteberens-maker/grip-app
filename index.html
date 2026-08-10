@@ -1793,18 +1793,24 @@ class Component extends DCLogic {
           data: { name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces },
           updated_at: new Date().toISOString()
         }).then(({ error }) => { if (error) console.error('Supabase save error', error); });
-        if (this.state.householdId) this.syncMyMirrorsToShared(() => this.persistShared());
+        if (this.state.householdId) this.syncMyMirrorsToShared();
       }, 700);
     }
   }
 
   syncMyMirrorsToShared(cb) {
-    if (!this.state.session || !this.state.householdId) { if (cb) cb(); return; }
+    if (!supabaseClient || !this.state.session || !this.state.householdId) { if (cb) cb(); return; }
     const myId = this.state.session.user.id;
+    const householdId = this.state.householdId;
     const personalWs = this.state.workspaces.personal;
-    const kinds = ['calcIncomeItems', 'calcFixedItems', 'calcVariableItems'];
-    this.setWsKey('shared', sharedWs => {
+    // Always fetch the LATEST shared data from Supabase before computing/writing mirrors.
+    // Using the locally-cached this.state.workspaces.shared here would risk overwriting the
+    // other partner's concurrent changes with a stale local copy (classic last-write-wins bug).
+    supabaseClient.from('grip_shared_dashboards').select('data').eq('household_id', householdId).maybeSingle().then(({ data, error }) => {
+      if (error) { console.error('Shared fetch error before sync', error); if (cb) cb(); return; }
+      const sharedWs = { ...this.defaultWorkspace('shared'), ...(data && data.data ? data.data : {}) };
       const patch = {};
+      const kinds = ['calcIncomeItems', 'calcFixedItems', 'calcVariableItems'];
       kinds.forEach(listKey => {
         const keep = (sharedWs[listKey] || []).filter(it => it.mirrorOwner !== myId);
         const mine = (personalWs[listKey] || []).filter(it => it.joint || it.visible).map(it => ({ ...it, id: 'mirror_' + it.id, mirrorOwner: myId, mirrorSourceId: it.id }));
@@ -1855,8 +1861,12 @@ class Component extends DCLogic {
         ...recFixedJoint
       ];
 
-      return patch;
-    }, cb);
+      const merged = { ...sharedWs, ...patch };
+      this.setState(s => ({ workspaces: { ...s.workspaces, shared: merged } }), () => {
+        this.persistShared(merged);
+        if (cb) cb();
+      });
+    });
   }
 
   buildCalcVariableSharedAutoRows(sharedWs, jointLabel) {
@@ -1883,11 +1893,11 @@ class Component extends DCLogic {
     else if (kind === 'variable') this.toggleCalcVariableItemJoint(sourceId, 'personal');
   }
 
-  persistShared() {
+  persistShared(explicitData) {
     if (!supabaseClient || !this.state.householdId) return;
     supabaseClient.from('grip_shared_dashboards').upsert({
       household_id: this.state.householdId,
-      data: this.state.workspaces.shared,
+      data: explicitData || this.state.workspaces.shared,
       updated_at: new Date().toISOString()
     }).then(({ error }) => { if (error) console.error('Shared save error', error); });
   }
@@ -1902,7 +1912,7 @@ class Component extends DCLogic {
       this.syncDisplayNameToHousehold();
       // Runs after loadUserData has already put the real personal workspace into state,
       // so this mirrors the actual "visible/gezamenlijk" items, not a stale/empty default.
-      this.syncMyMirrorsToShared(() => this.persistShared());
+      this.syncMyMirrorsToShared();
     });
   }
 
@@ -1940,7 +1950,7 @@ class Component extends DCLogic {
       if (error || !data) { this.setState({ householdBusy: false, householdError: error ? error.message : 'Error' }); return; }
       supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
-        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false }, () => this.syncMyMirrorsToShared(() => this.persistShared()));
+        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false }, () => this.syncMyMirrorsToShared());
       });
     });
   }
