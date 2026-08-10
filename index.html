@@ -633,7 +633,9 @@
             <div style="font-size:11.5px;color:#3A2A1F;font-weight:600">{{ r.freqLabel }}</div>
             <div style="font-size:11px;color:#EDE4D9;background:{{ r.categoryColor }};padding:3px 8px;border-radius:6px">{{ r.categoryLabel }}</div>
             <span onClick="{{ r.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ r.jointBg }};color:{{ r.jointColor }}">{{ r.jointLabel }}</span>
-            <span onClick="{{ r.toggleVisible }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ r.visibleBg }};color:{{ r.visibleColor }};opacity:{{ r.visibleDisabled }}">{{ r.visibleLabel }}</span>
+            <sc-if value="{{ r.showVisibleToggle }}" hint-placeholder-val="{{ true }}">
+              <span onClick="{{ r.toggleVisible }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ r.visibleBg }};color:{{ r.visibleColor }}">{{ r.visibleLabel }}</span>
+            </sc-if>
             <div style="width:70px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:#B5654A">-€ {{ r.amountStr }}</div>
             <button onClick="{{ r.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:12px">✕</button>
           </div>
@@ -707,7 +709,9 @@
               <input type="date" value="{{ newRecStartDate }}" onChange="{{ setNewRecStartDate }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             </sc-if>
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecJoint }}" onChange="{{ setNewRecJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
-            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecVisible }}" onChange="{{ setNewRecVisible }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
+            <sc-if value="{{ newRecNotJoint }}" hint-placeholder-val="{{ true }}">
+              <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecVisible }}" onChange="{{ setNewRecVisible }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
+            </sc-if>
             <button onClick="{{ addRecurring }}" disabled="{{ addRecDisabled }}" style="margin-left:auto;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addFixedCost }}</button>
           </div>
         </div>
@@ -3263,15 +3267,15 @@ class Component extends DCLogic {
           nextDate: target,
           nextLabel: `${MONTHS_SHORT[target.getMonth()]} ${target.getDate()}`,
           freqLabel: this.tf(r.frequency === 'every4weeks' ? 'Every 4 weeks' : 'Monthly', r.frequency === 'every4weeks' ? 'Elke 4 weken' : 'Maandelijks', r.frequency === 'every4weeks' ? 'Alle 4 Wochen' : 'Monatlich', r.frequency === 'every4weeks' ? 'Toutes les 4 semaines' : 'Mensuel', r.frequency === 'every4weeks' ? 'Cada 4 semanas' : 'Mensual'),
-          jointLabel: r.joint ? t.calcJointLabel : t.solo,
+          jointLabel: r.joint ? t.calcJointLabel : t.calcJointLabel,
           jointBg: r.joint ? '#3A2A1F' : 'transparent',
           jointColor: r.joint ? '#EDE4D9' : '#7A5233',
           toggleJoint: () => this.toggleRecurringJoint(r.id),
-          visibleLabel: r.joint || r.visible ? t.shareVisibleLabel : t.sharePrivateLabel,
-          visibleBg: r.joint || r.visible ? '#7A5233' : 'transparent',
-          visibleColor: r.joint || r.visible ? '#EDE4D9' : '#7A5233',
-          visibleDisabled: r.joint ? '0.5' : '1',
-          toggleVisible: r.joint ? () => {} : () => this.toggleRecurringVisible(r.id),
+          showVisibleToggle: !r.joint,
+          visibleLabel: r.visible ? t.shareVisibleLabel : t.sharePrivateLabel,
+          visibleBg: r.visible ? '#7A5233' : 'transparent',
+          visibleColor: r.visible ? '#EDE4D9' : '#7A5233',
+          toggleVisible: () => this.toggleRecurringVisible(r.id),
           categoryLabel: cat.label,
           categoryColor: cat.color,
           remove: () => this.removeRecurring(r.id)
@@ -4063,6 +4067,7 @@ class Component extends DCLogic {
       newRecCategory: this.state.newRecCategory,
       setNewRecCategory: (e) => this.setNewRecCategory(e),
       newRecJoint: this.state.newRecJoint,
+      newRecNotJoint: !this.state.newRecJoint,
       setNewRecJoint: (e) => this.setNewRecJoint(e),
       newRecVisible: this.state.newRecVisible,
       setNewRecVisible: (e) => this.setNewRecVisible(e),
