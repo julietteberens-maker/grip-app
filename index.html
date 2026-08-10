@@ -632,6 +632,8 @@
             <div style="flex:1;font-weight:600;color:{{ r.categoryColor }}">{{ r.name }}</div>
             <div style="font-size:11.5px;color:#3A2A1F;font-weight:600">{{ r.freqLabel }}</div>
             <div style="font-size:11px;color:#EDE4D9;background:{{ r.categoryColor }};padding:3px 8px;border-radius:6px">{{ r.categoryLabel }}</div>
+            <span onClick="{{ r.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ r.jointBg }};color:{{ r.jointColor }}">{{ r.jointLabel }}</span>
+            <span onClick="{{ r.toggleVisible }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ r.visibleBg }};color:{{ r.visibleColor }};opacity:{{ r.visibleDisabled }}">{{ r.visibleLabel }}</span>
             <div style="width:70px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:#B5654A">-€ {{ r.amountStr }}</div>
             <button onClick="{{ r.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:12px">✕</button>
           </div>
@@ -704,6 +706,8 @@
               <span style="font-size:12px;color:#3A2A1F">{{ t.firstChargeDate }}</span>
               <input type="date" value="{{ newRecStartDate }}" onChange="{{ setNewRecStartDate }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             </sc-if>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecJoint }}" onChange="{{ setNewRecJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecVisible }}" onChange="{{ setNewRecVisible }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
             <button onClick="{{ addRecurring }}" disabled="{{ addRecDisabled }}" style="margin-left:auto;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addFixedCost }}</button>
           </div>
         </div>
@@ -1034,6 +1038,18 @@
             <button onClick="{{ toggleCalcAddCategory }}" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addCategory }}</button>
           </div>
           <div style="font-size:11.5px;color:#7A5233;margin-bottom:14px">{{ t.calcFixedIntro }}</div>
+
+          <sc-if value="{{ calcShowFixedAutoRow }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+            <sc-for list="{{ calcFixedAutoItems }}" as="afi" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:8px;background:#EDE2CC;border-radius:8px;padding:8px 10px">
+                <span style="font-size:12.5px;font-weight:600;flex:1">{{ afi.name }}</span>
+                <span style="font-size:9.5px;font-weight:600;color:#7A5233;background:#DDCEB4;border-radius:6px;padding:3px 7px;flex:none">{{ t.calcAutoIncomeRowLabel }}</span>
+                <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ afi.amountStr }}</span>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
 
           <sc-if value="{{ showCalcAddCategory }}" hint-placeholder-val="{{ false }}">
             <div style="background:#EDE2CC;border-radius:10px;padding:12px;margin-bottom:14px">
@@ -1695,6 +1711,8 @@ class Component extends DCLogic {
     newRecFrequency: 'monthly',
     newRecStartDate: '',
     newRecCategory: '',
+    newRecJoint: false,
+    newRecVisible: false,
     recColorPickerFor: null,
     showRecCategoryForm: false,
     newRecCategoryName: '',
@@ -1813,6 +1831,26 @@ class Component extends DCLogic {
       const mineRecurringIncome = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => ({ ...ri, id: 'mirror_recinc_' + ri.id, mirrorOwner: myId, mirrorSourceId: ri.id }));
       patch.recurringIncome = [...keepRecurringIncome, ...mineRecurringIncome];
 
+      // Mirror recurring fixed costs (Vaste lasten, from the Uitgaven tab) into the shared
+      // Budgetcalculator's calcFixedItems list.
+      // - "Gezamenlijk" (joint) costs are mirrored WITHOUT a mirrorOwner, so buildCalcTableRows
+      //   treats them like a genuine joint cost and splits them 50/50 between both partners.
+      // - "Zichtbaar" (visible)-only costs keep mirrorOwner, so they're attributed 100% to their
+      //   owner and shown (not split) under that person's name in Gedeeld.
+      const recFixedVisible = (personalWs.recurring || []).filter(r => r.visible && !r.joint).map(r => ({
+        id: 'mirror_recfix_' + r.id, name: r.name, amount: r.amount, categoryId: r.category,
+        mirrorOwner: myId, mirrorSourceId: r.id, isRecurringFixedMirror: true
+      }));
+      const recFixedJoint = (personalWs.recurring || []).filter(r => r.joint).map(r => ({
+        id: 'mirror_recfixjoint_' + r.id, name: r.name, amount: r.amount, categoryId: r.category,
+        jointMirrorOwner: myId, mirrorSourceId: r.id, isRecurringFixedMirror: true
+      }));
+      patch.calcFixedItems = [
+        ...patch.calcFixedItems.filter(it => !it.isRecurringFixedMirror || (it.mirrorOwner !== myId && it.jointMirrorOwner !== myId)),
+        ...recFixedVisible,
+        ...recFixedJoint
+      ];
+
       return patch;
     }, cb);
   }
@@ -1831,10 +1869,11 @@ class Component extends DCLogic {
       };
     });
   }
-  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror, isOneOffIncomeMirror) {
+  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror, isOneOffIncomeMirror, isRecurringFixedMirror) {
     if (isOneOffIncomeMirror) this.toggleIncomeEntryJoint(sourceId);
     else if (isIncomeMirror) this.toggleRecurringIncomeJoint(sourceId);
     else if (isAvgMirror) this.toggleCalcOtherCategoryJoint(sourceId, 'personal');
+    else if (isRecurringFixedMirror) this.toggleRecurringVisible(sourceId);
     else if (kind === 'income') this.toggleCalcIncomeItemJoint(sourceId, 'personal');
     else if (kind === 'fixed') this.toggleCalcFixedItemJoint(sourceId, 'personal');
     else if (kind === 'variable') this.toggleCalcVariableItemJoint(sourceId, 'personal');
@@ -2407,7 +2446,7 @@ class Component extends DCLogic {
       }
       const canEdit = !isTrueMirror && !it.__direct && !it.isAvgMirror;
       const removeFn = isTrueMirror
-        ? (it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror, it.isOneOffIncomeMirror) : null)
+        ? (it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror, it.isOneOffIncomeMirror, it.isRecurringFixedMirror) : null)
         : it.__direct ? () => this.unshareCalcItem(kind, it.id, false, false, false)
         : () => this.removeCalcTableItem(kind, it.id, 'shared');
       const cycleOwner = (!isTrueMirror && !it.__direct) ? () => this.cycleNativeItemOwner(kind, it.id) : null;
@@ -2595,6 +2634,12 @@ class Component extends DCLogic {
       .map(ri => ({ id: 'auto_' + ri.id, name: ri.name, amount: ri.amount }));
     return [...oneOff, ...recurring];
   }
+  fixedAutoItems(ws, jointFilter) {
+    const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
+    return (ws.recurring || [])
+      .filter(r => matchJoint(r.joint))
+      .map(r => ({ id: 'autofix_' + r.id, name: r.name, amount: r.amount }));
+  }
   calcSummaryFor(ws, variableMode) {
     // Only non-joint (private) recurring/one-off income belongs in the non-joint bucket — joint-marked
     // income is added separately below via incomeAutoJoint. Passing no filter here double-counted every
@@ -2758,25 +2803,35 @@ class Component extends DCLogic {
   setNewRecFrequency(e) { this.setState({ newRecFrequency: e.target.value }); }
   setNewRecStartDate(e) { this.setState({ newRecStartDate: e.target.value }); }
   setNewRecCategory(e) { this.setState({ newRecCategory: e.target.value }); }
+  setNewRecJoint(e) { this.setState({ newRecJoint: e.target.checked }); }
+  setNewRecVisible(e) { this.setState({ newRecVisible: e.target.checked }); }
+  toggleRecurringJoint(id) {
+    this.setWs(ws => ({ recurring: ws.recurring.map(r => r.id === id ? { ...r, joint: !r.joint, visible: !r.joint ? true : r.visible } : r) }), () => this.persist());
+  }
+  toggleRecurringVisible(id) {
+    this.setWs(ws => ({ recurring: ws.recurring.map(r => r.id === id && !r.joint ? { ...r, visible: !r.visible } : r) }), () => this.persist());
+  }
 
   addRecurring() {
     const amount = this.parseAmt(this.state.newRecAmount);
     const frequency = this.state.newRecFrequency;
     const category = this.state.newRecCategory || 'other';
+    const joint = this.state.newRecJoint;
+    const visible = joint ? true : this.state.newRecVisible;
     if (!this.state.newRecName || !amount) return;
 
     let rec;
     if (frequency === 'every4weeks') {
       if (!this.state.newRecStartDate) return;
-      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency, startDate: this.state.newRecStartDate, category };
+      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency, startDate: this.state.newRecStartDate, category, joint, visible };
     } else {
       const day = parseInt(this.state.newRecDay, 10);
       if (!day || day < 1 || day > 31) return;
-      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency: 'monthly', day, category };
+      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency: 'monthly', day, category, joint, visible };
     }
 
     this.setWs(ws => ({ recurring: [...ws.recurring, rec] }), () => this.persist());
-    this.setState({ newRecName: '', newRecAmount: '', newRecDay: '', newRecStartDate: '' });
+    this.setState({ newRecName: '', newRecAmount: '', newRecDay: '', newRecStartDate: '', newRecJoint: false, newRecVisible: false });
   }
 
   removeRecurring(id) {
@@ -3208,6 +3263,15 @@ class Component extends DCLogic {
           nextDate: target,
           nextLabel: `${MONTHS_SHORT[target.getMonth()]} ${target.getDate()}`,
           freqLabel: this.tf(r.frequency === 'every4weeks' ? 'Every 4 weeks' : 'Monthly', r.frequency === 'every4weeks' ? 'Elke 4 weken' : 'Maandelijks', r.frequency === 'every4weeks' ? 'Alle 4 Wochen' : 'Monatlich', r.frequency === 'every4weeks' ? 'Toutes les 4 semaines' : 'Mensuel', r.frequency === 'every4weeks' ? 'Cada 4 semanas' : 'Mensual'),
+          jointLabel: r.joint ? t.calcJointLabel : t.solo,
+          jointBg: r.joint ? '#3A2A1F' : 'transparent',
+          jointColor: r.joint ? '#EDE4D9' : '#7A5233',
+          toggleJoint: () => this.toggleRecurringJoint(r.id),
+          visibleLabel: r.joint || r.visible ? t.shareVisibleLabel : t.sharePrivateLabel,
+          visibleBg: r.joint || r.visible ? '#7A5233' : 'transparent',
+          visibleColor: r.joint || r.visible ? '#EDE4D9' : '#7A5233',
+          visibleDisabled: r.joint ? '0.5' : '1',
+          toggleVisible: r.joint ? () => {} : () => this.toggleRecurringVisible(r.id),
           categoryLabel: cat.label,
           categoryColor: cat.color,
           remove: () => this.removeRecurring(r.id)
@@ -3408,7 +3472,12 @@ class Component extends DCLogic {
       ...c,
       remove: () => this.removeCalcFixedCategory(c.id)
     }));
-    const calcFixedTotal = (ws.calcFixedItems || []).filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
+    const calcFixedAutoItems = (calcIsPersonalMode ? this.fixedAutoItems(ws) : []).map(fi => ({
+      ...fi,
+      amountStr: this.fmt(fi.amount)
+    }));
+    const calcFixedAutoAmount = calcFixedAutoItems.reduce((s, fi) => s + fi.amount, 0);
+    const calcFixedTotal = calcFixedAutoAmount + (ws.calcFixedItems || []).filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
     const calcGeneralItems = (ws.calcFixedItems || []).filter(it => !it.joint).filter(it => !it.categoryId || !(ws.calcFixedCategories || []).some(c => c.id === it.categoryId));
     const calcFixedGroups = [
       {
@@ -3819,6 +3888,8 @@ class Component extends DCLogic {
       addCalcJointVariableItemDisabled: !this.state.newCalcJointVariableName.trim() || !this.parseAmt(this.state.newCalcJointVariableAmount),
       calcFixedCategoryChips,
       calcFixedGroups,
+      calcFixedAutoItems,
+      calcShowFixedAutoRow: calcIsPersonalMode && calcFixedAutoItems.length > 0,
       calcFixedTotalStr: this.fmt(calcFixedTotal),
       showCalcAddCategory: this.state.showCalcAddCategory,
       toggleCalcAddCategory: () => this.toggleCalcAddCategory(),
@@ -3991,6 +4062,10 @@ class Component extends DCLogic {
       addRecDisabled: !(this.state.newRecName && this.parseAmt(this.state.newRecAmount) > 0 && (this.state.newRecFrequency === 'every4weeks' ? this.state.newRecStartDate : parseInt(this.state.newRecDay, 10) >= 1)),
       newRecCategory: this.state.newRecCategory,
       setNewRecCategory: (e) => this.setNewRecCategory(e),
+      newRecJoint: this.state.newRecJoint,
+      setNewRecJoint: (e) => this.setNewRecJoint(e),
+      newRecVisible: this.state.newRecVisible,
+      setNewRecVisible: (e) => this.setNewRecVisible(e),
       fixedCostCategories: ws.fixedCostCategories,
       fixedCategoriesWithUsage,
       fixedCategorySuggestions: t.fixedCostSuggestions.filter(label => !ws.fixedCostCategories.some(c => c.label === label)).map(label => ({ label, add: () => this.addSuggestedCategory('fixedCostCategories', label) })),
