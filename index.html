@@ -998,10 +998,13 @@
           <div style="font-size:14px;font-weight:700;margin-bottom:10px">{{ t.calcIncomeLabel }}</div>
           <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
             <sc-if value="{{ calcShowIncomeAutoRow }}" hint-placeholder-val="{{ true }}">
-            <div style="display:flex;align-items:center;gap:8px;background:#EDE2CC;border-radius:8px;padding:8px 10px">
-              <span style="font-size:12.5px;font-weight:600;flex:1">{{ t.calcAutoIncomeRowLabel }}</span>
-              <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ calcIncomeAutoAmountStr }}</span>
-            </div>
+            <sc-for list="{{ calcIncomeAutoItems }}" as="ai" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:8px;background:#EDE2CC;border-radius:8px;padding:8px 10px">
+                <span style="font-size:12.5px;font-weight:600;flex:1">{{ ai.name }}</span>
+                <span style="font-size:9.5px;font-weight:600;color:#7A5233;background:#DDCEB4;border-radius:6px;padding:3px 7px;flex:none">{{ t.calcAutoIncomeRowLabel }}</span>
+                <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ ai.amountStr }}</span>
+              </div>
+            </sc-for>
             </sc-if>
             <sc-for list="{{ calcIncomeItemsView }}" as="ii" hint-placeholder-count="2">
               <div style="display:flex;align-items:center;gap:8px;background:#EDE2CC;border-radius:8px;padding:8px 10px">
@@ -2572,6 +2575,25 @@ class Component extends DCLogic {
     }, 0);
     return incomeTotal + futureRecurringIncomeThisMonth;
   }
+  monthIncomeAutoItems(ws, jointFilter) {
+    const now = new Date(); const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
+    const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
+    const oneOff = ws.incomeEntries
+      .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
+      .filter(inc => matchJoint(inc.joint))
+      .map(inc => ({ id: 'auto_' + inc.id, name: inc.source, amount: inc.amount }));
+    const recurring = ws.recurringIncome
+      .filter(ri => matchJoint(ri.joint))
+      .filter(ri => {
+        if (ri.frequency === 'every4weeks' && ri.startDate) {
+          const nd = this.nextOccurrence(ri);
+          return nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today;
+        }
+        return ri.day > today;
+      })
+      .map(ri => ({ id: 'auto_' + ri.id, name: ri.name, amount: ri.amount }));
+    return [...oneOff, ...recurring];
+  }
   calcSummaryFor(ws, variableMode) {
     // Only non-joint (private) recurring/one-off income belongs in the non-joint bucket — joint-marked
     // income is added separately below via incomeAutoJoint. Passing no filter here double-counted every
@@ -3409,6 +3431,10 @@ class Component extends DCLogic {
       })
     ];
     const calcIncomeAutoAmount = calcIsPersonalMode ? this.monthIncomeAutoTotal(ws) : 0;
+    const calcIncomeAutoItems = (calcIsPersonalMode ? this.monthIncomeAutoItems(ws) : []).map(ai => ({
+      ...ai,
+      amountStr: this.fmt(ai.amount)
+    }));
     const calcIncomeItemsView = (ws.calcIncomeItems || []).filter(it => !it.joint).map(it => ({
       ...it,
       amountStr: this.fmt(it.amount),
@@ -3686,7 +3712,8 @@ class Component extends DCLogic {
       calcIsSharedMode,
       recentLoggedItems: recentLoggedItemsList,
       noRecentLoggedItems: recentLoggedItemsList.length === 0,
-      calcShowIncomeAutoRow: calcIsPersonalMode,
+      calcShowIncomeAutoRow: calcIsPersonalMode && calcIncomeAutoItems.length > 0,
+      calcIncomeAutoItems,
       calcIncomeAutoAmountStr: this.fmt(calcIncomeAutoAmount),
       calcIncomeAutoJoint: !!ws.calcIncomeAutoJoint,
       calcIncomeAutoJointLabel: ws.calcIncomeAutoJoint ? t.calcJointLabel : t.solo,
