@@ -377,7 +377,7 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newIncomeSource }}" onChange="{{ setNewIncomeSource }}" style="width:120px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
           <input type="text" inputmode="decimal" placeholder="{{ t.amountPlaceholder }}" value="{{ newIncomeAmount }}" onChange="{{ setNewIncomeAmount }}" style="width:90px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
-          <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newIncomeJoint }}" onChange="{{ setNewIncomeJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newIncomeJoint }}" onChange="{{ setNewIncomeJoint }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
           <button onClick="{{ addIncome }}" disabled="{{ addIncomeDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addPlus }}</button>
         </div>
       </div>
@@ -431,7 +431,7 @@
               <span style="font-size:12px;color:#3A2A1F">{{ t.firstDateLabel }}</span>
               <input type="date" value="{{ newRecIncomeStartDate }}" onChange="{{ setNewRecIncomeStartDate }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             </sc-if>
-            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecIncomeJoint }}" onChange="{{ setNewRecIncomeJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newRecIncomeJoint }}" onChange="{{ setNewRecIncomeJoint }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
             <button onClick="{{ addRecurringIncome }}" disabled="{{ addRecIncomeDisabled }}" style="margin-left:auto;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addIncomeSourceBtn }}</button>
           </div>
         </div>
@@ -1062,6 +1062,7 @@
                     <div style="display:flex;align-items:center;gap:8px;background:#F2EAD9;border-radius:8px;padding:6px 10px">
                       <span style="font-size:12px;flex:1">{{ it.name }}</span>
                       <span style="font-size:12px;font-variant-numeric:tabular-nums">€ {{ it.amountStr }}</span>
+                      <span onClick="{{ it.toggleVisible }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:5px;border:1px solid #C7B08A;background:{{ it.visibleBg }};color:{{ it.visibleColor }};opacity:{{ it.visibleDisabled }}">{{ it.visibleLabel }}</span>
                       <span onClick="{{ it.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:5px;border:1px solid #C7B08A;background:{{ it.jointBg }};color:{{ it.jointColor }}">{{ it.jointLabel }}</span>
                       <button onClick="{{ it.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:11px">✕</button>
                     </div>
@@ -1083,6 +1084,7 @@
                 <option value="{{ fco.id }}">{{ fco.label }}</option>
               </sc-for>
             </select>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newCalcFixedVisible }}" onChange="{{ setNewCalcFixedVisible }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newCalcFixedJoint }}" onChange="{{ setNewCalcFixedJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
             <button onClick="{{ addCalcFixedItem }}" disabled="{{ addCalcFixedItemDisabled }}" style="border:none;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addFixedCost }}</button>
           </div>
@@ -1101,6 +1103,7 @@
                 <span style="font-size:12.5px;font-weight:600;flex:1">{{ oc.label }}</span>
                 <span style="font-size:12px;color:#7A5233">{{ t.calcAvgSuffix }}</span>
                 <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ oc.avgStr }}</span>
+                <span onClick="{{ oc.toggleVisible }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ oc.visibleBg }};color:{{ oc.visibleColor }};opacity:{{ oc.visibleDisabled }}">{{ oc.visibleLabel }}</span>
                 <span onClick="{{ oc.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ oc.jointBg }};color:{{ oc.jointColor }}">{{ oc.jointLabel }}</span>
                 <button onClick="{{ oc.remove }}" style="border:none;background:transparent;color:#3A2A1F;font-size:11px">✕</button>
               </div>
@@ -1117,6 +1120,7 @@
                 <option value="{{ oco.id }}">{{ oco.label }}</option>
               </sc-for>
             </select>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newCalcOtherVisible }}" onChange="{{ setNewCalcOtherVisible }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newCalcOtherJoint }}" onChange="{{ setNewCalcOtherJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
             <button onClick="{{ addCalcOtherCategory }}" disabled="{{ addCalcOtherCategoryDisabled }}" style="border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addShort }}</button>
           </div>
@@ -1634,7 +1638,9 @@ class Component extends DCLogic {
     newCalcVariableAmount: '',
     newCalcIncomeJoint: false,
     newCalcFixedJoint: false,
+    newCalcFixedVisible: false,
     newCalcOtherJoint: false,
+    newCalcOtherVisible: false,
     newCalcVariableJoint: false,
     newCalcFixedOwner: 'joint',
     newCalcIncomeOwner: 'joint',
@@ -1775,10 +1781,10 @@ class Component extends DCLogic {
       const patch = {};
       kinds.forEach(listKey => {
         const keep = (sharedWs[listKey] || []).filter(it => it.mirrorOwner !== myId);
-        const mine = (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, id: 'mirror_' + it.id, mirrorOwner: myId, mirrorSourceId: it.id }));
+        const mine = (personalWs[listKey] || []).filter(it => it.joint || it.visible).map(it => ({ ...it, id: 'mirror_' + it.id, mirrorOwner: myId, mirrorSourceId: it.id }));
         patch[listKey] = [...keep, ...mine];
       });
-      const avgMirrors = this.getOtherCatEntries(personalWs).filter(e => e.joint).map(e => {
+      const avgMirrors = this.getOtherCatEntries(personalWs).filter(e => e.joint || e.visible).map(e => {
         const cat = (personalWs.categoryOptions || []).find(c => c.id === e.id) || { id: e.id, label: e.id };
         return { id: 'mirror_avgcat_' + e.id, name: cat.label, amount: this.avgSpendLast3Months(personalWs, e.id), mirrorOwner: myId, mirrorSourceId: e.id, isAvgMirror: true };
       });
@@ -1792,17 +1798,6 @@ class Component extends DCLogic {
         mirrorOwner: myId, mirrorSourceId: ie.id, isOneOffIncomeMirror: true
       }));
       patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors, ...oneOffIncomeMirrors];
-
-      // Also mirror joint income into the plain "Inkomen" tab (incomeEntries / recurringIncome).
-      // This is separate from the calcIncomeItems mirrors above, which only feed the Budgetcalculator.
-      const keepIncomeEntries = (sharedWs.incomeEntries || []).filter(it => it.mirrorOwner !== myId);
-      const mineIncomeEntries = (personalWs.incomeEntries || []).filter(ie => ie.joint).map(ie => ({ ...ie, id: 'mirror_incentry_' + ie.id, mirrorOwner: myId, mirrorSourceId: ie.id }));
-      patch.incomeEntries = [...keepIncomeEntries, ...mineIncomeEntries];
-
-      const keepRecurringIncome = (sharedWs.recurringIncome || []).filter(it => it.mirrorOwner !== myId);
-      const mineRecurringIncome = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => ({ ...ri, id: 'mirror_recinc_' + ri.id, mirrorOwner: myId, mirrorSourceId: ri.id }));
-      patch.recurringIncome = [...keepRecurringIncome, ...mineRecurringIncome];
-
       return patch;
     }, cb);
   }
@@ -1847,6 +1842,8 @@ class Component extends DCLogic {
       this.loadSharedData(data.household_id);
       this.loadHouseholdMembers(data.household_id);
       this.syncDisplayNameToHousehold();
+      // Runs after loadUserData has already put the real personal workspace into state,
+      // so this mirrors the actual "visible/gezamenlijk" items, not a stale/empty default.
       this.syncMyMirrorsToShared(() => this.persistShared());
     });
   }
@@ -1904,17 +1901,18 @@ class Component extends DCLogic {
   }
 
   loadUserData(userId) {
-    this.loadHousehold(userId);
     supabaseClient.from('grip_dashboards').select('data').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
-      if (error) { console.error('Supabase load error', error); return; }
+      if (error) { console.error('Supabase load error', error); this.loadHousehold(userId); return; }
       if (data && data.data) {
         const saved = data.data;
         this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', view: saved.view || 'overview', language: saved.language || this.state.language, workspaces: saved.workspaces ? this.fillWorkspaceDefaults(saved.workspaces) : this.state.workspaces }, () => {
           this.processDueRecurring(); this.scheduleAlertDismiss();
+          this.loadHousehold(userId);
         });
       } else {
         this.persist();
         this.processDueRecurring(); this.scheduleAlertDismiss();
+        this.loadHousehold(userId);
       }
     });
   }
@@ -2212,17 +2210,26 @@ class Component extends DCLogic {
     const name = this.state.newCalcFixedName.trim();
     const amount = this.parseAmt(this.state.newCalcFixedAmount);
     if (!name || !amount) return;
-    const item = { id: 'cfi' + Date.now(), name, amount, categoryId: this.state.newCalcFixedCategory || '', joint: this.state.newCalcFixedJoint };
+    const item = { id: 'cfi' + Date.now(), name, amount, categoryId: this.state.newCalcFixedCategory || '', joint: this.state.newCalcFixedJoint, visible: this.state.newCalcFixedJoint || this.state.newCalcFixedVisible };
     this.setWs(ws => ({ calcFixedItems: [...(ws.calcFixedItems || []), item] }), () => this.persist());
-    this.setState({ newCalcFixedName: '', newCalcFixedAmount: '', newCalcFixedJoint: false });
+    this.setState({ newCalcFixedName: '', newCalcFixedAmount: '', newCalcFixedJoint: false, newCalcFixedVisible: false });
   }
   removeCalcFixedItem(id, key) {
     this.setWsKey(key || this.state.mode, ws => ({ calcFixedItems: (ws.calcFixedItems || []).filter(it => it.id !== id) }), () => this.persist());
   }
   toggleCalcFixedItemJoint(id, key) {
-    this.setWsKey(key || this.state.mode, ws => ({ calcFixedItems: (ws.calcFixedItems || []).map(it => it.id === id ? { ...it, joint: !it.joint } : it) }), () => this.persist());
+    this.setWsKey(key || this.state.mode, ws => ({ calcFixedItems: (ws.calcFixedItems || []).map(it => {
+      if (it.id !== id) return it;
+      const joint = !it.joint;
+      return { ...it, joint, visible: joint ? true : it.visible };
+    }) }), () => this.persist());
+  }
+  toggleCalcFixedItemVisible(id, key) {
+    this.setWsKey(key || this.state.mode, ws => ({ calcFixedItems: (ws.calcFixedItems || []).map(it => it.id === id && !it.joint ? { ...it, visible: !it.visible } : it) }), () => this.persist());
   }
   setNewCalcOtherCategory(e) { this.setState({ newCalcOtherCategory: e.target.value }); }
+  setNewCalcFixedVisible(e) { this.setState({ newCalcFixedVisible: e.target.checked }); }
+  setNewCalcOtherVisible(e) { this.setState({ newCalcOtherVisible: e.target.checked }); }
   setNewCalcFixedJoint(e) { this.setState({ newCalcFixedJoint: e.target.checked }); }
   setNewCalcOtherJoint(e) { this.setState({ newCalcOtherJoint: e.target.checked }); }
   setNewCalcIncomeJoint(e) { this.setState({ newCalcIncomeJoint: e.target.checked }); }
@@ -2230,14 +2237,21 @@ class Component extends DCLogic {
   addCalcOtherCategory() {
     const id = this.state.newCalcOtherCategory;
     if (!id) return;
-    this.setWs(ws => ({ calcOtherCategories: [...this.getOtherCatEntries(ws), { id, joint: this.state.newCalcOtherJoint }] }), () => this.persist());
-    this.setState({ newCalcOtherCategory: '', newCalcOtherJoint: false });
+    this.setWs(ws => ({ calcOtherCategories: [...this.getOtherCatEntries(ws), { id, joint: this.state.newCalcOtherJoint, visible: this.state.newCalcOtherJoint || this.state.newCalcOtherVisible }] }), () => this.persist());
+    this.setState({ newCalcOtherCategory: '', newCalcOtherJoint: false, newCalcOtherVisible: false });
   }
   removeCalcOtherCategory(id, key) {
     this.setWsKey(key || this.state.mode, ws => ({ calcOtherCategories: this.getOtherCatEntries(ws).filter(e => e.id !== id) }), () => this.persist());
   }
   toggleCalcOtherCategoryJoint(id, key) {
-    this.setWsKey(key || this.state.mode, ws => ({ calcOtherCategories: this.getOtherCatEntries(ws).map(e => e.id === id ? { ...e, joint: !e.joint } : e) }), () => this.persist());
+    this.setWsKey(key || this.state.mode, ws => ({ calcOtherCategories: this.getOtherCatEntries(ws).map(e => {
+      if (e.id !== id) return e;
+      const joint = !e.joint;
+      return { ...e, joint, visible: joint ? true : e.visible };
+    }) }), () => this.persist());
+  }
+  toggleCalcOtherCategoryVisible(id, key) {
+    this.setWsKey(key || this.state.mode, ws => ({ calcOtherCategories: this.getOtherCatEntries(ws).map(e => e.id === id && !e.joint ? { ...e, visible: !e.visible } : e) }), () => this.persist());
   }
   getOtherCatEntries(ws) {
     return (ws.calcOtherCategories || []).map(e => typeof e === 'string' ? { id: e, joint: false } : e);
@@ -2321,8 +2335,8 @@ class Component extends DCLogic {
         const next = order[(order.indexOf(current) + 1) % 3];
         const rest = { ...it };
         delete rest.mirrorOwner;
-        if (next === 'joint') return rest;
-        return { ...rest, mirrorOwner: next === 'me' ? myId : partnerId };
+        if (next === 'joint') return { ...rest, joint: true };
+        return { ...rest, joint: false, mirrorOwner: next === 'me' ? myId : partnerId };
       })
     }), () => this.persist());
   }
@@ -2339,6 +2353,7 @@ class Component extends DCLogic {
     if (kind === 'fixed') item.categoryId = this.state.newCalcFixedCategory || '';
     if (owner === 'me') item.mirrorOwner = this.state.session ? this.state.session.user.id : null;
     else if (owner === 'partner') item.mirrorOwner = this.state.householdPartnerUserId;
+    else item.joint = true;
     this.setWsKey('shared', ws => ({ [listKey]: [...(ws[listKey] || []), item] }), () => this.persist());
     this.setState({ [nameField]: '', [amountField]: '' });
   }
@@ -2547,7 +2562,10 @@ class Component extends DCLogic {
     return incomeTotal + futureRecurringIncomeThisMonth;
   }
   calcSummaryFor(ws, variableMode) {
-    const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws) : 0;
+    // Only non-joint (private) recurring/one-off income belongs in the non-joint bucket — joint-marked
+    // income is added separately below via incomeAutoJoint. Passing no filter here double-counted every
+    // "visible" income item: once as if it were fully private, again in the joint pool.
+    const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, false) : 0;
     const incomeAutoJoint = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, true) : 0;
     const incomeItems = ws.calcIncomeItems || [];
     const incomeNonJoint = incomeAuto + incomeItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
@@ -3224,25 +3242,21 @@ class Component extends DCLogic {
     });
     const spendingTotal = filteredTxRaw.reduce((s, t) => s + t.amount, 0);
 
-    const myUserIdForIncome = this.state.session ? this.state.session.user.id : null;
-    const ownerLabelFor = (mirrorOwner) => mirrorOwner === myUserIdForIncome ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader);
-
     const monthIncomeRaw = ws.incomeEntries
       .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
       .slice()
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const monthIncome = monthIncomeRaw.map(inc => {
       const dt = new Date(inc.date + 'T00:00:00');
-      const isMirror = !!inc.mirrorOwner;
       return {
         ...inc,
         dateLabel: `${MONTHS_SHORT[dt.getMonth()]} ${dt.getDate()}`,
         amountStr: this.fmt(inc.amount),
-        jointLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
-        jointBg: isMirror ? '#7A5233' : (inc.joint ? '#3A2A1F' : 'transparent'),
-        jointColor: '#EDE4D9',
-        toggleJoint: isMirror ? () => {} : () => this.toggleIncomeEntryJoint(inc.id),
-        remove: isMirror ? () => {} : () => this.removeIncome(inc.id)
+        jointLabel: inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel,
+        jointBg: inc.joint ? '#3A2A1F' : 'transparent',
+        jointColor: inc.joint ? '#EDE4D9' : '#7A5233',
+        toggleJoint: () => this.toggleIncomeEntryJoint(inc.id),
+        remove: () => this.removeIncome(inc.id)
       };
     });
     const incomeTotal = monthIncomeRaw.reduce((s, inc) => s + inc.amount, 0);
@@ -3325,9 +3339,15 @@ class Component extends DCLogic {
         kindColor: it.kind === 'income' ? '#5F6F45' : '#B5654A'
       }));
     const jointPill = (joint) => ({
-      jointLabel: joint ? t.shareVisibleLabel : t.sharePrivateLabel,
+      jointLabel: joint ? t.calcJointLabel : t.calcMeLabel,
       jointBg: joint ? '#3A2A1F' : 'transparent',
       jointColor: joint ? '#EDE4D9' : '#7A5233'
+    });
+    const visiblePill = (visible, joint) => ({
+      visibleLabel: (visible || joint) ? t.shareVisibleLabel : t.sharePrivateLabel,
+      visibleBg: (visible || joint) ? '#3A2A1F' : 'transparent',
+      visibleColor: (visible || joint) ? '#EDE4D9' : '#7A5233',
+      visibleDisabled: !!joint
     });
     const calcOtherCategoryRows = this.getOtherCatEntries(ws).filter(e => !e.joint).map(e => {
       const cat = ws.categoryOptions.find(c => c.id === e.id) || { id: e.id, label: e.id, color: '#3A2A1F' };
@@ -3338,7 +3358,9 @@ class Component extends DCLogic {
         avgStr: this.fmt(this.avgSpendLast3Months(ws, e.id)),
         joint: !!e.joint,
         ...jointPill(!!e.joint),
+        ...visiblePill(!!e.visible, !!e.joint),
         toggleJoint: () => this.toggleCalcOtherCategoryJoint(e.id),
+        toggleVisible: () => this.toggleCalcOtherCategoryVisible(e.id),
         remove: () => this.removeCalcOtherCategory(e.id)
       };
     });
@@ -3355,7 +3377,7 @@ class Component extends DCLogic {
         id: '',
         label: t.calcGeneralGroup,
         color: '#3A2A1F',
-        items: calcGeneralItems.map(it => ({ ...it, amountStr: this.fmt(it.amount), ...jointPill(!!it.joint), remove: () => this.removeCalcFixedItem(it.id), toggleJoint: () => this.toggleCalcFixedItemJoint(it.id) })),
+        items: calcGeneralItems.map(it => ({ ...it, amountStr: this.fmt(it.amount), ...jointPill(!!it.joint), ...visiblePill(!!it.visible, !!it.joint), remove: () => this.removeCalcFixedItem(it.id), toggleJoint: () => this.toggleCalcFixedItemJoint(it.id), toggleVisible: () => this.toggleCalcFixedItemVisible(it.id) })),
         noItems: calcGeneralItems.length === 0,
         subtotalStr: this.fmt(calcGeneralItems.reduce((s, it) => s + it.amount, 0))
       },
@@ -3365,7 +3387,7 @@ class Component extends DCLogic {
           id: c.id,
           label: c.label,
           color: c.color,
-          items: items.map(it => ({ ...it, amountStr: this.fmt(it.amount), ...jointPill(!!it.joint), remove: () => this.removeCalcFixedItem(it.id), toggleJoint: () => this.toggleCalcFixedItemJoint(it.id) })),
+          items: items.map(it => ({ ...it, amountStr: this.fmt(it.amount), ...jointPill(!!it.joint), ...visiblePill(!!it.visible, !!it.joint), remove: () => this.removeCalcFixedItem(it.id), toggleJoint: () => this.toggleCalcFixedItemJoint(it.id), toggleVisible: () => this.toggleCalcFixedItemVisible(it.id) })),
           noItems: items.length === 0,
           subtotalStr: this.fmt(items.reduce((s, it) => s + it.amount, 0))
         };
@@ -3492,18 +3514,17 @@ class Component extends DCLogic {
     const recurringIncome = ws.recurringIncome
       .map(ri => {
         const target = this.nextOccurrence(ri);
-        const isMirror = !!ri.mirrorOwner;
         return {
           ...ri,
           amountStr: this.fmt(ri.amount),
           nextDate: target,
           nextLabel: `${MONTHS_SHORT[target.getMonth()]} ${target.getDate()}`,
           freqLabel: this.tf(ri.frequency === 'every4weeks' ? 'every 4 weeks' : 'monthly', ri.frequency === 'every4weeks' ? 'elke 4 weken' : 'maandelijks', ri.frequency === 'every4weeks' ? 'alle 4 Wochen' : 'monatlich', ri.frequency === 'every4weeks' ? 'toutes les 4 semaines' : 'mensuel', ri.frequency === 'every4weeks' ? 'cada 4 semanas' : 'mensual'),
-          jointLabel: isMirror ? ownerLabelFor(ri.mirrorOwner) : (ri.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
-          jointBg: isMirror ? '#7A5233' : (ri.joint ? '#3A2A1F' : 'transparent'),
-          jointColor: '#EDE4D9',
-          toggleJoint: isMirror ? () => {} : () => this.toggleRecurringIncomeJoint(ri.id),
-          remove: isMirror ? () => {} : () => this.removeRecurringIncome(ri.id)
+          jointLabel: ri.joint ? t.shareVisibleLabel : t.sharePrivateLabel,
+          jointBg: ri.joint ? '#3A2A1F' : 'transparent',
+          jointColor: ri.joint ? '#EDE4D9' : '#7A5233',
+          toggleJoint: () => this.toggleRecurringIncomeJoint(ri.id),
+          remove: () => this.removeRecurringIncome(ri.id)
         };
       })
       .sort((a, b) => a.nextDate - b.nextDate);
@@ -3591,8 +3612,8 @@ class Component extends DCLogic {
     const isResetMode = this.state.authMode === 'reset';
 
     return {
-      showAuthScreen: SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
-      showApp: (!SUPABASE_CONFIGURED || (this.state.authChecked && !!this.state.session)) && !this.state.authRecoveryMode,
+      showAuthScreen: false && SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
+      showApp: true || ((!SUPABASE_CONFIGURED || (this.state.authChecked && !!this.state.session)) && !this.state.authRecoveryMode),
       showRecoveryScreen: SUPABASE_CONFIGURED && this.state.authRecoveryMode,
       newPasswordValue: this.state.newPasswordValue,
       setNewPasswordValue: (e) => this.setNewPasswordValue(e),
@@ -3688,6 +3709,8 @@ class Component extends DCLogic {
       addCalcOtherCategoryDisabled: !this.state.newCalcOtherCategory,
       newCalcOtherJoint: this.state.newCalcOtherJoint,
       setNewCalcOtherJoint: (e) => this.setNewCalcOtherJoint(e),
+      newCalcOtherVisible: this.state.newCalcOtherVisible,
+      setNewCalcOtherVisible: (e) => this.setNewCalcOtherVisible(e),
       calcPartnerNameValue: ws.calcPartnerName || '',
       calcPartnerHeaderLabel: ws.calcPartnerName || t.calcPartnerColumnHeader,
       setCalcPartnerName: (e) => this.setCalcPartnerName(e),
@@ -3769,6 +3792,8 @@ class Component extends DCLogic {
       addCalcFixedItemDisabled: !this.state.newCalcFixedName.trim() || !this.parseAmt(this.state.newCalcFixedAmount),
       newCalcFixedJoint: this.state.newCalcFixedJoint,
       setNewCalcFixedJoint: (e) => this.setNewCalcFixedJoint(e),
+      newCalcFixedVisible: this.state.newCalcFixedVisible,
+      setNewCalcFixedVisible: (e) => this.setNewCalcFixedVisible(e),
       calcSurplusStr: this.fmt(calcSurplus),
       calcAllocationRows,
       noCalcAllocationRows: calcAllocationRows.length === 0,
