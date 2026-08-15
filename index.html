@@ -2196,11 +2196,13 @@ class Component extends DCLogic {
     supabaseClient.from('household_members').select('household_id, households(invite_code)').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
       if (error || !data) return;
       this.setState({ householdId: data.household_id, householdInviteCode: data.households ? data.households.invite_code : '' });
-      this.loadSharedData(data.household_id);
       this.loadHouseholdMembers(data.household_id);
       this.syncDisplayNameToHousehold();
-      // Runs after loadUserData has already put the real personal workspace into state,
-      // so this mirrors the actual "visible/gezamenlijk" items, not a stale/empty default.
+      // syncMyMirrorsToShared already fetches the latest shared data, safely 3-way-merges it with
+      // any pending local edits, and updates local state — calling loadSharedData() here too (as
+      // this used to) created a race: whichever of the two finished last would win, and
+      // loadSharedData's naive merge could silently undo syncMyMirrorsToShared's careful one,
+      // which looked exactly like "my partner's edits keep disappearing".
       this.syncMyMirrorsToShared();
     });
   }
@@ -2256,7 +2258,7 @@ class Component extends DCLogic {
       if (error || !data) { this.setState({ householdBusy: false, householdError: this.tf('Code not found.', 'Code niet gevonden.', 'Code nicht gefunden.', 'Code introuvable.', 'Código no encontrado.') }); return; }
       supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
-        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false, joinCodeInput: '' }, () => { this.loadSharedData(data.id); this.loadHouseholdMembers(data.id); });
+        this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false, joinCodeInput: '' }, () => { this.syncMyMirrorsToShared(); this.loadHouseholdMembers(data.id); });
       });
     });
   }
@@ -3829,6 +3831,37 @@ class Component extends DCLogic {
         };
       })
       .sort((a, b) => a.nextDate - b.nextDate);
+
+    // Also show Solo-mirrored joint/visible fixed costs (like Huur, mirrored via
+    // syncMyMirrorsToShared into calcFixedItems) in this same list when in Gedeeld — read-only,
+    // since the real item lives in someone's Solo Uitgaven tab and must be edited there. These are
+    // NOT added to ws.recurring itself, so they're never double-counted in any total.
+    if (this.state.mode === 'shared') {
+      const myUserIdForMirrorRows = this.state.session ? this.state.session.user.id : null;
+      const mirrorFixedRows = (ws.calcFixedItems || [])
+        .filter(it => it.isRecurringFixedMirror || it.isFixedHistoryMirror)
+        .map(it => {
+          const isJointMirror = !!it.jointMirrorOwner;
+          const isMine = it.mirrorOwner === myUserIdForMirrorRows;
+          const cat = fixedCatMap[it.categoryId] || { label: t.calcGeneralGroup, color: '#3A2A1F' };
+          return {
+            id: it.id, name: it.name, amountStr: this.fmt(it.amount),
+            nextDate: new Date(8640000000000000), nextLabel: '—',
+            freqLabel: t.calcAutoIncomeRowLabel,
+            categoryLabel: cat.label, categoryColor: cat.color,
+            jointLabel: isJointMirror ? t.calcJointLabel : (isMine ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader)),
+            jointBg: isJointMirror ? '#3A2A1F' : '#7A5233', jointColor: '#EDE4D9',
+            toggleJoint: () => {}, showVisibleToggle: false,
+            visibleLabel: '', visibleBg: 'transparent', visibleColor: '#7A5233', toggleVisible: () => {},
+            isEditing: false, notEditing: true, editButtonLabel: '', editableDay: false,
+            toggleEdit: () => {}, setEditName: () => {}, setEditAmount: () => {}, setEditDay: () => {},
+            setEditCategory: () => {}, setEditFlexNext: () => {}, editCategories: [],
+            showOwnerSelect: false, ownerSelectValue: 'me', setOwner: () => {}, myOwnerLabel: '', partnerOwnerLabel: '',
+            remove: () => {}
+          };
+        });
+      recurring.push(...mirrorFixedRows);
+    }
 
     const primaryGoal = ws.savingsGoals.find(g => g.favorite) || ws.savingsGoals[0] || { label: '', target: 0, saved: 0 };
     const primaryGoalPct = primaryGoal.target > 0 ? Math.min(100, Math.round((primaryGoal.saved / primaryGoal.target) * 100)) : 0;
