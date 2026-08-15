@@ -382,7 +382,7 @@
           <input type="text" inputmode="decimal" placeholder="{{ t.amountPlaceholder }}" value="{{ newIncomeAmount }}" onChange="{{ setNewIncomeAmount }}" style="width:90px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
           <select value="{{ newIncomeCategory }}" onChange="{{ setNewIncomeCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             <option value="">{{ t.calcGeneralGroup }}</option>
-            <sc-for list="{{ incomeCategories }}" as="ic" hint-placeholder-count="5">
+            <sc-for list="{{ incomeCategoriesMerged }}" as="ic" hint-placeholder-count="5">
               <option value="{{ ic.id }}">{{ ic.label }}</option>
             </sc-for>
             <option value="__add_category__">+ {{ t.addCategory }}...</option>
@@ -513,7 +513,7 @@
             <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newRecIncomeAmount }}" onChange="{{ setNewRecIncomeAmount }}" style="width:74px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             <select value="{{ newRecIncomeCategory }}" onChange="{{ setNewRecIncomeCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
               <option value="">{{ t.calcGeneralGroup }}</option>
-              <sc-for list="{{ incomeCategories }}" as="ric" hint-placeholder-count="5">
+              <sc-for list="{{ incomeCategoriesMerged }}" as="ric" hint-placeholder-count="5">
                 <option value="{{ ric.id }}">{{ ric.label }}</option>
               </sc-for>
               <option value="__add_category__">+ {{ t.addCategory }}...</option>
@@ -820,7 +820,7 @@
             <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newRecAmount }}" onChange="{{ setNewRecAmount }}" style="width:74px;border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
             <select value="{{ newRecCategory }}" onChange="{{ setNewRecCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
               <option value="">{{ t.calcGeneralGroup }}</option>
-              <sc-for list="{{ fixedCostCategories }}" as="fc" hint-placeholder-count="7">
+              <sc-for list="{{ fixedCostCategoriesMerged }}" as="fc" hint-placeholder-count="7">
                 <option value="{{ fc.id }}">{{ fc.label }}</option>
               </sc-for>
               <option value="__add_category__">+ {{ t.addCategory }}...</option>
@@ -1254,7 +1254,7 @@
             <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onChange="{{ setNewCalcFixedAmount }}" style="width:100px;border:1px solid #C7B08A;border-radius:8px;padding:7px 9px;font-size:12.5px;background:#EDE2CC;color:#3A2A1F">
             <select value="{{ newCalcFixedCategory }}" onChange="{{ setNewCalcFixedCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:7px 9px;font-size:12.5px;background:#EDE2CC;color:#3A2A1F">
               <option value="">{{ t.calcGeneralGroup }}</option>
-              <sc-for list="{{ calcFixedCategoryChips }}" as="fco" hint-placeholder-count="3">
+              <sc-for list="{{ calcFixedCategoryOptions }}" as="fco" hint-placeholder-count="3">
                 <option value="{{ fco.id }}">{{ fco.label }}</option>
               </sc-for>
               <option value="__add_category__">+ {{ t.addCategory }}...</option>
@@ -1405,9 +1405,10 @@
                 <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onChange="{{ setNewCalcFixedAmount }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                 <select value="{{ newCalcFixedCategory }}" onChange="{{ setNewCalcFixedCategory }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                   <option value="">{{ t.calcGeneralGroup }}</option>
-                  <sc-for list="{{ calcFixedCategoryChips }}" as="fco2" hint-placeholder-count="3">
+                  <sc-for list="{{ calcFixedCategoryOptions }}" as="fco2" hint-placeholder-count="3">
                     <option value="{{ fco2.id }}">{{ fco2.label }}</option>
                   </sc-for>
+                  <option value="__add_category__">+ {{ t.addCategory }}...</option>
                 </select>
                 <select value="{{ newCalcFixedOwnerVal }}" onChange="{{ setNewCalcFixedOwnerSel }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
                   <option value="joint">{{ t.calcJointLabel }}</option>
@@ -1751,6 +1752,11 @@ const supabaseClient = (SUPABASE_CONFIGURED && window.supabase) ? window.supabas
 
 class Component extends DCLogic {
   colorPalette = ['#3A2A1F', '#7A5233', '#8A9A72', '#5F6F45', '#C9A876', '#C17A4A', '#B5654A', '#8B4A42', '#C99A93'];
+  // Tracks which top-level keys of workspaces.shared have local, not-yet-server-confirmed edits
+  // (e.g. you just deleted a Vaste last). syncMyMirrorsToShared only preserves these specific
+  // keys from your local copy — everything else comes from the fresh server fetch, so your
+  // partner's concurrent changes to OTHER fields are never silently overwritten.
+  _sharedDirtyKeys = new Set();
 
   defaultWorkspace(kind) {
     const now = new Date();
@@ -1964,6 +1970,9 @@ class Component extends DCLogic {
     this.setState(s => {
       const current = s.workspaces[key];
       const next = typeof patch === 'function' ? patch(current) : patch;
+      if (key === 'shared') {
+        Object.keys(next).forEach(k => this._sharedDirtyKeys.add(k));
+      }
       return { workspaces: { ...s.workspaces, [key]: { ...current, ...next } } };
     }, cb);
   }
@@ -2000,10 +2009,12 @@ class Component extends DCLogic {
     const myId = this.state.session.user.id;
     const householdId = this.state.householdId;
     const personalWs = this.state.workspaces.personal;
-    // Capture the CURRENT local shared workspace before fetching. This preserves any direct edits
-    // you just made while browsing Gedeeld (e.g. deleting a Vaste last, adding a transaction) that
-    // haven't reached the server yet — without this, those edits get silently reverted below.
+    // Capture the CURRENT local shared workspace before fetching, and which keys on it have
+    // pending local edits (see _sharedDirtyKeys). Only those specific keys get preserved from the
+    // local copy below — every other field comes from the fresh server fetch, so a partner's
+    // concurrent changes to fields you haven't touched are never silently overwritten.
     const localSharedWs = this.state.workspaces.shared;
+    const dirtyKeysSnapshot = new Set(this._sharedDirtyKeys);
     // Always fetch the LATEST shared data from Supabase before computing/writing mirrors.
     // Using only the locally-cached copy here would risk overwriting the other partner's
     // concurrent changes with a stale local copy (classic last-write-wins bug) for the
@@ -2057,13 +2068,45 @@ class Component extends DCLogic {
         id: 'mirror_recfixjoint_' + r.id, name: r.name, amount: r.amount, categoryId: r.category,
         jointMirrorOwner: myId, mirrorSourceId: r.id, isRecurringFixedMirror: true
       }));
+      // Same pattern for "Uit gelogde geschiedenis" fixed-cost categories: recompute the current
+      // averaged amount at sync time (it isn't a fixed stored amount, it's derived from spendHistory).
+      const fixedHistoryVisible = (personalWs.calcFixedHistoryCategories || []).filter(e => e.visible && !e.joint).map(e => ({
+        id: 'mirror_fixhist_' + e.id,
+        name: (personalWs.categoryOptions.find(c => c.id === e.id) || { label: e.id }).label,
+        amount: this.avgSpendFromHistory(personalWs, e.id, e.monthsCount),
+        mirrorOwner: myId, mirrorSourceId: e.id, isFixedHistoryMirror: true
+      }));
+      const fixedHistoryJoint = (personalWs.calcFixedHistoryCategories || []).filter(e => e.joint).map(e => ({
+        id: 'mirror_fixhistjoint_' + e.id,
+        name: (personalWs.categoryOptions.find(c => c.id === e.id) || { label: e.id }).label,
+        amount: this.avgSpendFromHistory(personalWs, e.id, e.monthsCount),
+        jointMirrorOwner: myId, mirrorSourceId: e.id, isFixedHistoryMirror: true
+      }));
       patch.calcFixedItems = [
-        ...patch.calcFixedItems.filter(it => !it.isRecurringFixedMirror || (it.mirrorOwner !== myId && it.jointMirrorOwner !== myId)),
+        ...patch.calcFixedItems.filter(it => !(it.isRecurringFixedMirror || it.isFixedHistoryMirror) || (it.mirrorOwner !== myId && it.jointMirrorOwner !== myId)),
         ...recFixedVisible,
-        ...recFixedJoint
+        ...recFixedJoint,
+        ...fixedHistoryVisible,
+        ...fixedHistoryJoint
       ];
 
-      const merged = { ...sharedWs, ...localSharedWs, ...patch };
+      // Merge each partner's own categories (Vaste lasten, Budgetcalculator, Inkomen) into a
+      // shared pool, so both accounts see every category either person has created — not just
+      // categories on items that happen to be joint/visible. Deduplicated by lowercase label.
+      const mergeCategoryList = (listKey) => {
+        const existing = sharedWs[listKey] || [];
+        const existingLabels = new Set(existing.map(c => c.label.toLowerCase()));
+        const mine = (personalWs[listKey] || []).filter(c => !existingLabels.has(c.label.toLowerCase()));
+        return [...existing, ...mine];
+      };
+      patch.fixedCostCategories = mergeCategoryList('fixedCostCategories');
+      patch.calcFixedCategories = mergeCategoryList('calcFixedCategories');
+      patch.incomeCategories = mergeCategoryList('incomeCategories');
+
+      const dirtyOverlay = {};
+      dirtyKeysSnapshot.forEach(k => { dirtyOverlay[k] = localSharedWs[k]; });
+      const merged = { ...sharedWs, ...dirtyOverlay, ...patch };
+      dirtyKeysSnapshot.forEach(k => this._sharedDirtyKeys.delete(k));
       this.setState(s => ({ workspaces: { ...s.workspaces, shared: merged } }), () => {
         this.persistShared(merged);
         if (cb) cb();
@@ -2088,10 +2131,11 @@ class Component extends DCLogic {
       };
     });
   }
-  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror, isOneOffIncomeMirror, isRecurringFixedMirror) {
+  unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror, isOneOffIncomeMirror, isRecurringFixedMirror, isFixedHistoryMirror) {
     if (isOneOffIncomeMirror) this.toggleIncomeEntryJoint(sourceId);
     else if (isIncomeMirror) this.toggleRecurringIncomeJoint(sourceId);
     else if (isAvgMirror) this.toggleCalcOtherCategoryJoint(sourceId, 'personal');
+    else if (isFixedHistoryMirror) this.toggleCalcFixedHistoryVisible(sourceId);
     else if (isRecurringFixedMirror) this.toggleRecurringVisible(sourceId);
     else if (kind === 'income') this.toggleCalcIncomeItemJoint(sourceId, 'personal');
     else if (kind === 'fixed') this.toggleCalcFixedItemJoint(sourceId, 'personal');
@@ -2670,10 +2714,16 @@ class Component extends DCLogic {
       const directRecurring = (sharedWs.recurring || []).filter(r => r.joint || r.visible).map(r => ({
         id: r.id, name: r.name, amount: r.amount, joint: r.joint, isDirectRecurring: true
       }));
-      sharedItems = [...sharedItems, ...directRecurring];
+      // Same for "Uit gelogde geschiedenis" categories added directly while already in Gedeeld.
+      const directFixedHistory = (sharedWs.calcFixedHistoryCategories || []).filter(e => e.joint || e.visible).map(e => ({
+        id: e.id, name: (sharedWs.categoryOptions.find(c => c.id === e.id) || { label: e.id }).label,
+        amount: this.avgSpendFromHistory(sharedWs, e.id, e.monthsCount), joint: e.joint, isDirectFixedHistory: true
+      }));
+      sharedItems = [...sharedItems, ...directRecurring, ...directFixedHistory];
     }
     return [...personalItems, ...sharedItems].map(it => {
       const isTrueMirror = !!it.mirrorSourceId;
+      const isDirectNative = it.isDirectRecurring || it.isDirectFixedHistory;
       let ownerLabel, ownerBg, meAmt, partnerAmt;
       if (it.mirrorOwner) {
         const isMine = it.mirrorOwner === myUserId;
@@ -2684,20 +2734,21 @@ class Component extends DCLogic {
       } else if (it.__direct) {
         ownerLabel = meLabel; ownerBg = '#8A9A72';
         meAmt = it.amount; partnerAmt = 0;
-      } else if (it.isDirectRecurring && !it.joint) {
+      } else if (isDirectNative && !it.joint) {
         ownerLabel = meLabel; ownerBg = '#8A9A72';
         meAmt = it.amount; partnerAmt = 0;
       } else {
         ownerLabel = jointLabel; ownerBg = '#3A2A1F';
         meAmt = it.amount / 2; partnerAmt = it.amount / 2;
       }
-      const canEdit = !isTrueMirror && !it.__direct && !it.isAvgMirror && !it.isDirectRecurring;
+      const canEdit = !isTrueMirror && !it.__direct && !it.isAvgMirror && !isDirectNative;
       const removeFn = isTrueMirror
-        ? (it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror, it.isOneOffIncomeMirror, it.isRecurringFixedMirror) : null)
+        ? (it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror, it.isOneOffIncomeMirror, it.isRecurringFixedMirror, it.isFixedHistoryMirror) : null)
         : it.__direct ? () => this.unshareCalcItem(kind, it.id, false, false, false)
         : it.isDirectRecurring ? () => this.removeRecurring(it.id)
+        : it.isDirectFixedHistory ? () => this.removeCalcFixedHistoryCategory(it.id)
         : () => this.removeCalcTableItem(kind, it.id, 'shared');
-      const cycleOwner = (!isTrueMirror && !it.__direct && !it.isDirectRecurring) ? () => this.cycleNativeItemOwner(kind, it.id) : null;
+      const cycleOwner = (!isTrueMirror && !it.__direct && !isDirectNative) ? () => this.cycleNativeItemOwner(kind, it.id) : null;
       return {
         id: it.id, name: it.name, total: it.amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(it.amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
@@ -3615,6 +3666,24 @@ class Component extends DCLogic {
   renderVals() {
     const ws = this.ws();
     const t = TRANSLATIONS[this.state.language] || TRANSLATIONS.en;
+    // Merge both partners' categories (deduplicated by label) so either account can pick a
+    // category the other one created. Used for dropdown OPTIONS only — the "manage categories"
+    // panels (with remove buttons) still show just your own list, since removing a category you
+    // don't own wouldn't work correctly.
+    const mergedCategoryList = (listKey) => {
+      const personalList = this.state.workspaces.personal[listKey] || [];
+      const sharedList = this.state.workspaces.shared[listKey] || [];
+      const seen = new Set();
+      const out = [];
+      [...personalList, ...sharedList].forEach(c => {
+        const key = c.label.toLowerCase();
+        if (!seen.has(key)) { seen.add(key); out.push(c); }
+      });
+      return out;
+    };
+    const fixedCostCategoriesMerged = mergedCategoryList('fixedCostCategories');
+    const calcFixedCategoryOptions = mergedCategoryList('calcFixedCategories');
+    const incomeCategoriesMerged = mergedCategoryList('incomeCategories');
     const now = new Date();
     const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -3643,7 +3712,10 @@ class Component extends DCLogic {
       };
     });
 
-    const fixedCatMap = Object.fromEntries(ws.fixedCostCategories.map(c => [c.id, c]));
+    const fixedCatMap = Object.fromEntries([
+      ...(this.state.workspaces.personal.fixedCostCategories || []),
+      ...(this.state.workspaces.shared.fixedCostCategories || [])
+    ].map(c => [c.id, c]));
     const fixedCategoriesWithUsage = ws.fixedCostCategories.map(c => ({
       ...c,
       canRemove: !ws.recurring.some(r => r.category === c.id),
@@ -3689,7 +3761,7 @@ class Component extends DCLogic {
           setEditDay: (e) => this.updateRecurringField(r.id, 'day', e),
           setEditCategory: (e) => this.updateRecurringField(r.id, 'category', e),
           setEditFlexNext: (e) => this.updateRecurringFlexNextDate(r.id, e),
-          editCategories: ws.fixedCostCategories,
+          editCategories: fixedCostCategoriesMerged,
           remove: () => this.removeRecurring(r.id)
         };
       })
@@ -3706,6 +3778,10 @@ class Component extends DCLogic {
     const chartLabels = [...ws.spendHistory.map(h => h.label), MONTHS_SHORT[m]];
     const hasSavingsSpendingData = spendValues.some(v => v > 0) || savingsValues.some(v => v > 0);
 
+    // Merge both partners' categories (deduplicated by label) so either account can pick a
+    // category the other one created. Used for dropdown OPTIONS only — the "manage categories"
+    // panels (with remove buttons) still show just your own list, since removing a category you
+    // don't own wouldn't work correctly.
     const categoryLabelMap = Object.fromEntries(ws.categoryOptions.map(c => [c.id, c.label]));
     const categoryColorMap = Object.fromEntries(ws.categoryOptions.map(c => [c.id, c.color || '#3A2A1F']));
     const categoriesWithUsage = ws.categoryOptions.map(c => ({
@@ -3786,7 +3862,7 @@ class Component extends DCLogic {
         setEditSource: (e) => this.updateIncomeEntryField(inc.id, 'source', e),
         setEditAmount: (e) => this.updateIncomeEntryField(inc.id, 'amount', e),
         setEditCategory: (e) => this.updateIncomeEntryField(inc.id, 'category', e),
-        editCategories: ws.incomeCategories || []
+        editCategories: incomeCategoriesMerged
       };
     });
     const incomeTotal = monthIncomeRaw.reduce((s, inc) => s + inc.amount, 0);
@@ -4124,7 +4200,7 @@ class Component extends DCLogic {
           setEditDay: (e) => this.updateRecurringIncomeField(ri.id, 'day', e),
           setEditCategory: (e) => this.updateRecurringIncomeField(ri.id, 'category', e),
           editableDay: ri.frequency !== 'every4weeks',
-          editCategories: ws.incomeCategories || []
+          editCategories: incomeCategoriesMerged
         };
       })
       .sort((a, b) => a.nextDate - b.nextDate);
@@ -4375,6 +4451,7 @@ class Component extends DCLogic {
       addCalcJointVariableItem: () => this.addCalcJointVariableItem(),
       addCalcJointVariableItemDisabled: !this.state.newCalcJointVariableName.trim() || !this.parseAmt(this.state.newCalcJointVariableAmount),
       calcFixedCategoryChips,
+      calcFixedCategoryOptions,
       calcFixedGroups,
       calcFixedAutoItems,
       calcShowFixedAutoRow: calcIsPersonalMode && calcFixedAutoItems.length > 0,
@@ -4558,7 +4635,7 @@ class Component extends DCLogic {
       setNewRecFlexLastDate: (e) => this.setNewRecFlexLastDate(e),
       newRecFlexNextDate: this.state.newRecFlexNextDate,
       setNewRecFlexNextDate: (e) => this.setNewRecFlexNextDate(e),
-      noFixedCostCategories: ws.fixedCostCategories.length === 0,
+      noFixedCostCategories: fixedCostCategoriesMerged.length === 0,
       addRecurring: () => this.addRecurring(),
       addRecDisabled: !(this.state.newRecName && this.parseAmt(this.state.newRecAmount) > 0 && (
         ['every4weeks', 'every3months', 'every6months', 'yearly'].includes(this.state.newRecFrequency) ? this.state.newRecStartDate
@@ -4573,6 +4650,7 @@ class Component extends DCLogic {
       newRecVisible: this.state.newRecVisible,
       setNewRecVisible: (e) => this.setNewRecVisible(e),
       fixedCostCategories: ws.fixedCostCategories,
+      fixedCostCategoriesMerged,
       fixedCategoriesWithUsage,
       fixedCategorySuggestions: t.fixedCostSuggestions.filter(label => !ws.fixedCostCategories.some(c => c.label === label)).map(label => ({ label, add: () => this.addSuggestedCategory('fixedCostCategories', label) })),
       showRecCategoryForm: this.state.showRecCategoryForm,
@@ -4658,7 +4736,8 @@ class Component extends DCLogic {
       addIncome: () => this.addIncome(),
       addIncomeDisabled: !(this.parseAmt(this.state.newIncomeAmount) > 0),
       incomeCategories: ws.incomeCategories || [],
-      noIncomeCategories: (ws.incomeCategories || []).length === 0,
+      incomeCategoriesMerged,
+      noIncomeCategories: incomeCategoriesMerged.length === 0,
       newIncomeCategory: this.state.newIncomeCategory,
       setNewIncomeCategory: (e) => this.setNewIncomeCategory(e),
       newRecIncomeCategory: this.state.newRecIncomeCategory,
