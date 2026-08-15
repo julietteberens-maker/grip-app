@@ -2757,12 +2757,12 @@ class Component extends DCLogic {
       // not sharedWs.calcFixedItems — include them here too so Gezamenlijk/Zichtbaar items from that
       // form show up in the joint summary and Budgetcalculator table, not just Solo-mirrored ones.
       const directRecurring = (sharedWs.recurring || []).filter(r => r.joint || r.visible).map(r => ({
-        id: r.id, name: r.name, amount: r.amount, joint: r.joint, isDirectRecurring: true
+        id: r.id, name: r.name, amount: r.amount, joint: r.joint, addedBy: r.addedBy, isDirectRecurring: true
       }));
       // Same for "Uit gelogde geschiedenis" categories added directly while already in Gedeeld.
       const directFixedHistory = (sharedWs.calcFixedHistoryCategories || []).filter(e => e.joint || e.visible).map(e => ({
         id: e.id, name: (sharedWs.categoryOptions.find(c => c.id === e.id) || { label: e.id }).label,
-        amount: this.avgSpendFromHistory(sharedWs, e.id, e.monthsCount), joint: e.joint, isDirectFixedHistory: true
+        amount: this.avgSpendFromHistory(sharedWs, e.id, e.monthsCount), joint: e.joint, addedBy: e.addedBy, isDirectFixedHistory: true
       }));
       sharedItems = [...sharedItems, ...directRecurring, ...directFixedHistory];
     }
