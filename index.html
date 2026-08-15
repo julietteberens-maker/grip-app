@@ -385,6 +385,7 @@
             <sc-for list="{{ incomeCategories }}" as="ic" hint-placeholder-count="5">
               <option value="{{ ic.id }}">{{ ic.label }}</option>
             </sc-for>
+            <option value="__add_category__">+ {{ t.addCategory }}...</option>
           </select>
           <sc-if value="{{ noIncomeCategories }}" hint-placeholder-val="{{ false }}">
             <span style="font-size:11px;color:#7A5233;align-self:center">{{ t.noCategoryHint }}</span>
@@ -515,6 +516,7 @@
               <sc-for list="{{ incomeCategories }}" as="ric" hint-placeholder-count="5">
                 <option value="{{ ric.id }}">{{ ric.label }}</option>
               </sc-for>
+              <option value="__add_category__">+ {{ t.addCategory }}...</option>
             </select>
             <select value="{{ newRecIncomeFrequency }}" onChange="{{ setNewRecIncomeFrequency }}" style="border:1px solid #C7B08A;border-radius:8px;padding:6px 8px;font-size:12px;background:#EDE2CC;color:#3A2A1F">
               <option value="monthly">{{ t.monthlyOnDayOption }}</option>
@@ -821,6 +823,7 @@
               <sc-for list="{{ fixedCostCategories }}" as="fc" hint-placeholder-count="7">
                 <option value="{{ fc.id }}">{{ fc.label }}</option>
               </sc-for>
+              <option value="__add_category__">+ {{ t.addCategory }}...</option>
             </select>
             <sc-if value="{{ noFixedCostCategories }}" hint-placeholder-val="{{ false }}">
               <span style="font-size:11px;color:#7A5233;align-self:center">{{ t.noCategoryHint }}</span>
@@ -1193,6 +1196,9 @@
                 <sc-if value="{{ afi.showVisibleToggle }}" hint-placeholder-val="{{ true }}">
                   <span onClick="{{ afi.toggleVisible }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ afi.visibleBg }};color:{{ afi.visibleColor }};flex:none">{{ afi.visibleLabel }}</span>
                 </sc-if>
+                <sc-if value="{{ afi.joint }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:10px;color:#7A5233;flex:none">{{ afi.halfNote }}</span>
+                </sc-if>
                 <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ afi.amountStr }}</span>
               </div>
             </sc-for>
@@ -1251,6 +1257,7 @@
               <sc-for list="{{ calcFixedCategoryChips }}" as="fco" hint-placeholder-count="3">
                 <option value="{{ fco.id }}">{{ fco.label }}</option>
               </sc-for>
+              <option value="__add_category__">+ {{ t.addCategory }}...</option>
             </select>
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newCalcFixedVisible }}" onChange="{{ setNewCalcFixedVisible }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#3A2A1F;cursor:pointer"><input type="checkbox" checked="{{ newCalcFixedJoint }}" onChange="{{ setNewCalcFixedJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
@@ -1993,9 +2000,14 @@ class Component extends DCLogic {
     const myId = this.state.session.user.id;
     const householdId = this.state.householdId;
     const personalWs = this.state.workspaces.personal;
+    // Capture the CURRENT local shared workspace before fetching. This preserves any direct edits
+    // you just made while browsing Gedeeld (e.g. deleting a Vaste last, adding a transaction) that
+    // haven't reached the server yet — without this, those edits get silently reverted below.
+    const localSharedWs = this.state.workspaces.shared;
     // Always fetch the LATEST shared data from Supabase before computing/writing mirrors.
-    // Using the locally-cached this.state.workspaces.shared here would risk overwriting the
-    // other partner's concurrent changes with a stale local copy (classic last-write-wins bug).
+    // Using only the locally-cached copy here would risk overwriting the other partner's
+    // concurrent changes with a stale local copy (classic last-write-wins bug) for the
+    // mirror-derived fields specifically — so we still fetch fresh for those.
     supabaseClient.from('grip_shared_dashboards').select('data').eq('household_id', householdId).maybeSingle().then(({ data, error }) => {
       if (error) { console.error('Shared fetch error before sync', error); if (cb) cb(); return; }
       const sharedWs = { ...this.defaultWorkspace('shared'), ...(data && data.data ? data.data : {}) };
@@ -2051,7 +2063,7 @@ class Component extends DCLogic {
         ...recFixedJoint
       ];
 
-      const merged = { ...sharedWs, ...patch };
+      const merged = { ...sharedWs, ...localSharedWs, ...patch };
       this.setState(s => ({ workspaces: { ...s.workspaces, shared: merged } }), () => {
         this.persistShared(merged);
         if (cb) cb();
@@ -2479,7 +2491,10 @@ class Component extends DCLogic {
   }
   setNewCalcFixedName(e) { this.setState({ newCalcFixedName: e.target.value }); }
   setNewCalcFixedAmount(e) { this.setState({ newCalcFixedAmount: e.target.value }); }
-  setNewCalcFixedCategory(e) { this.setState({ newCalcFixedCategory: e.target.value }); }
+  setNewCalcFixedCategory(e) {
+    if (e.target.value === '__add_category__') { this.setState({ showCalcAddCategory: true }); return; }
+    this.setState({ newCalcFixedCategory: e.target.value });
+  }
   addCalcFixedItem() {
     const name = this.state.newCalcFixedName.trim();
     const amount = this.parseAmt(this.state.newCalcFixedAmount);
@@ -2871,7 +2886,14 @@ class Component extends DCLogic {
     const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
     return (ws.recurring || [])
       .filter(r => matchJoint(r.joint))
-      .map(r => ({ id: 'autofix_' + r.id, sourceId: r.id, name: r.name, amount: r.amount, joint: !!r.joint, visible: !!r.visible }));
+      .map(r => ({
+        id: 'autofix_' + r.id, sourceId: r.id, name: r.name,
+        // Joint costs are split 50/50 with your partner — only YOUR half should count towards
+        // your own Solo total/leftover. fullAmount keeps the original bill amount for reference.
+        amount: r.joint ? r.amount / 2 : r.amount,
+        fullAmount: r.amount,
+        joint: !!r.joint, visible: !!r.visible
+      }));
   }
   calcSummaryFor(ws, variableMode) {
     // Only non-joint (private) recurring/one-off income belongs in the non-joint bucket — joint-marked
@@ -3074,7 +3096,10 @@ class Component extends DCLogic {
   setNewRecDay(e) { this.setState({ newRecDay: e.target.value }); }
   setNewRecFrequency(e) { this.setState({ newRecFrequency: e.target.value }); }
   setNewRecStartDate(e) { this.setState({ newRecStartDate: e.target.value }); }
-  setNewRecCategory(e) { this.setState({ newRecCategory: e.target.value }); }
+  setNewRecCategory(e) {
+    if (e.target.value === '__add_category__') { this.setState({ showRecCategoryForm: true }); return; }
+    this.setState({ newRecCategory: e.target.value });
+  }
   setNewRecJoint(e) { this.setState({ newRecJoint: e.target.checked }); }
   setNewRecVisible(e) { this.setState({ newRecVisible: e.target.checked }); }
   setNewRecFlexLastDate(e) { this.setState({ newRecFlexLastDate: e.target.value }); }
@@ -3496,8 +3521,14 @@ class Component extends DCLogic {
     if (inUse) return;
     this.setWs(ws => ({ incomeCategories: (ws.incomeCategories || []).filter(c => c.id !== id) }), () => this.persist());
   }
-  setNewIncomeCategory(e) { this.setState({ newIncomeCategory: e.target.value }); }
-  setNewRecIncomeCategory(e) { this.setState({ newRecIncomeCategory: e.target.value }); }
+  setNewIncomeCategory(e) {
+    if (e.target.value === '__add_category__') { this.setState({ showIncomeCategoryForm: true }); return; }
+    this.setState({ newIncomeCategory: e.target.value });
+  }
+  setNewRecIncomeCategory(e) {
+    if (e.target.value === '__add_category__') { this.setState({ showIncomeCategoryForm: true }); return; }
+    this.setState({ newRecIncomeCategory: e.target.value });
+  }
   toggleEditIncomeEntry(id) { this.setState(s => ({ editingIncomeEntryId: s.editingIncomeEntryId === id ? null : id })); }
   toggleEditRecurringIncome(id) { this.setState(s => ({ editingRecurringIncomeId: s.editingRecurringIncomeId === id ? null : id })); }
   updateIncomeEntryField(id, field, e) {
@@ -3873,6 +3904,7 @@ class Component extends DCLogic {
     const calcFixedAutoItems = (calcIsPersonalMode ? this.fixedAutoItems(ws) : []).map(fi => ({
       ...fi,
       amountStr: this.fmt(fi.amount),
+      halfNote: fi.joint ? `(${t.calcJointLabel.toLowerCase()}, ${t.ofEuro} ${this.fmt(fi.fullAmount)})` : '',
       jointLabel: t.calcJointLabel,
       jointBg: fi.joint ? '#3A2A1F' : 'transparent',
       jointColor: fi.joint ? '#EDE4D9' : '#7A5233',
@@ -4040,7 +4072,12 @@ class Component extends DCLogic {
     // (those only affect what's shown to / split with a partner in Gedeeld).
     const calcSoloIncomeTotal = calcIncomeAutoAmount + calcIncomeItemsView.reduce((s, it) => s + it.amount, 0);
     const calcSoloSurplus = calcSoloIncomeTotal - calcFixedTotal - calcVariableAvgTotal;
-    const calcSurplus = calcIsSharedMode ? (partnerCalcSummary.surplusNonJoint + jointCalcSummary.surplus) : calcSoloSurplus;
+    // Shared surplus: reuse calcTableOverSums, which is already correctly computed from the same
+    // joint income/expense rows shown in the Budgetcalculator table above. The previous calculation
+    // here (partnerCalcSummary + jointCalcSummary, based on the older calcSummaryFor helper) could
+    // double-count items and produce a leftover figure inconsistent with — and sometimes larger
+    // than — the combined income shown in that same table.
+    const calcSurplus = calcIsSharedMode ? calcTableOverSums.total : calcSoloSurplus;
     const calcAllocationRows = [
       ...ws.categoryOptions.map(c => ({
         key: 'cat_' + c.id,
