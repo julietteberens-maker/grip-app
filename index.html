@@ -752,6 +752,12 @@
                 <span style="font-size:11px;color:#3A2A1F">{{ t.dayOfMonth }}</span>
                 <input type="text" inputmode="decimal" value="{{ r.day }}" onChange="{{ r.setEditDay }}" style="width:44px;border:1px solid #C7B08A;border-radius:6px;padding:4px 7px;font-size:12px;background:#F2EAD9;color:#3A2A1F">
               </sc-if>
+              <sc-if value="{{ r.showOwnerSelect }}" hint-placeholder-val="{{ false }}">
+                <select value="{{ r.ownerSelectValue }}" onChange="{{ r.setOwner }}" style="border:1px solid #C7B08A;border-radius:6px;padding:4px 7px;font-size:12px;background:#F2EAD9;color:#3A2A1F">
+                  <option value="me">{{ r.myOwnerLabel }}</option>
+                  <option value="partner">{{ r.partnerOwnerLabel }}</option>
+                </select>
+              </sc-if>
             </sc-if>
 
             <span onClick="{{ r.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid #C7B08A;background:{{ r.jointBg }};color:{{ r.jointColor }}">{{ r.jointLabel }}</span>
@@ -1757,6 +1763,11 @@ class Component extends DCLogic {
   // keys from your local copy — everything else comes from the fresh server fetch, so your
   // partner's concurrent changes to OTHER fields are never silently overwritten.
   _sharedDirtyKeys = new Set();
+  // The last shared-workspace state we know both this client and the server agreed on. Used as
+  // the "base" in a 3-way merge (base/local/remote) so concurrent edits to the SAME field by both
+  // partners (e.g. both adding a different Vaste last around the same time) merge item-by-item
+  // instead of one partner's whole array silently replacing the other's.
+  _lastSyncedShared = null;
 
   defaultWorkspace(kind) {
     const now = new Date();
@@ -2104,9 +2115,37 @@ class Component extends DCLogic {
       patch.incomeCategories = mergeCategoryList('incomeCategories');
 
       const dirtyOverlay = {};
-      dirtyKeysSnapshot.forEach(k => { dirtyOverlay[k] = localSharedWs[k]; });
+      const baseline = this._lastSyncedShared || {};
+      dirtyKeysSnapshot.forEach(k => {
+        const localVal = localSharedWs[k];
+        const remoteVal = sharedWs[k];
+        if (Array.isArray(localVal) && Array.isArray(remoteVal) && localVal.every(x => x && x.id != null)) {
+          // 3-way item-level merge: keep partner's items you don't know about, keep your own
+          // additions/edits, and respect items you deliberately removed (present in the last
+          // synced baseline but no longer in your local array).
+          const baseArr = Array.isArray(baseline[k]) ? baseline[k] : [];
+          const baseIds = new Set(baseArr.map(x => x.id));
+          const localIds = new Set(localVal.map(x => x.id));
+          const localMap = Object.fromEntries(localVal.map(x => [x.id, x]));
+          const merged = [];
+          const seen = new Set();
+          remoteVal.forEach(item => {
+            if (baseIds.has(item.id) && !localIds.has(item.id)) return; // you deleted this locally
+            merged.push(localIds.has(item.id) ? localMap[item.id] : item);
+            seen.add(item.id);
+          });
+          localVal.forEach(item => {
+            if (!seen.has(item.id) && !baseIds.has(item.id)) { merged.push(item); seen.add(item.id); }
+          });
+          dirtyOverlay[k] = merged;
+        } else {
+          // Non-array or non-id'd field: your local edit wins (rare to conflict on scalars).
+          dirtyOverlay[k] = localVal;
+        }
+      });
       const merged = { ...sharedWs, ...dirtyOverlay, ...patch };
       dirtyKeysSnapshot.forEach(k => this._sharedDirtyKeys.delete(k));
+      this._lastSyncedShared = merged;
       this.setState(s => ({ workspaces: { ...s.workspaces, shared: merged } }), () => {
         this.persistShared(merged);
         if (cb) cb();
@@ -2183,7 +2222,11 @@ class Component extends DCLogic {
     supabaseClient.from('grip_shared_dashboards').select('data').eq('household_id', householdId).maybeSingle().then(({ data, error }) => {
       if (error) { console.error('Shared load error', error); return; }
       if (data && data.data) {
-        this.setState(s => ({ workspaces: { ...s.workspaces, shared: { ...s.workspaces.shared, ...data.data } } }));
+        this.setState(s => {
+          const merged = { ...s.workspaces.shared, ...data.data };
+          this._lastSyncedShared = merged;
+          return { workspaces: { ...s.workspaces, shared: merged } };
+        });
       } else {
         this.persistShared();
       }
@@ -2735,8 +2778,14 @@ class Component extends DCLogic {
         ownerLabel = meLabel; ownerBg = '#8A9A72';
         meAmt = it.amount; partnerAmt = 0;
       } else if (isDirectNative && !it.joint) {
-        ownerLabel = meLabel; ownerBg = '#8A9A72';
-        meAmt = it.amount; partnerAmt = 0;
+        // Attribute to whoever actually created it (it.addedBy), not whoever is currently
+        // viewing the screen. Older items created before this field existed have no addedBy —
+        // fall back to treating them as "mine" from either viewer's perspective (best effort).
+        const isMine = it.addedBy ? it.addedBy === myUserId : true;
+        ownerLabel = isMine ? meLabel : partnerLabel;
+        ownerBg = isMine ? '#8A9A72' : '#8B4A42';
+        meAmt = isMine ? it.amount : 0;
+        partnerAmt = isMine ? 0 : it.amount;
       } else {
         ownerLabel = jointLabel; ownerBg = '#3A2A1F';
         meAmt = it.amount / 2; partnerAmt = it.amount / 2;
@@ -3007,9 +3056,10 @@ class Component extends DCLogic {
   addCalcFixedHistoryCategory() {
     const id = this.state.newCalcFixedHistoryCategory;
     if (!id) return;
+    const addedBy = (this.state.mode === 'shared' && this.state.session) ? this.state.session.user.id : undefined;
     this.setWs(ws => {
       if ((ws.calcFixedHistoryCategories || []).some(e => e.id === id)) return {};
-      return { calcFixedHistoryCategories: [...(ws.calcFixedHistoryCategories || []), { id, monthsCount: 3, joint: false, visible: false }] };
+      return { calcFixedHistoryCategories: [...(ws.calcFixedHistoryCategories || []), { id, monthsCount: 3, joint: false, visible: false, addedBy }] };
     }, () => this.persist());
     this.setState({ newCalcFixedHistoryCategory: '' });
   }
@@ -3156,6 +3206,11 @@ class Component extends DCLogic {
   setNewRecFlexLastDate(e) { this.setState({ newRecFlexLastDate: e.target.value }); }
   setNewRecFlexNextDate(e) { this.setState({ newRecFlexNextDate: e.target.value }); }
   toggleEditRecurring(id) { this.setState(s => ({ editingRecurringId: s.editingRecurringId === id ? null : id })); }
+  setRecurringOwner(id, e) {
+    const wantsPartner = e.target.value === 'partner';
+    const ownerId = wantsPartner ? this.state.householdPartnerUserId : (this.state.session ? this.state.session.user.id : null);
+    this.setWs(ws => ({ recurring: ws.recurring.map(r => r.id === id ? { ...r, addedBy: ownerId } : r) }), () => this.persist());
+  }
   updateRecurringField(id, field, e) {
     const raw = e.target.value;
     this.setWs(ws => ({
@@ -3193,22 +3248,25 @@ class Component extends DCLogic {
     const category = this.state.newRecCategory || 'other';
     const joint = this.state.newRecJoint;
     const visible = joint ? true : this.state.newRecVisible;
+    // Remember who actually created this item when added directly while browsing Gedeeld — without
+    // this, the owner label would just show whichever partner happens to be looking at the screen.
+    const addedBy = (this.state.mode === 'shared' && this.state.session) ? this.state.session.user.id : undefined;
     if (!this.state.newRecName || !amount) return;
 
     let rec;
     if (frequency === 'every4weeks' || frequency === 'every3months' || frequency === 'every6months' || frequency === 'yearly') {
       if (!this.state.newRecStartDate) return;
-      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency, startDate: this.state.newRecStartDate, category, joint, visible };
+      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency, startDate: this.state.newRecStartDate, category, joint, visible, addedBy };
     } else if (frequency === 'flexible') {
       if (!this.state.newRecFlexLastDate || !this.state.newRecFlexNextDate) return;
       const [ly, lm, ld] = this.state.newRecFlexLastDate.split('-').map(Number);
       const [ny, nm, nd] = this.state.newRecFlexNextDate.split('-').map(Number);
       const intervalDays = Math.max(1, Math.round((new Date(ny, nm - 1, nd) - new Date(ly, lm - 1, ld)) / 86400000));
-      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency, lastKnownDate: this.state.newRecFlexLastDate, intervalDays, category, joint, visible };
+      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency, lastKnownDate: this.state.newRecFlexLastDate, intervalDays, category, joint, visible, addedBy };
     } else {
       const day = parseInt(this.state.newRecDay, 10);
       if (!day || day < 1 || day > 31) return;
-      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency: 'monthly', day, category, joint, visible };
+      rec = { id: 'rec' + Date.now(), name: this.state.newRecName, amount, frequency: 'monthly', day, category, joint, visible, addedBy };
     }
 
     this.setWs(ws => ({ recurring: [...ws.recurring, rec] }), () => this.persist());
@@ -3762,6 +3820,11 @@ class Component extends DCLogic {
           setEditCategory: (e) => this.updateRecurringField(r.id, 'category', e),
           setEditFlexNext: (e) => this.updateRecurringFlexNextDate(r.id, e),
           editCategories: fixedCostCategoriesMerged,
+          showOwnerSelect: this.state.mode === 'shared' && !r.joint,
+          ownerSelectValue: (r.addedBy && r.addedBy === this.state.householdPartnerUserId) ? 'partner' : 'me',
+          setOwner: (e) => this.setRecurringOwner(r.id, e),
+          myOwnerLabel: this.state.name || t.calcMeLabel,
+          partnerOwnerLabel: this.state.householdPartnerName || t.calcPartnerColumnHeader,
           remove: () => this.removeRecurring(r.id)
         };
       })
