@@ -1084,16 +1084,6 @@
         </div>
       </div>
 
-      <div style="background:#DDCEB4;border-radius:16px;padding:18px 20px;margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-          <span style="width:10px;height:10px;border-radius:50%;background:#C9A876;display:inline-block;flex:none"></span>
-          <span style="font-size:14px;font-weight:700;flex:1">{{ t.navSavings }}</span>
-          <div style="font-size:13px;font-variant-numeric:tabular-nums;color:#3A2A1F">€ {{ plannerSavingsMonthlyStr }} {{ t.perMonthScheduled }}</div>
-        </div>
-        <div style="height:7px;border-radius:4px;background:#C7B08A;overflow:hidden"><div style="height:100%;background:#C9A876;width:{{ plannerSavingsPct }}%"></div></div>
-        <div style="font-size:11.5px;color:#3A2A1F;margin-top:8px">{{ plannerSavingsText }}</div>
-      </div>
-
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;position:relative">
         <div style="font-size:13px;font-weight:700">{{ t.categoryBudgetsHeader }}</div>
         <button onClick="{{ toggleAddCategoryForm }}" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addCategory }}</button>
@@ -3134,12 +3124,9 @@ class Component extends DCLogic {
       if (val > 0) { addedTotal += val; return { ...g, contributionAmount: val, contributionFrequency: g.contributionFrequency || 'monthly' }; }
       return g;
     });
-    const plannerSavingsMonthly = savingsGoals.reduce((sum, g) => {
-      const amt = g.contributionAmount || 0;
-      if (!amt) return sum;
-      return sum + (g.contributionFrequency === 'every4weeks' ? (amt * 13) / 12 : amt);
-    }, 0);
-    const otherBudgetsTotal = Object.values(catBudgets).reduce((s, v) => s + (v || 0), 0) + plannerSavingsMonthly;
+    // Savings goals never factor into budgetMonthly/"toegewezen" — sparen is fully separate from
+    // budgeting. Only category budgets count towards the Planner total here.
+    const otherBudgetsTotal = Object.values(catBudgets).reduce((s, v) => s + (v || 0), 0);
     const newBudgetMonthly = Math.max(ws.budgetManuallySet ? ws.budgetMonthly : ws.balance, otherBudgetsTotal);
     this.setWs(() => ({ categoryBudgets: catBudgets, savingsGoals, budgetMonthly: newBudgetMonthly, budgetManuallySet: true }), () => this.persist());
     this.setState({ calcAllocations: {} });
@@ -4031,14 +4018,9 @@ class Component extends DCLogic {
         setBudget: (e) => this.setCategoryBudget(cat.id, e)
       };
     });
-    const plannerSavingsMonthly = ws.savingsGoals.reduce((sum, g) => {
-      const amt = g.contributionAmount || 0;
-      if (!amt) return sum;
-      return sum + (g.contributionFrequency === 'every4weeks' ? (amt * 13) / 12 : amt);
-    }, 0);
-    const plannerAllocated = Object.values(categoryBudgets).reduce((s, v) => s + (v || 0), 0) + plannerSavingsMonthly;
+    // Sparen never factors into Planner's totals — savings goals live only in the Sparen tab.
+    const plannerAllocated = Object.values(categoryBudgets).reduce((s, v) => s + (v || 0), 0);
     const plannerUnallocated = effectiveBudget - plannerAllocated;
-    const plannerSavingsPct = effectiveBudget > 0 ? Math.min(100, Math.round((plannerSavingsMonthly / effectiveBudget) * 100)) : 0;
 
     const futureRecurringBillsThisMonth = ws.recurring.reduce((sum, r) => {
       if (r.frequency === 'every4weeks' && r.startDate) {
@@ -4937,11 +4919,6 @@ class Component extends DCLogic {
       plannerUnallocatedStr: this.fmt(Math.abs(plannerUnallocated)),
       plannerUnallocatedLabel: plannerUnallocated < 0 ? this.tf('over-allocated', 'over-toegewezen', 'über-zugewiesen', 'sur-alloué', 'sobre-asignado') : this.tf('unallocated', 'niet-toegewezen', 'nicht zugewiesen', 'non alloué', 'no asignado'),
       plannerUnallocatedColor: plannerUnallocated < 0 ? '#B5654A' : '#3A2A1F',
-      plannerSavingsMonthlyStr: this.fmt(plannerSavingsMonthly),
-      plannerSavingsPct,
-      plannerSavingsText: plannerSavingsMonthly > 0
-        ? this.tf('Based on the monthly contributions set for your savings goals in Savings.', 'Gebaseerd op de maandelijkse bijdragen die je bij je spaardoelen in Sparen hebt ingesteld.', 'Basierend auf den monatlichen Beiträgen, die du für deine Sparziele unter Sparen festgelegt hast.', "Basé sur les contributions mensuelles définies pour vos objectifs d'épargne dans Épargne.", 'Basado en las contribuciones mensuales establecidas para tus objetivos de ahorro en Ahorros.')
-        : this.tf('Set a monthly contribution on a savings goal in Savings to see it reserved here.', 'Stel een maandelijkse bijdrage in bij een spaardoel in Sparen om dit hier gereserveerd te zien.', 'Lege einen monatlichen Beitrag für ein Sparziel unter Sparen fest, um ihn hier reserviert zu sehen.', "Définissez une contribution mensuelle pour un objectif d'épargne dans Épargne pour la voir réservée ici.", 'Establece una contribución mensual para un objetivo de ahorro en Ahorros para verla reservada aquí.'),
       incomeActualPx: Math.round(incomeTotal * overviewScale),
       incomeExpectedPx: Math.round(futureRecurringIncomeThisMonth * overviewScale),
       spendActualPx: Math.round(spentMonth * overviewScale),
