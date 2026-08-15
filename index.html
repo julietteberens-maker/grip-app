@@ -728,14 +728,14 @@
           <button onClick="{{ toggleRecCategoryForm }}" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#3A2A1F;color:#EDE4D9">{{ t.addCategory }}</button>
         </div>
         <sc-if value="{{ recurring.length }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;align-items:center;gap:10px;padding:0 0 6px;font-size:10px;font-weight:700;color:#7A5233;text-transform:uppercase;letter-spacing:.03em;flex-wrap:wrap">
-            <span style="width:70px;flex:none">{{ t.colNextCharge }}</span>
-            <span style="flex:1">{{ t.colDescription }}</span>
-            <span>{{ t.colFrequency }}</span>
-            <span>{{ t.colCategory }}</span>
-            <span style="margin-left:auto">{{ t.colStatus }}</span>
-            <span style="width:70px;text-align:right">{{ t.colTotal }}</span>
-            <span>{{ t.colActions }}</span>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:0 0 8px;font-size:10.5px;font-weight:700;color:#7A5233;flex-wrap:wrap;line-height:1.3">
+            <span style="width:80px;flex:none">{{ t.colNextCharge }}</span>
+            <span style="flex:1;min-width:100px">{{ t.colDescription }}</span>
+            <span style="width:90px;flex:none">{{ t.colFrequency }}</span>
+            <span style="width:80px;flex:none">{{ t.colCategory }}</span>
+            <span style="width:150px;flex:none">{{ t.colStatus }}</span>
+            <span style="width:70px;text-align:right;flex:none">{{ t.colTotal }}</span>
+            <span style="width:60px;flex:none">{{ t.colActions }}</span>
           </div>
         </sc-if>
         <sc-for list="{{ recurring }}" as="r" hint-placeholder-count="4">
@@ -2562,8 +2562,12 @@ class Component extends DCLogic {
     if (!label) return;
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().categoryOptions.length % this.colorPalette.length];
-    this.setWs(ws => ({ categoryOptions: [...ws.categoryOptions, { id, label, color }] }), () => this.persist());
-    this.setState({ newCategoryName: '' });
+    const mode = this.state.mode;
+    if (mode === 'shared') this._sharedDirtyKeys.add('categoryOptions');
+    this.setState(s => ({
+      workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], categoryOptions: [...s.workspaces[mode].categoryOptions, { id, label, color }] } },
+      newCategoryName: ''
+    }), () => this.persist());
   }
   removeCategory(id) {
     const inUse = this.ws().transactions.some(t => t.category === id);
@@ -2593,8 +2597,12 @@ class Component extends DCLogic {
     if (!label) return;
     const id = 'cfc' + Date.now();
     const color = this.colorPalette[(this.ws().calcFixedCategories || []).length % this.colorPalette.length];
-    this.setWs(ws => ({ calcFixedCategories: [...(ws.calcFixedCategories || []), { id, label, color }] }), () => this.persist());
-    this.setState({ newCalcFixedCategoryName: '' });
+    const mode = this.state.mode;
+    if (mode === 'shared') this._sharedDirtyKeys.add('calcFixedCategories');
+    this.setState(s => ({
+      workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], calcFixedCategories: [...(s.workspaces[mode].calcFixedCategories || []), { id, label, color }] } },
+      newCalcFixedCategoryName: ''
+    }), () => this.persist());
   }
   removeCalcFixedCategory(id) {
     this.setWs(ws => ({
@@ -3599,8 +3607,12 @@ class Component extends DCLogic {
     if (!label) return;
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().savingsCategories.length % this.colorPalette.length];
-    this.setWs(ws => ({ savingsCategories: [...ws.savingsCategories, { id, label, color }] }), () => this.persist());
-    this.setState({ newSavingsCategoryName: '' });
+    const mode = this.state.mode;
+    if (mode === 'shared') this._sharedDirtyKeys.add('savingsCategories');
+    this.setState(s => ({
+      workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], savingsCategories: [...s.workspaces[mode].savingsCategories, { id, label, color }] } },
+      newSavingsCategoryName: ''
+    }), () => this.persist());
   }
   removeSavingsCategory(id) {
     const inUse = this.ws().savingsGoals.some(g => g.category === id);
@@ -3625,8 +3637,12 @@ class Component extends DCLogic {
     if (!label) return;
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().fixedCostCategories.length % this.colorPalette.length];
-    this.setWs(ws => ({ fixedCostCategories: [...ws.fixedCostCategories, { id, label, color }] }), () => this.persist());
-    this.setState({ newRecCategoryName: '' });
+    const mode = this.state.mode;
+    if (mode === 'shared') this._sharedDirtyKeys.add('fixedCostCategories');
+    this.setState(s => ({
+      workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], fixedCostCategories: [...s.workspaces[mode].fixedCostCategories, { id, label, color }] } },
+      newRecCategoryName: ''
+    }), () => this.persist());
   }
   removeFixedCategory(id) {
     const inUse = this.ws().recurring.some(r => r.category === id);
@@ -3645,8 +3661,12 @@ class Component extends DCLogic {
     if (!label) return;
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[(this.ws().incomeCategories || []).length % this.colorPalette.length];
-    this.setWs(ws => ({ incomeCategories: [...(ws.incomeCategories || []), { id, label, color }] }), () => this.persist());
-    this.setState({ newIncomeCategoryName: '' });
+    const mode = this.state.mode;
+    if (mode === 'shared') this._sharedDirtyKeys.add('incomeCategories');
+    this.setState(s => ({
+      workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], incomeCategories: [...(s.workspaces[mode].incomeCategories || []), { id, label, color }] } },
+      newIncomeCategoryName: ''
+    }), () => this.persist());
   }
   removeIncomeCategory(id) {
     const inUse = this.ws().incomeEntries.some(i => i.category === id) || this.ws().recurringIncome.some(r => r.category === id);
