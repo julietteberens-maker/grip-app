@@ -3486,6 +3486,7 @@ class Component extends DCLogic {
       .reduce((s, t) => s + t.amount, 0);
     const elapsedFraction = today / daysInMonth;
     const effectiveBudget = ws.budgetManuallySet ? ws.budgetMonthly : this.computeCurrentBalance();
+    const expected = effectiveBudget * elapsedFraction;
 
     const list = [];
     if (effectiveBudget > 0 && spentMonth > expected * 1.15) {
