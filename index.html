@@ -29,10 +29,10 @@
   .fixed-grid.row{padding:11px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:12.5px;min-height:20px}
   .fixed-grid .col-amt{text-align:right;font-variant-numeric:tabular-nums}
   .fixed-grid .col-actions{text-align:right}
-  .chip{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 9px;border-radius:6px;font-size:9.5px;font-weight:600;line-height:1;white-space:nowrap;box-sizing:border-box}
+  .chip{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:64px;padding:0 10px;border-radius:6px;font-size:9.5px;font-weight:600;line-height:1;white-space:nowrap;box-sizing:border-box;text-align:center}
   .income-grid{
     display:grid;
-    grid-template-columns: 54px minmax(110px,1.6fr) 90px minmax(80px,.8fr) 100px 62px;
+    grid-template-columns: 54px minmax(100px,1.5fr) 84px 90px minmax(80px,.8fr) 100px 34px;
     align-items:center;
     column-gap:12px;
   }
@@ -220,25 +220,9 @@
     <sc-if value="{{ isOverview }}" hint-placeholder-val="{{ true }}">
 
     <sc-if value="{{ isShared }}" hint-placeholder-val="{{ false }}">
-      <div style="background:#EEE6D8;border-radius:16px;padding:16px 20px;margin-bottom:20px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="width:7px;height:7px;border-radius:50%;background:#66715A;display:inline-block;flex:none"></span>
-            <span style="font-size:12.5px;font-weight:600;color:#3A261D">{{ t.linkedToLabel }} {{ householdPartnerNameDisplay }}</span>
-          </div>
-          <span style="font-size:12px;color:#7A5941">{{ t.combined }} € {{ accountsTotalStr }}</span>
-        </div>
-        <sc-for list="{{ accounts }}" as="acc" hint-placeholder-count="2">
-          <div style="display:flex;align-items:center;gap:10px;padding:6px 0">
-            <input type="text" value="{{ acc.name }}" onChange="{{ acc.setName }}" style="flex:1;border:none;background:transparent;outline:none;font-size:12.5px;font-weight:600;color:#634031;padding:0">
-            <div style="display:flex;align-items:baseline;gap:2px;font-size:12.5px;font-variant-numeric:tabular-nums;color:#634031">
-              <span>€</span>
-              <input type="text" inputmode="decimal" step="0.01" value="{{ acc.balance }}" onChange="{{ acc.setBalance }}" style="width:80px;border:none;background:transparent;outline:none;font:inherit;color:inherit;padding:0">
-            </div>
-            <button onClick="{{ acc.remove }}" disabled="{{ acc.removeDisabled }}" style="border:none;background:transparent;color:#634031;font-size:12px;opacity:{{ acc.removeOpacity }}">✕</button>
-          </div>
-        </sc-for>
-        <button onClick="{{ addAccount }}" style="margin-top:8px;border:none;background:transparent;color:#7A5941;font-size:11.5px;font-weight:600;text-decoration:underline;padding:0">{{ t.addAccount }}</button>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:18px">
+        <span style="width:7px;height:7px;border-radius:50%;background:#66715A;display:inline-block;flex:none"></span>
+        <span style="font-size:12.5px;font-weight:600;color:#3A261D">{{ t.linkedToLabel }} {{ householdPartnerNameDisplay }}</span>
       </div>
     </sc-if>
 
@@ -270,7 +254,7 @@
     <sc-if value="{{ hasOverviewActivity }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;gap:20px;margin-bottom:20px;align-items:stretch">
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.incomeVsSpending }}</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ currentMonthFullName }}: {{ t.incomeVsSpendingSuffix }}</div>
         <div style="display:flex;gap:44px;align-items:flex-end;justify-content:center;height:150px">
           <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:150px;gap:6px">
             <div style="font-size:12.5px;font-weight:700;color:#3A261D">€ {{ incomeTotalAllStr }}</div>
@@ -475,6 +459,7 @@
           <div class="income-grid head">
             <span>{{ t.colNextCharge }}</span>
             <span>{{ t.colDescription }}</span>
+            <span></span>
             <span>{{ t.colCategory }}</span>
             <span class="col-amt">{{ t.colTotal }}</span>
             <span>{{ t.colStatus }}</span>
@@ -493,10 +478,14 @@
                 <input type="text" value="{{ inc.source }}" onChange="{{ inc.setEditSource }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
               </sc-if>
 
+              <span></span>
+
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
-                <sc-if value="{{ inc.categoryLabel }}" hint-placeholder-val="{{ false }}">
-                  <span class="chip" style="color:#F6F1E7;background:{{ inc.categoryColor }};justify-self:start">{{ inc.categoryLabel }}</span>
-                </sc-if>
+                <div>
+                  <sc-if value="{{ inc.categoryLabel }}" hint-placeholder-val="{{ false }}">
+                    <span class="chip" style="color:#F6F1E7;background:{{ inc.categoryColor }};justify-self:stretch;width:100%">{{ inc.categoryLabel }}</span>
+                  </sc-if>
+                </div>
               </sc-if>
               <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
                 <select value="{{ inc.category }}" onChange="{{ inc.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
@@ -514,7 +503,7 @@
                 <input type="text" inputmode="decimal" value="{{ inc.amountStr }}" onChange="{{ inc.setEditAmount }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right;box-sizing:border-box">
               </sc-if>
 
-              <span onClick="{{ inc.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};justify-self:start">{{ inc.jointLabel }}</span>
+              <span onClick="{{ inc.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};justify-self:stretch;width:100%">{{ inc.jointLabel }}</span>
 
               <div class="col-actions">
                 <button onClick="{{ inc.toggleEdit }}" style="border:none;background:transparent;color:#634031;font-size:11px;text-decoration:underline">{{ inc.editButtonLabel }}</button>
@@ -537,6 +526,7 @@
           <div class="income-grid head">
             <span>{{ t.colNextCharge }}</span>
             <span>{{ t.colDescription }}</span>
+            <span>{{ t.colFrequency }}</span>
             <span>{{ t.colCategory }}</span>
             <span class="col-amt">{{ t.colTotal }}</span>
             <span>{{ t.colStatus }}</span>
@@ -548,19 +538,28 @@
             <div style="color:#634031;font-size:11.5px">{{ ri.nextLabel }}</div>
 
             <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
-              <div style="overflow:hidden">
-                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ri.name }}</div>
-                <div style="color:#7A5941;font-size:10.5px;margin-top:1px">{{ ri.freqLabel }}</div>
-              </div>
+              <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ri.name }}</div>
             </sc-if>
             <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
               <input type="text" value="{{ ri.name }}" onChange="{{ ri.setEditName }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
             </sc-if>
 
             <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
-              <sc-if value="{{ ri.categoryLabel }}" hint-placeholder-val="{{ false }}">
-                <span class="chip" style="color:#F6F1E7;background:{{ ri.categoryColor }};justify-self:start">{{ ri.categoryLabel }}</span>
-              </sc-if>
+              <div style="color:#7A5941;font-size:11px">{{ ri.freqLabel }}</div>
+            </sc-if>
+            <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
+              <select value="{{ ri.frequency }}" onChange="{{ ri.setEditFrequency }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+                <option value="monthly">{{ t.monthlyOnDayOption }}</option>
+                <option value="every4weeks">{{ t.every4WeeksOption }}</option>
+              </select>
+            </sc-if>
+
+            <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <sc-if value="{{ ri.categoryLabel }}" hint-placeholder-val="{{ false }}">
+                  <span class="chip" style="color:#F6F1E7;background:{{ ri.categoryColor }};justify-self:stretch;width:100%">{{ ri.categoryLabel }}</span>
+                </sc-if>
+              </div>
             </sc-if>
             <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
               <select value="{{ ri.category }}" onChange="{{ ri.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
@@ -578,7 +577,7 @@
               <input type="text" inputmode="decimal" value="{{ ri.amountStr }}" onChange="{{ ri.setEditAmount }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right;box-sizing:border-box">
             </sc-if>
 
-            <span onClick="{{ ri.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ ri.jointBg }};color:{{ ri.jointColor }};justify-self:start">{{ ri.jointLabel }}</span>
+            <span onClick="{{ ri.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ ri.jointBg }};color:{{ ri.jointColor }};justify-self:stretch;width:100%">{{ ri.jointLabel }}</span>
 
             <div class="col-actions">
               <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
@@ -810,7 +809,7 @@
                 </sc-if>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ tx.note }}</span>
               </div>
-              <div class="chip" style="color:#F6F1E7;background:{{ tx.categoryColor }};justify-self:start">{{ tx.categoryLabel }}</div>
+              <div class="chip" style="color:#F6F1E7;background:{{ tx.categoryColor }};justify-self:stretch;width:100%">{{ tx.categoryLabel }}</div>
               <div class="col-amt" style="font-weight:600;color:#BC6F52">-€ {{ tx.amountStr }}</div>
               <div class="col-actions"><button onClick="{{ tx.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button></div>
             </div>
@@ -866,7 +865,7 @@
             </sc-if>
 
             <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-              <span class="chip" style="color:#F6F1E7;background:{{ r.categoryColor }};justify-self:start">{{ r.categoryLabel }}</span>
+              <span class="chip" style="color:#F6F1E7;background:{{ r.categoryColor }};justify-self:stretch;width:100%">{{ r.categoryLabel }}</span>
             </sc-if>
             <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
               <select value="{{ r.category }}" onChange="{{ r.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
@@ -878,7 +877,7 @@
             </sc-if>
 
             <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-              <span class="chip" style="color:{{ r.statusColor }};background:{{ r.statusBg }};justify-self:start">{{ r.statusLabel }}</span>
+              <span class="chip" style="color:{{ r.statusColor }};background:{{ r.statusBg }};justify-self:stretch;width:100%">{{ r.statusLabel }}</span>
             </sc-if>
             <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1026,6 +1025,9 @@
               <div onClick="{{ sh.toggle }}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer">
                 <span style="font-size:12.5px;font-weight:600;flex:1">{{ sh.label }}</span>
                 <span style="font-size:12.5px;font-variant-numeric:tabular-nums">€ {{ sh.totalStr }}</span>
+                <sc-if value="{{ sh.showMoveToSolo }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ sh.moveToSolo }}" title="{{ t.moveToSoloTooltip }}" style="border:1px solid rgba(99,64,49,.25);background:transparent;color:#634031;font-size:10px;font-weight:600;border-radius:6px;padding:3px 8px">{{ t.moveToSoloBtn }}</button>
+                </sc-if>
                 <button onClick="{{ sh.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px">✕</button>
               </div>
               <sc-if value="{{ sh.expanded }}" hint-placeholder-val="{{ false }}">
@@ -1215,13 +1217,25 @@
         </div>
       </sc-if>
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px">{{ t.totalMonthlyBudgetHeader }}</div>
-        <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap">
-          <div style="display:flex;align-items:baseline;gap:2px;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums">
-            <span>€</span>
-            <input type="text" inputmode="decimal" value="{{ budgetMonthly }}" onChange="{{ setBudget }}" style="width:100px;border:none;background:transparent;outline:none;font:inherit;color:inherit;padding:0">
-          </div>
-          <div style="font-size:12px;color:#634031">€ {{ plannerAllocatedStr }} {{ t.allocatedIncl }} <span style="color:{{ plannerUnallocatedColor }};font-weight:600">€ {{ plannerUnallocatedStr }} {{ plannerUnallocatedLabel }}</span></div>
+        <div style="font-size:12px;color:#634031;margin-bottom:8px;font-weight:600">{{ t.totalMonthlyBudgetHeader }}</div>
+        <div style="display:flex;align-items:baseline;gap:2px;font-size:32px;font-weight:700;font-variant-numeric:tabular-nums;color:#3A261D">
+          <span>€</span>
+          <input type="text" inputmode="decimal" value="{{ budgetMonthly }}" onChange="{{ setBudget }}" style="width:110px;border:none;background:transparent;outline:none;font:inherit;color:inherit;padding:0">
+        </div>
+      </div>
+
+      <div style="background:#D8C7AB;border-radius:16px;padding:18px 20px;margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;color:#3A261D;margin-bottom:10px">{{ t.autoSaveHeader }}</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <select value="{{ autoSaveGoalId }}" onChange="{{ setAutoSaveGoal }}" style="height:32px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+            <option value="">{{ t.autoSaveNoneOption }}</option>
+            <sc-for list="{{ savingsGoalOptions }}" as="asg" hint-placeholder-count="2">
+              <option value="{{ asg.id }}">{{ asg.label }}</option>
+            </sc-for>
+          </select>
+          <sc-if value="{{ hasAutoSaveGoal }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:12.5px;color:#634031">{{ t.autoSaveResultPrefix }} <b style="color:#66715A">€ {{ autoSaveAmountStr }}</b> {{ t.autoSaveResultSuffix }} <b>{{ autoSaveGoalLabel }}</b></span>
+          </sc-if>
         </div>
       </div>
 
@@ -1738,33 +1752,9 @@
         </div>
       </sc-if>
 
-      <div style="background:#5A3B2D;border-radius:16px;padding:20px 22px;margin-bottom:20px;max-width:460px;color:#F6F1E7">
+      <div style="background:#5A3B2D;border-radius:16px;padding:20px 22px;max-width:460px;color:#F6F1E7">
         <div style="font-size:12.5px;color:#C7B49A;margin-bottom:4px">{{ t.calcSurplusLabel }}</div>
         <div style="font-size:32px;font-weight:700">€ {{ calcSurplusStr }}</div>
-        <div style="font-size:11px;color:#C7B49A;margin-top:6px">{{ t.calcSurplusPlannerNote }}</div>
-      </div>
-
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px">{{ t.calcAllocateHeader }}</div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;max-width:640px">
-        <sc-for list="{{ calcAllocationRows }}" as="ar" hint-placeholder-count="4">
-          <div style="display:flex;align-items:center;gap:10px;background:#EEE6D8;border-radius:10px;padding:10px 14px">
-            <span style="width:10px;height:10px;border-radius:50%;background:{{ ar.color }};display:inline-block;flex:none"></span>
-            <span style="font-size:13px;font-weight:600;flex:1">{{ ar.label }}</span>
-            <button onClick="{{ ar.addFifty }}" style="border:1px solid #63403155;border-radius:7px;padding:4px 9px;font-size:11.5px;font-weight:600;background:transparent;color:#634031">+ 50</button>
-            <div style="display:flex;align-items:baseline;gap:2px;font-size:13px">
-              <span>€</span>
-              <input type="text" inputmode="decimal" value="{{ ar.value }}" onChange="{{ ar.setValue }}" placeholder="0" style="width:64px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0">
-            </div>
-          </div>
-        </sc-for>
-        <sc-if value="{{ noCalcAllocationRows }}" hint-placeholder-val="{{ false }}">
-          <div style="font-size:12px;color:#7A5941">{{ t.calcNoCategoriesText }}</div>
-        </sc-if>
-      </div>
-
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <button onClick="{{ applyCalcToPlanner }}" disabled="{{ calcApplyDisabled }}" style="border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;background:#5A3B2D;color:#F6F1E7">{{ t.calcApplyBtn }}</button>
-        <div style="font-size:12px;color:{{ calcRemainingColor }}">{{ calcRemainingText }}</div>
       </div>
     </sc-if>
 
@@ -1872,19 +1862,19 @@ const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 // 3. Paste your project URL + anon key below (Project Settings -> API).
 const TRANSLATIONS = {
   en: { solo: 'Solo', shared: 'Shared', navOverview: 'Overview', navIncome: 'Income', navSpending: 'Spending', navSavings: 'Savings', navPlanner: 'Planner', navQuit: 'Quit & Save', loggedInAs: 'Logged in as', settings: 'Settings', signOut: 'Sign out', language: 'Language', done: 'Done', pageOverview: 'Overview', pageIncome: 'Income', pageSpending: 'Spending', pageSavings: 'Savings', pagePlanner: 'Planner', pageQuit: 'Quit & Save',
-    accounts: 'Accounts', combined: 'Combined:', addAccount: '+ Add account', balanceLabel: 'Balance', safeToSpendPerDay: 'Safe to spend per day', daysLeftSuffix: 'days left ·', budgetColon: 'budget', savingsSpendingEmptyText: 'No history yet. Once you log a month of activity, your savings and spending trend shows up here.', resetDataBtn: 'Clear all data', spendingSuggestions: ['Groceries', 'Going out', 'Subscriptions', 'Transport', 'Other'], fixedCostSuggestions: ['Rent', 'Utilities', 'Healthcare', 'Service costs', 'Subscriptions', 'Debt repayment', 'Other'], savingsSuggestions: ['Emergency fund', 'Travel', 'Laptop', 'Car', 'Wedding'], savingsGoalLabel: 'Savings goal:', removeBtn: '− Remove', addPlus: '+ Add', incomeVsSpending: 'This month: income vs. spending', received: 'Received €', expected: 'Expected €', spentLabel: 'Spent €', upcoming: 'Upcoming €', savingsSpendingChart: 'Savings & spending — last 4 months', spendingByCategory: 'Spending by category —', biggestExpense: 'Biggest expense:', recurringPayments: 'Recurring payments', next: 'next', storePlaceholder: 'Store', amountPlaceholder: 'Amount', addTransactionHeader: 'Add a transaction', addCategory: 'Add category', yourCategories: 'Your categories', changeColor: 'Change color', newCategoryNamePlaceholder: 'New category name', addShort: 'Add', categoriesLabel: 'Categories:', amountLabel: 'Amount:', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Total: €', noTransactions: 'No transactions in this category yet.', fixedCostCategoriesHeader: 'Fixed cost categories', whichBillPlaceholder: 'Description', amountEuroPlaceholder: 'Amount €', dayOfMonth: 'Day of month:', firstChargeDate: 'First charge date:', addFixedCost: '+ Add fixed cost', autoAddedTooltip: 'Automatically added from Recurring payments', addIncomeHeader: 'Add income', thisMonthColon: 'This month: €', sourcePlaceholder: 'Source', incomeThisMonthHeader: 'Income this month', noIncomeText: 'No income logged yet this month.', recurringIncomeHeader: 'Recurring income', whichIncomePlaceholder: 'Which income?', monthlyOnDayOption: 'Monthly, on day...', every4WeeksOption: 'Every 4 weeks, starting...', firstDateLabel: 'First date:', addIncomeSourceBtn: '+ Add income source', dragGoalHint: "Drag a goal by its handle to reorder. Set a monthly amount to see how long each goal will take.", savingsCategoriesHeader: 'Savings categories', noCategoryOption: 'No category', ofEuro: 'of €', scheduleSavingsBtn: 'Schedule savings', saveEuroLabel: 'Save €', dayLabelShort: 'Day:', addNewGoalHeader: 'Add a new goal', goalNamePlaceholder: 'Goal name', targetEuroPlaceholder: 'Target €', addGoalBtn: '+ Add goal', totalMonthlyBudgetHeader: 'Total monthly budget', allocatedIncl: 'allocated (incl. savings) ·', perMonthScheduled: '/ month scheduled', categoryBudgetsHeader: 'Category budgets', quitIntro: "Pick a spending category you're cutting back on. Every day with no spending logged in it adds your usual daily spend to the pot below.", noSpendingIn: 'No spending in', sinceWord: 'since', savedSoFar: 'saved so far', perDayAvoided: '/ day avoided', noPastSpending: "No past spending found in this category yet, so there's nothing to compare against.", newGoalHeader: 'New goal', pickCategoryToCutBack: 'Pick a category to cut back on...', goalNameQuitPlaceholder: 'Goal name (e.g. Quit smoking)', startDateColon: 'Start date:', startGoalBtn: 'Start goal', suggestionsLabel: 'Suggestions:', calcFixedFromHistoryHeader: 'From logged history', noCategoryHint: 'No category yet — add one with the + button above', every3MonthsOption: 'Every 3 months, starting...', every6MonthsOption: 'Every 6 months, starting...', yearlyOption: 'Yearly, starting...', flexibleOption: 'Flexible (varying dates)...', lastChargeDate: 'Last charge date:', nextChargeDate: 'Next charge date:', editBtn: 'Edit', doneEditBtn: 'Done', incomeCategoriesHeader: 'Income categories', incomeCategorySuggestions: ['Salary', 'Allowance', 'Bonus', 'Freelance', 'Other'], historyMonthsPlaceholder: 'Months', allLoggedMonthsOption: 'All logged months', calcAutoFixedRowLabel: 'Automatic (edit in Solo)', totalSavedLabel: 'Total saved', calcSurplusPlannerNote: 'Variable expenses are now based on your Planner budgets.', currentIncomeMinusExpenses: 'Current income minus current expenses', colNextCharge: 'Next charge', colDescription: 'Description', colFrequency: 'Frequency', colCategory: 'Category', colStatus: 'Status', colTotal: 'Total', colMyShare: 'My share', colPartnerShare: 'Partner share', colActions: 'Actions', addToFixedFromLog: '+ Add to Vaste lasten', statusPrivate: 'Private', linkedToLabel: 'Linked with'
+    accounts: 'Accounts', combined: 'Combined:', addAccount: '+ Add account', balanceLabel: 'Balance', safeToSpendPerDay: 'Safe to spend per day', daysLeftSuffix: 'days left ·', budgetColon: 'budget', savingsSpendingEmptyText: 'No history yet. Once you log a month of activity, your savings and spending trend shows up here.', resetDataBtn: 'Clear all data', spendingSuggestions: ['Groceries', 'Going out', 'Subscriptions', 'Transport', 'Other'], fixedCostSuggestions: ['Rent', 'Utilities', 'Healthcare', 'Service costs', 'Subscriptions', 'Debt repayment', 'Other'], savingsSuggestions: ['Emergency fund', 'Travel', 'Laptop', 'Car', 'Wedding'], savingsGoalLabel: 'Savings goal:', removeBtn: '− Remove', addPlus: '+ Add', incomeVsSpending: 'This month: income vs. spending', received: 'Received €', expected: 'Expected €', spentLabel: 'Spent €', upcoming: 'Upcoming €', savingsSpendingChart: 'Savings & spending — last 4 months', spendingByCategory: 'Spending by category —', biggestExpense: 'Biggest expense:', recurringPayments: 'Recurring payments', next: 'next', storePlaceholder: 'Store', amountPlaceholder: 'Amount', addTransactionHeader: 'Add a transaction', addCategory: 'Add category', yourCategories: 'Your categories', changeColor: 'Change color', newCategoryNamePlaceholder: 'New category name', addShort: 'Add', categoriesLabel: 'Categories:', amountLabel: 'Amount:', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Total: €', noTransactions: 'No transactions in this category yet.', fixedCostCategoriesHeader: 'Fixed cost categories', whichBillPlaceholder: 'Description', amountEuroPlaceholder: 'Amount €', dayOfMonth: 'Day of month:', firstChargeDate: 'First charge date:', addFixedCost: '+ Add fixed cost', autoAddedTooltip: 'Automatically added from Recurring payments', addIncomeHeader: 'Add income', thisMonthColon: 'This month: €', sourcePlaceholder: 'Source', incomeThisMonthHeader: 'Income this month', noIncomeText: 'No income logged yet this month.', recurringIncomeHeader: 'Recurring income', whichIncomePlaceholder: 'Which income?', monthlyOnDayOption: 'Monthly, on day...', every4WeeksOption: 'Every 4 weeks, starting...', firstDateLabel: 'First date:', addIncomeSourceBtn: '+ Add income source', dragGoalHint: "Drag a goal by its handle to reorder. Set a monthly amount to see how long each goal will take.", savingsCategoriesHeader: 'Savings categories', noCategoryOption: 'No category', ofEuro: 'of €', scheduleSavingsBtn: 'Schedule savings', saveEuroLabel: 'Save €', dayLabelShort: 'Day:', addNewGoalHeader: 'Add a new goal', goalNamePlaceholder: 'Goal name', targetEuroPlaceholder: 'Target €', addGoalBtn: '+ Add goal', totalMonthlyBudgetHeader: 'Total monthly budget', allocatedIncl: 'allocated (incl. savings) ·', perMonthScheduled: '/ month scheduled', categoryBudgetsHeader: 'Category budgets', quitIntro: "Pick a spending category you're cutting back on. Every day with no spending logged in it adds your usual daily spend to the pot below.", noSpendingIn: 'No spending in', sinceWord: 'since', savedSoFar: 'saved so far', perDayAvoided: '/ day avoided', noPastSpending: "No past spending found in this category yet, so there's nothing to compare against.", newGoalHeader: 'New goal', pickCategoryToCutBack: 'Pick a category to cut back on...', goalNameQuitPlaceholder: 'Goal name (e.g. Quit smoking)', startDateColon: 'Start date:', startGoalBtn: 'Start goal', suggestionsLabel: 'Suggestions:', calcFixedFromHistoryHeader: 'From logged history', noCategoryHint: 'No category yet — add one with the + button above', every3MonthsOption: 'Every 3 months, starting...', every6MonthsOption: 'Every 6 months, starting...', yearlyOption: 'Yearly, starting...', flexibleOption: 'Flexible (varying dates)...', lastChargeDate: 'Last charge date:', nextChargeDate: 'Next charge date:', editBtn: 'Edit', doneEditBtn: 'Done', incomeCategoriesHeader: 'Income categories', incomeCategorySuggestions: ['Salary', 'Allowance', 'Bonus', 'Freelance', 'Other'], historyMonthsPlaceholder: 'Months', allLoggedMonthsOption: 'All logged months', calcAutoFixedRowLabel: 'Automatic (edit in Solo)', totalSavedLabel: 'Total saved', calcSurplusPlannerNote: 'Variable expenses are now based on your Planner budgets.', currentIncomeMinusExpenses: 'Current income minus current expenses', colNextCharge: 'Next charge', colDescription: 'Description', colFrequency: 'Frequency', colCategory: 'Category', colStatus: 'Status', colTotal: 'Total', colMyShare: 'My share', colPartnerShare: 'Partner share', colActions: 'Actions', addToFixedFromLog: '+ Add to Vaste lasten', statusPrivate: 'Private', linkedToLabel: 'Linked with', autoSaveHeader: 'Automatic savings', autoSaveNoneOption: 'No automatic savings', autoSaveResultPrefix: 'This month, about', autoSaveResultSuffix: 'automatically goes to', incomeVsSpendingSuffix: 'income vs. spending', moveToSoloBtn: '\u2192 Solo', moveToSoloTooltip: 'Move this month to Solo'
   },
   nl: { solo: 'Solo', shared: 'Gedeeld', navOverview: 'Overzicht', navIncome: 'Inkomen', navSpending: 'Uitgaven', navSavings: 'Sparen', navPlanner: 'Planner', navQuit: 'Stoppen & besparen', loggedInAs: 'Ingelogd als', settings: 'Instellingen', signOut: 'Uitloggen', language: 'Taal', done: 'Klaar', pageOverview: 'Overzicht', pageIncome: 'Inkomen', pageSpending: 'Uitgaven', pageSavings: 'Sparen', pagePlanner: 'Planner', pageQuit: 'Stoppen & besparen',
-    accounts: 'Rekeningen', combined: 'Totaal:', addAccount: '+ Rekening toevoegen', balanceLabel: 'Saldo', safeToSpendPerDay: 'Veilig te besteden per dag', daysLeftSuffix: 'dagen te gaan ·', budgetColon: 'budget', savingsSpendingEmptyText: 'Nog geen geschiedenis. Zodra je een maand actief bent, zie je hier je trend in sparen en uitgaven.', resetDataBtn: 'Alle gegevens wissen', spendingSuggestions: ['Boodschappen', 'Uitgaan', 'Abonnementen', 'Vervoer', 'Overig'], fixedCostSuggestions: ['Huur', 'Nutsvoorzieningen', 'Zorgverzekering', 'Servicekosten', 'Abonnementen', 'Schuldaflossing', 'Overig'], savingsSuggestions: ['Noodfonds', 'Reizen', 'Laptop', 'Auto', 'Bruiloft'], savingsGoalLabel: 'Spaardoel:', removeBtn: '− Verwijderen', addPlus: '+ Toevoegen', incomeVsSpending: 'Deze maand: inkomen vs. uitgaven', received: 'Ontvangen €', expected: 'Verwacht €', spentLabel: 'Uitgegeven €', upcoming: 'Aankomend €', savingsSpendingChart: 'Sparen & uitgaven — laatste 4 maanden', spendingByCategory: 'Uitgaven per categorie —', biggestExpense: 'Grootste uitgave:', recurringPayments: 'Vaste lasten', next: 'volgende', storePlaceholder: 'Winkel', amountPlaceholder: 'Bedrag', addTransactionHeader: 'Transactie toevoegen', addCategory: 'Categorie toevoegen', yourCategories: 'Jouw categorieën', changeColor: 'Kleur wijzigen', newCategoryNamePlaceholder: 'Nieuwe categorienaam', addShort: 'Toevoegen', categoriesLabel: 'Categorieën:', amountLabel: 'Bedrag:', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Totaal: €', noTransactions: 'Nog geen transacties in deze categorie.', fixedCostCategoriesHeader: 'Vaste lastencategorieën', whichBillPlaceholder: 'Omschrijving', amountEuroPlaceholder: 'Bedrag €', dayOfMonth: 'Dag van de maand:', firstChargeDate: 'Eerste afschrijfdatum:', addFixedCost: '+ Vaste last toevoegen', autoAddedTooltip: 'Automatisch toegevoegd vanuit Vaste lasten', addIncomeHeader: 'Inkomen toevoegen', thisMonthColon: 'Deze maand: €', sourcePlaceholder: 'Bron', incomeThisMonthHeader: 'Inkomen deze maand', noIncomeText: 'Nog geen inkomen geregistreerd deze maand.', recurringIncomeHeader: 'Vast inkomen', whichIncomePlaceholder: 'Welk inkomen?', monthlyOnDayOption: 'Maandelijks, op dag...', every4WeeksOption: 'Elke 4 weken, vanaf...', firstDateLabel: 'Eerste datum:', addIncomeSourceBtn: '+ Inkomstenbron toevoegen', dragGoalHint: 'Sleep een doel aan de handgreep om te herordenen. Stel een maandelijks bedrag in om te zien hoe lang elk doel duurt.', savingsCategoriesHeader: 'Spaarcategorieën', noCategoryOption: 'Geen categorie', ofEuro: 'van €', scheduleSavingsBtn: 'Sparen plannen', saveEuroLabel: 'Spaar €', dayLabelShort: 'Dag:', addNewGoalHeader: 'Nieuw doel toevoegen', goalNamePlaceholder: 'Naam van doel', targetEuroPlaceholder: 'Doelbedrag €', addGoalBtn: '+ Doel toevoegen', totalMonthlyBudgetHeader: 'Totaal maandbudget', allocatedIncl: 'toegewezen (incl. sparen) ·', perMonthScheduled: '/ maand gepland', categoryBudgetsHeader: 'Categoriebudgetten', quitIntro: 'Kies een uitgavencategorie waarop je minder wilt uitgeven. Elke dag zonder uitgaven daarin voegt je gebruikelijke dagelijkse bedrag toe aan de pot hieronder.', noSpendingIn: 'Geen uitgaven in', sinceWord: 'sinds', savedSoFar: 'tot nu toe bespaard', perDayAvoided: '/ dag vermeden', noPastSpending: 'Nog geen eerdere uitgaven gevonden in deze categorie, dus er is niets om mee te vergelijken.', newGoalHeader: 'Nieuw doel', pickCategoryToCutBack: 'Kies een categorie om op te besparen...', goalNameQuitPlaceholder: 'Naam van doel (bv. Stoppen met roken)', startDateColon: 'Startdatum:', startGoalBtn: 'Doel starten', suggestionsLabel: 'Suggesties:', calcFixedFromHistoryHeader: 'Uit gelogde geschiedenis', noCategoryHint: 'Nog geen categorie — maak er een aan met de + knop hierboven', every3MonthsOption: 'Elke 3 maanden, vanaf...', every6MonthsOption: 'Elke 6 maanden, vanaf...', yearlyOption: 'Jaarlijks, vanaf...', flexibleOption: 'Aanpasbaar (wisselende data)...', lastChargeDate: 'Laatste afschrijfdatum:', nextChargeDate: 'Eerstvolgende afschrijfdatum:', editBtn: 'Bewerken', doneEditBtn: 'Gereed', incomeCategoriesHeader: 'Inkomstencategorieën', incomeCategorySuggestions: ['Salaris', 'Toeslag', 'Bonus', 'Freelance', 'Overig'], historyMonthsPlaceholder: 'Maanden', allLoggedMonthsOption: 'Alle gelogde maanden', calcAutoFixedRowLabel: 'Automatisch (bewerk in Solo)', totalSavedLabel: 'Totaal gespaard', calcSurplusPlannerNote: 'Huidig inkomen min huidige uitgaven.', currentIncomeMinusExpenses: 'Huidige inkomsten min huidige uitgaven', colNextCharge: 'Volgende afschrijving op', colDescription: 'Omschrijving', colFrequency: 'Frequentie', colCategory: 'Categorie', colStatus: 'Status', colTotal: 'Totaal', colMyShare: 'Mijn aandeel', colPartnerShare: 'Aandeel partner', colActions: 'Acties', addToFixedFromLog: '+ Toevoegen aan Vaste lasten', statusPrivate: 'Privé', linkedToLabel: 'Gekoppeld aan'
+    accounts: 'Rekeningen', combined: 'Totaal:', addAccount: '+ Rekening toevoegen', balanceLabel: 'Saldo', safeToSpendPerDay: 'Veilig te besteden per dag', daysLeftSuffix: 'dagen te gaan ·', budgetColon: 'budget', savingsSpendingEmptyText: 'Nog geen geschiedenis. Zodra je een maand actief bent, zie je hier je trend in sparen en uitgaven.', resetDataBtn: 'Alle gegevens wissen', spendingSuggestions: ['Boodschappen', 'Uitgaan', 'Abonnementen', 'Vervoer', 'Overig'], fixedCostSuggestions: ['Huur', 'Nutsvoorzieningen', 'Zorgverzekering', 'Servicekosten', 'Abonnementen', 'Schuldaflossing', 'Overig'], savingsSuggestions: ['Noodfonds', 'Reizen', 'Laptop', 'Auto', 'Bruiloft'], savingsGoalLabel: 'Spaardoel:', removeBtn: '− Verwijderen', addPlus: '+ Toevoegen', incomeVsSpending: 'Deze maand: inkomen vs. uitgaven', received: 'Ontvangen €', expected: 'Verwacht €', spentLabel: 'Uitgegeven €', upcoming: 'Aankomend €', savingsSpendingChart: 'Sparen & uitgaven — laatste 4 maanden', spendingByCategory: 'Uitgaven per categorie —', biggestExpense: 'Grootste uitgave:', recurringPayments: 'Vaste lasten', next: 'volgende', storePlaceholder: 'Winkel', amountPlaceholder: 'Bedrag', addTransactionHeader: 'Transactie toevoegen', addCategory: 'Categorie toevoegen', yourCategories: 'Jouw categorieën', changeColor: 'Kleur wijzigen', newCategoryNamePlaceholder: 'Nieuwe categorienaam', addShort: 'Toevoegen', categoriesLabel: 'Categorieën:', amountLabel: 'Bedrag:', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Totaal: €', noTransactions: 'Nog geen transacties in deze categorie.', fixedCostCategoriesHeader: 'Vaste lastencategorieën', whichBillPlaceholder: 'Omschrijving', amountEuroPlaceholder: 'Bedrag €', dayOfMonth: 'Dag van de maand:', firstChargeDate: 'Eerste afschrijfdatum:', addFixedCost: '+ Vaste last toevoegen', autoAddedTooltip: 'Automatisch toegevoegd vanuit Vaste lasten', addIncomeHeader: 'Inkomen toevoegen', thisMonthColon: 'Deze maand: €', sourcePlaceholder: 'Bron', incomeThisMonthHeader: 'Inkomen deze maand', noIncomeText: 'Nog geen inkomen geregistreerd deze maand.', recurringIncomeHeader: 'Vast inkomen', whichIncomePlaceholder: 'Welk inkomen?', monthlyOnDayOption: 'Maandelijks, op dag...', every4WeeksOption: 'Elke 4 weken, vanaf...', firstDateLabel: 'Eerste datum:', addIncomeSourceBtn: '+ Inkomstenbron toevoegen', dragGoalHint: 'Sleep een doel aan de handgreep om te herordenen. Stel een maandelijks bedrag in om te zien hoe lang elk doel duurt.', savingsCategoriesHeader: 'Spaarcategorieën', noCategoryOption: 'Geen categorie', ofEuro: 'van €', scheduleSavingsBtn: 'Sparen plannen', saveEuroLabel: 'Spaar €', dayLabelShort: 'Dag:', addNewGoalHeader: 'Nieuw doel toevoegen', goalNamePlaceholder: 'Naam van doel', targetEuroPlaceholder: 'Doelbedrag €', addGoalBtn: '+ Doel toevoegen', totalMonthlyBudgetHeader: 'Totaal maandbudget', allocatedIncl: 'toegewezen (incl. sparen) ·', perMonthScheduled: '/ maand gepland', categoryBudgetsHeader: 'Categoriebudgetten', quitIntro: 'Kies een uitgavencategorie waarop je minder wilt uitgeven. Elke dag zonder uitgaven daarin voegt je gebruikelijke dagelijkse bedrag toe aan de pot hieronder.', noSpendingIn: 'Geen uitgaven in', sinceWord: 'sinds', savedSoFar: 'tot nu toe bespaard', perDayAvoided: '/ dag vermeden', noPastSpending: 'Nog geen eerdere uitgaven gevonden in deze categorie, dus er is niets om mee te vergelijken.', newGoalHeader: 'Nieuw doel', pickCategoryToCutBack: 'Kies een categorie om op te besparen...', goalNameQuitPlaceholder: 'Naam van doel (bv. Stoppen met roken)', startDateColon: 'Startdatum:', startGoalBtn: 'Doel starten', suggestionsLabel: 'Suggesties:', calcFixedFromHistoryHeader: 'Uit gelogde geschiedenis', noCategoryHint: 'Nog geen categorie — maak er een aan met de + knop hierboven', every3MonthsOption: 'Elke 3 maanden, vanaf...', every6MonthsOption: 'Elke 6 maanden, vanaf...', yearlyOption: 'Jaarlijks, vanaf...', flexibleOption: 'Aanpasbaar (wisselende data)...', lastChargeDate: 'Laatste afschrijfdatum:', nextChargeDate: 'Eerstvolgende afschrijfdatum:', editBtn: 'Bewerken', doneEditBtn: 'Gereed', incomeCategoriesHeader: 'Inkomstencategorieën', incomeCategorySuggestions: ['Salaris', 'Toeslag', 'Bonus', 'Freelance', 'Overig'], historyMonthsPlaceholder: 'Maanden', allLoggedMonthsOption: 'Alle gelogde maanden', calcAutoFixedRowLabel: 'Automatisch (bewerk in Solo)', totalSavedLabel: 'Totaal gespaard', calcSurplusPlannerNote: 'Huidig inkomen min huidige uitgaven.', currentIncomeMinusExpenses: 'Huidige inkomsten min huidige uitgaven', colNextCharge: 'Volgende afschrijving op', colDescription: 'Omschrijving', colFrequency: 'Frequentie', colCategory: 'Categorie', colStatus: 'Status', colTotal: 'Totaal', colMyShare: 'Mijn aandeel', colPartnerShare: 'Aandeel partner', colActions: 'Acties', addToFixedFromLog: '+ Toevoegen aan Vaste lasten', statusPrivate: 'Privé', linkedToLabel: 'Gekoppeld aan', autoSaveHeader: 'Automatisch sparen', autoSaveNoneOption: 'Geen automatisch sparen', autoSaveResultPrefix: 'Deze maand gaat er ongeveer', autoSaveResultSuffix: 'automatisch naar', incomeVsSpendingSuffix: 'inkomen vs. uitgaven', moveToSoloBtn: '\u2192 Solo', moveToSoloTooltip: 'Verplaats deze maand naar Solo'
   },
   de: { solo: 'Solo', shared: 'Gemeinsam', navOverview: 'Übersicht', navIncome: 'Einkommen', navSpending: 'Ausgaben', navSavings: 'Sparen', navPlanner: 'Planer', navQuit: 'Aufhören & Sparen', loggedInAs: 'Angemeldet als', settings: 'Einstellungen', signOut: 'Abmelden', language: 'Sprache', done: 'Fertig', pageOverview: 'Übersicht', pageIncome: 'Einkommen', pageSpending: 'Ausgaben', pageSavings: 'Sparen', pagePlanner: 'Planer', pageQuit: 'Aufhören & Sparen',
-    accounts: 'Konten', combined: 'Gesamt:', addAccount: '+ Konto hinzufügen', balanceLabel: 'Kontostand', safeToSpendPerDay: 'Sicher ausgebbar pro Tag', daysLeftSuffix: 'Tage übrig ·', budgetColon: 'Budget', savingsSpendingEmptyText: 'Noch keine Historie. Sobald ein Monat Aktivität vorliegt, siehst du hier deinen Spar- und Ausgabenverlauf.', resetDataBtn: 'Alle Daten löschen', spendingSuggestions: ['Lebensmittel', 'Ausgehen', 'Abonnements', 'Transport', 'Sonstiges'], fixedCostSuggestions: ['Miete', 'Nebenkosten', 'Krankenversicherung', 'Servicekosten', 'Abonnements', 'Schuldentilgung', 'Sonstiges'], savingsSuggestions: ['Notfallfonds', 'Reisen', 'Laptop', 'Auto', 'Hochzeit'], savingsGoalLabel: 'Sparziel:', removeBtn: '− Entfernen', addPlus: '+ Hinzufügen', incomeVsSpending: 'Diesen Monat: Einkommen vs. Ausgaben', received: 'Erhalten €', expected: 'Erwartet €', spentLabel: 'Ausgegeben €', upcoming: 'Anstehend €', savingsSpendingChart: 'Sparen & Ausgaben — letzte 4 Monate', spendingByCategory: 'Ausgaben nach Kategorie —', biggestExpense: 'Größte Ausgabe:', recurringPayments: 'Wiederkehrende Zahlungen', next: 'nächste', storePlaceholder: 'Geschäft', amountPlaceholder: 'Betrag', addTransactionHeader: 'Transaktion hinzufügen', addCategory: 'Kategorie hinzufügen', yourCategories: 'Deine Kategorien', changeColor: 'Farbe ändern', newCategoryNamePlaceholder: 'Neuer Kategoriename', addShort: 'Hinzufügen', categoriesLabel: 'Kategorien:', amountLabel: 'Betrag:', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Gesamt: €', noTransactions: 'Noch keine Transaktionen in dieser Kategorie.', fixedCostCategoriesHeader: 'Kategorien für feste Kosten', whichBillPlaceholder: 'Beschreibung', amountEuroPlaceholder: 'Betrag €', dayOfMonth: 'Tag des Monats:', firstChargeDate: 'Erstes Abbuchungsdatum:', addFixedCost: '+ Feste Kosten hinzufügen', autoAddedTooltip: 'Automatisch aus Wiederkehrende Zahlungen hinzugefügt', addIncomeHeader: 'Einkommen hinzufügen', thisMonthColon: 'Diesen Monat: €', sourcePlaceholder: 'Quelle', incomeThisMonthHeader: 'Einkommen diesen Monat', noIncomeText: 'Noch kein Einkommen für diesen Monat erfasst.', recurringIncomeHeader: 'Wiederkehrendes Einkommen', whichIncomePlaceholder: 'Welches Einkommen?', monthlyOnDayOption: 'Monatlich, am Tag...', every4WeeksOption: 'Alle 4 Wochen, ab...', firstDateLabel: 'Erstes Datum:', addIncomeSourceBtn: '+ Einkommensquelle hinzufügen', dragGoalHint: 'Ziehe ein Ziel am Griff, um die Reihenfolge zu ändern. Lege einen monatlichen Betrag fest, um zu sehen, wie lange jedes Ziel dauert.', savingsCategoriesHeader: 'Sparkategorien', noCategoryOption: 'Keine Kategorie', ofEuro: 'von €', scheduleSavingsBtn: 'Sparen planen', saveEuroLabel: 'Sparen €', dayLabelShort: 'Tag:', addNewGoalHeader: 'Neues Ziel hinzufügen', goalNamePlaceholder: 'Zielname', targetEuroPlaceholder: 'Zielbetrag €', addGoalBtn: '+ Ziel hinzufügen', totalMonthlyBudgetHeader: 'Gesamtes Monatsbudget', allocatedIncl: 'zugewiesen (inkl. Sparen) ·', perMonthScheduled: '/ Monat geplant', categoryBudgetsHeader: 'Kategoriebudgets', quitIntro: 'Wähle eine Ausgabenkategorie, bei der du sparen möchtest. Jeder Tag ohne Ausgaben darin fügt deinen üblichen Tagesbetrag zum Topf unten hinzu.', noSpendingIn: 'Keine Ausgaben in', sinceWord: 'seit', savedSoFar: 'bisher gespart', perDayAvoided: '/ Tag vermieden', noPastSpending: 'In dieser Kategorie wurden noch keine früheren Ausgaben gefunden, daher gibt es nichts zum Vergleich.', newGoalHeader: 'Neues Ziel', pickCategoryToCutBack: 'Wähle eine Kategorie, bei der du sparen möchtest...', goalNameQuitPlaceholder: 'Zielname (z. B. Rauchen aufgeben)', startDateColon: 'Startdatum:', startGoalBtn: 'Ziel starten', suggestionsLabel: 'Vorschläge:', calcFixedFromHistoryHeader: 'Aus erfasster Historie', noCategoryHint: 'Noch keine Kategorie — füge eine mit dem + Button oben hinzu', every3MonthsOption: 'Alle 3 Monate, ab...', every6MonthsOption: 'Alle 6 Monate, ab...', yearlyOption: 'Jährlich, ab...', flexibleOption: 'Flexibel (wechselnde Daten)...', lastChargeDate: 'Letztes Abbuchungsdatum:', nextChargeDate: 'Nächstes Abbuchungsdatum:', editBtn: 'Bearbeiten', doneEditBtn: 'Fertig', incomeCategoriesHeader: 'Einkommenskategorien', incomeCategorySuggestions: ['Gehalt', 'Zulage', 'Bonus', 'Freiberuflich', 'Sonstiges'], historyMonthsPlaceholder: 'Monate', allLoggedMonthsOption: 'Alle erfassten Monate', calcAutoFixedRowLabel: 'Automatisch (in Solo bearbeiten)', totalSavedLabel: 'Insgesamt gespart', calcSurplusPlannerNote: 'Variable Ausgaben basieren jetzt auf deinen Planer-Budgets.', currentIncomeMinusExpenses: 'Aktuelles Einkommen minus aktuelle Ausgaben', colNextCharge: 'Nächste Abbuchung am', colDescription: 'Beschreibung', colFrequency: 'Häufigkeit', colCategory: 'Kategorie', colStatus: 'Status', colTotal: 'Gesamt', colMyShare: 'Mein Anteil', colPartnerShare: 'Anteil Partner', colActions: 'Aktionen', addToFixedFromLog: '+ Zu Festkosten hinzufügen', statusPrivate: 'Privat', linkedToLabel: 'Verknüpft mit'
+    accounts: 'Konten', combined: 'Gesamt:', addAccount: '+ Konto hinzufügen', balanceLabel: 'Kontostand', safeToSpendPerDay: 'Sicher ausgebbar pro Tag', daysLeftSuffix: 'Tage übrig ·', budgetColon: 'Budget', savingsSpendingEmptyText: 'Noch keine Historie. Sobald ein Monat Aktivität vorliegt, siehst du hier deinen Spar- und Ausgabenverlauf.', resetDataBtn: 'Alle Daten löschen', spendingSuggestions: ['Lebensmittel', 'Ausgehen', 'Abonnements', 'Transport', 'Sonstiges'], fixedCostSuggestions: ['Miete', 'Nebenkosten', 'Krankenversicherung', 'Servicekosten', 'Abonnements', 'Schuldentilgung', 'Sonstiges'], savingsSuggestions: ['Notfallfonds', 'Reisen', 'Laptop', 'Auto', 'Hochzeit'], savingsGoalLabel: 'Sparziel:', removeBtn: '− Entfernen', addPlus: '+ Hinzufügen', incomeVsSpending: 'Diesen Monat: Einkommen vs. Ausgaben', received: 'Erhalten €', expected: 'Erwartet €', spentLabel: 'Ausgegeben €', upcoming: 'Anstehend €', savingsSpendingChart: 'Sparen & Ausgaben — letzte 4 Monate', spendingByCategory: 'Ausgaben nach Kategorie —', biggestExpense: 'Größte Ausgabe:', recurringPayments: 'Wiederkehrende Zahlungen', next: 'nächste', storePlaceholder: 'Geschäft', amountPlaceholder: 'Betrag', addTransactionHeader: 'Transaktion hinzufügen', addCategory: 'Kategorie hinzufügen', yourCategories: 'Deine Kategorien', changeColor: 'Farbe ändern', newCategoryNamePlaceholder: 'Neuer Kategoriename', addShort: 'Hinzufügen', categoriesLabel: 'Kategorien:', amountLabel: 'Betrag:', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Gesamt: €', noTransactions: 'Noch keine Transaktionen in dieser Kategorie.', fixedCostCategoriesHeader: 'Kategorien für feste Kosten', whichBillPlaceholder: 'Beschreibung', amountEuroPlaceholder: 'Betrag €', dayOfMonth: 'Tag des Monats:', firstChargeDate: 'Erstes Abbuchungsdatum:', addFixedCost: '+ Feste Kosten hinzufügen', autoAddedTooltip: 'Automatisch aus Wiederkehrende Zahlungen hinzugefügt', addIncomeHeader: 'Einkommen hinzufügen', thisMonthColon: 'Diesen Monat: €', sourcePlaceholder: 'Quelle', incomeThisMonthHeader: 'Einkommen diesen Monat', noIncomeText: 'Noch kein Einkommen für diesen Monat erfasst.', recurringIncomeHeader: 'Wiederkehrendes Einkommen', whichIncomePlaceholder: 'Welches Einkommen?', monthlyOnDayOption: 'Monatlich, am Tag...', every4WeeksOption: 'Alle 4 Wochen, ab...', firstDateLabel: 'Erstes Datum:', addIncomeSourceBtn: '+ Einkommensquelle hinzufügen', dragGoalHint: 'Ziehe ein Ziel am Griff, um die Reihenfolge zu ändern. Lege einen monatlichen Betrag fest, um zu sehen, wie lange jedes Ziel dauert.', savingsCategoriesHeader: 'Sparkategorien', noCategoryOption: 'Keine Kategorie', ofEuro: 'von €', scheduleSavingsBtn: 'Sparen planen', saveEuroLabel: 'Sparen €', dayLabelShort: 'Tag:', addNewGoalHeader: 'Neues Ziel hinzufügen', goalNamePlaceholder: 'Zielname', targetEuroPlaceholder: 'Zielbetrag €', addGoalBtn: '+ Ziel hinzufügen', totalMonthlyBudgetHeader: 'Gesamtes Monatsbudget', allocatedIncl: 'zugewiesen (inkl. Sparen) ·', perMonthScheduled: '/ Monat geplant', categoryBudgetsHeader: 'Kategoriebudgets', quitIntro: 'Wähle eine Ausgabenkategorie, bei der du sparen möchtest. Jeder Tag ohne Ausgaben darin fügt deinen üblichen Tagesbetrag zum Topf unten hinzu.', noSpendingIn: 'Keine Ausgaben in', sinceWord: 'seit', savedSoFar: 'bisher gespart', perDayAvoided: '/ Tag vermieden', noPastSpending: 'In dieser Kategorie wurden noch keine früheren Ausgaben gefunden, daher gibt es nichts zum Vergleich.', newGoalHeader: 'Neues Ziel', pickCategoryToCutBack: 'Wähle eine Kategorie, bei der du sparen möchtest...', goalNameQuitPlaceholder: 'Zielname (z. B. Rauchen aufgeben)', startDateColon: 'Startdatum:', startGoalBtn: 'Ziel starten', suggestionsLabel: 'Vorschläge:', calcFixedFromHistoryHeader: 'Aus erfasster Historie', noCategoryHint: 'Noch keine Kategorie — füge eine mit dem + Button oben hinzu', every3MonthsOption: 'Alle 3 Monate, ab...', every6MonthsOption: 'Alle 6 Monate, ab...', yearlyOption: 'Jährlich, ab...', flexibleOption: 'Flexibel (wechselnde Daten)...', lastChargeDate: 'Letztes Abbuchungsdatum:', nextChargeDate: 'Nächstes Abbuchungsdatum:', editBtn: 'Bearbeiten', doneEditBtn: 'Fertig', incomeCategoriesHeader: 'Einkommenskategorien', incomeCategorySuggestions: ['Gehalt', 'Zulage', 'Bonus', 'Freiberuflich', 'Sonstiges'], historyMonthsPlaceholder: 'Monate', allLoggedMonthsOption: 'Alle erfassten Monate', calcAutoFixedRowLabel: 'Automatisch (in Solo bearbeiten)', totalSavedLabel: 'Insgesamt gespart', calcSurplusPlannerNote: 'Variable Ausgaben basieren jetzt auf deinen Planer-Budgets.', currentIncomeMinusExpenses: 'Aktuelles Einkommen minus aktuelle Ausgaben', colNextCharge: 'Nächste Abbuchung am', colDescription: 'Beschreibung', colFrequency: 'Häufigkeit', colCategory: 'Kategorie', colStatus: 'Status', colTotal: 'Gesamt', colMyShare: 'Mein Anteil', colPartnerShare: 'Anteil Partner', colActions: 'Aktionen', addToFixedFromLog: '+ Zu Festkosten hinzufügen', statusPrivate: 'Privat', linkedToLabel: 'Verknüpft mit', autoSaveHeader: 'Automatisches Sparen', autoSaveNoneOption: 'Kein automatisches Sparen', autoSaveResultPrefix: 'Diesen Monat gehen etwa', autoSaveResultSuffix: 'automatisch an', incomeVsSpendingSuffix: 'Einkommen vs. Ausgaben', moveToSoloBtn: '\u2192 Solo', moveToSoloTooltip: 'Diesen Monat zu Solo verschieben'
   },
   fr: { solo: 'Solo', shared: 'Partagé', navOverview: 'Aperçu', navIncome: 'Revenus', navSpending: 'Dépenses', navSavings: 'Épargne', navPlanner: 'Planificateur', navQuit: 'Arrêter & Économiser', loggedInAs: 'Connecté en tant que', settings: 'Paramètres', signOut: 'Déconnexion', language: 'Langue', done: 'Terminé', pageOverview: 'Aperçu', pageIncome: 'Revenus', pageSpending: 'Dépenses', pageSavings: 'Épargne', pagePlanner: 'Planificateur', pageQuit: 'Arrêter & Économiser',
-    accounts: 'Comptes', combined: 'Total :', addAccount: '+ Ajouter un compte', balanceLabel: 'Solde', safeToSpendPerDay: 'Montant sûr à dépenser par jour', daysLeftSuffix: 'jours restants ·', budgetColon: 'budget', savingsSpendingEmptyText: 'Pas encore d’historique. Dès qu’un mois d’activité est enregistré, votre tendance d’épargne et de dépenses apparaîtra ici.', resetDataBtn: 'Effacer toutes les données', spendingSuggestions: ['Courses', 'Sorties', 'Abonnements', 'Transport', 'Autre'], fixedCostSuggestions: ['Loyer', 'Charges', 'Assurance santé', 'Frais de service', 'Abonnements', 'Remboursement de dette', 'Autre'], savingsSuggestions: ["Fonds d'urgence", 'Voyage', 'Ordinateur portable', 'Voiture', 'Mariage'], savingsGoalLabel: "Objectif d'épargne :", removeBtn: '− Retirer', addPlus: '+ Ajouter', incomeVsSpending: 'Ce mois-ci : revenus vs dépenses', received: 'Reçu €', expected: 'Prévu €', spentLabel: 'Dépensé €', upcoming: 'À venir €', savingsSpendingChart: 'Épargne et dépenses — 4 derniers mois', spendingByCategory: 'Dépenses par catégorie —', biggestExpense: 'Dépense la plus importante :', recurringPayments: 'Paiements récurrents', next: 'prochain', storePlaceholder: 'Magasin', amountPlaceholder: 'Montant', addTransactionHeader: 'Ajouter une transaction', addCategory: 'Ajouter une catégorie', yourCategories: 'Vos catégories', changeColor: 'Changer la couleur', newCategoryNamePlaceholder: 'Nom de la nouvelle catégorie', addShort: 'Ajouter', categoriesLabel: 'Catégories :', amountLabel: 'Montant :', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Total : €', noTransactions: 'Aucune transaction dans cette catégorie pour le moment.', fixedCostCategoriesHeader: 'Catégories de coûts fixes', whichBillPlaceholder: 'Description', amountEuroPlaceholder: 'Montant €', dayOfMonth: 'Jour du mois :', firstChargeDate: 'Première date de prélèvement :', addFixedCost: '+ Ajouter un coût fixe', autoAddedTooltip: 'Ajouté automatiquement depuis Paiements récurrents', addIncomeHeader: 'Ajouter un revenu', thisMonthColon: 'Ce mois-ci : €', sourcePlaceholder: 'Source', incomeThisMonthHeader: 'Revenus ce mois-ci', noIncomeText: 'Aucun revenu enregistré ce mois-ci.', recurringIncomeHeader: 'Revenus récurrents', whichIncomePlaceholder: 'Quel revenu ?', monthlyOnDayOption: 'Mensuel, le jour...', every4WeeksOption: 'Toutes les 4 semaines, à partir de...', firstDateLabel: 'Première date :', addIncomeSourceBtn: '+ Ajouter une source de revenu', dragGoalHint: 'Faites glisser un objectif par sa poignée pour le réorganiser. Définissez un montant mensuel pour voir combien de temps chaque objectif prendra.', savingsCategoriesHeader: "Catégories d'épargne", noCategoryOption: 'Aucune catégorie', ofEuro: 'de €', scheduleSavingsBtn: "Planifier l'épargne", saveEuroLabel: 'Épargner €', dayLabelShort: 'Jour :', addNewGoalHeader: 'Ajouter un nouvel objectif', goalNamePlaceholder: "Nom de l'objectif", targetEuroPlaceholder: 'Objectif €', addGoalBtn: '+ Ajouter un objectif', totalMonthlyBudgetHeader: 'Budget mensuel total', allocatedIncl: 'alloué (épargne incluse) ·', perMonthScheduled: '/ mois programmé', categoryBudgetsHeader: 'Budgets par catégorie', quitIntro: 'Choisissez une catégorie de dépenses que vous réduisez. Chaque jour sans dépense enregistrée y ajoute votre dépense quotidienne habituelle à la cagnotte ci-dessous.', noSpendingIn: 'Aucune dépense en', sinceWord: 'depuis', savedSoFar: "économisé jusqu'à présent", perDayAvoided: '/ jour évité', noPastSpending: "Aucune dépense passée trouvée dans cette catégorie, il n'y a donc rien à comparer.", newGoalHeader: 'Nouvel objectif', pickCategoryToCutBack: 'Choisissez une catégorie à réduire...', goalNameQuitPlaceholder: "Nom de l'objectif (p. ex. Arrêter de fumer)", startDateColon: 'Date de début :', startGoalBtn: "Démarrer l'objectif", suggestionsLabel: 'Suggestions :', calcFixedFromHistoryHeader: 'À partir de l\u2019historique enregistré', noCategoryHint: 'Pas encore de catégorie — ajoutez-en une avec le bouton + ci-dessus', every3MonthsOption: 'Tous les 3 mois, à partir de...', every6MonthsOption: 'Tous les 6 mois, à partir de...', yearlyOption: 'Annuel, à partir de...', flexibleOption: 'Flexible (dates variables)...', lastChargeDate: 'Dernière date de prélèvement :', nextChargeDate: 'Prochaine date de prélèvement :', editBtn: 'Modifier', doneEditBtn: 'Terminé', incomeCategoriesHeader: 'Catégories de revenus', incomeCategorySuggestions: ['Salaire', 'Allocation', 'Prime', 'Freelance', 'Autre'], historyMonthsPlaceholder: 'Mois', allLoggedMonthsOption: 'Tous les mois enregistrés', calcAutoFixedRowLabel: 'Automatique (modifier dans Solo)', totalSavedLabel: 'Total épargné', calcSurplusPlannerNote: 'Les dépenses variables sont désormais basées sur vos budgets du Planificateur.', currentIncomeMinusExpenses: 'Revenu actuel moins dépenses actuelles', colNextCharge: 'Prochain prélèvement le', colDescription: 'Description', colFrequency: 'Fréquence', colCategory: 'Catégorie', colStatus: 'Statut', colTotal: 'Total', colMyShare: 'Ma part', colPartnerShare: 'Part du partenaire', colActions: 'Actions', addToFixedFromLog: '+ Ajouter aux charges fixes', statusPrivate: 'Privé', linkedToLabel: 'Lié avec'
+    accounts: 'Comptes', combined: 'Total :', addAccount: '+ Ajouter un compte', balanceLabel: 'Solde', safeToSpendPerDay: 'Montant sûr à dépenser par jour', daysLeftSuffix: 'jours restants ·', budgetColon: 'budget', savingsSpendingEmptyText: 'Pas encore d’historique. Dès qu’un mois d’activité est enregistré, votre tendance d’épargne et de dépenses apparaîtra ici.', resetDataBtn: 'Effacer toutes les données', spendingSuggestions: ['Courses', 'Sorties', 'Abonnements', 'Transport', 'Autre'], fixedCostSuggestions: ['Loyer', 'Charges', 'Assurance santé', 'Frais de service', 'Abonnements', 'Remboursement de dette', 'Autre'], savingsSuggestions: ["Fonds d'urgence", 'Voyage', 'Ordinateur portable', 'Voiture', 'Mariage'], savingsGoalLabel: "Objectif d'épargne :", removeBtn: '− Retirer', addPlus: '+ Ajouter', incomeVsSpending: 'Ce mois-ci : revenus vs dépenses', received: 'Reçu €', expected: 'Prévu €', spentLabel: 'Dépensé €', upcoming: 'À venir €', savingsSpendingChart: 'Épargne et dépenses — 4 derniers mois', spendingByCategory: 'Dépenses par catégorie —', biggestExpense: 'Dépense la plus importante :', recurringPayments: 'Paiements récurrents', next: 'prochain', storePlaceholder: 'Magasin', amountPlaceholder: 'Montant', addTransactionHeader: 'Ajouter une transaction', addCategory: 'Ajouter une catégorie', yourCategories: 'Vos catégories', changeColor: 'Changer la couleur', newCategoryNamePlaceholder: 'Nom de la nouvelle catégorie', addShort: 'Ajouter', categoriesLabel: 'Catégories :', amountLabel: 'Montant :', minPlaceholder: 'Min €', maxPlaceholder: 'Max €', totalLabel: 'Total : €', noTransactions: 'Aucune transaction dans cette catégorie pour le moment.', fixedCostCategoriesHeader: 'Catégories de coûts fixes', whichBillPlaceholder: 'Description', amountEuroPlaceholder: 'Montant €', dayOfMonth: 'Jour du mois :', firstChargeDate: 'Première date de prélèvement :', addFixedCost: '+ Ajouter un coût fixe', autoAddedTooltip: 'Ajouté automatiquement depuis Paiements récurrents', addIncomeHeader: 'Ajouter un revenu', thisMonthColon: 'Ce mois-ci : €', sourcePlaceholder: 'Source', incomeThisMonthHeader: 'Revenus ce mois-ci', noIncomeText: 'Aucun revenu enregistré ce mois-ci.', recurringIncomeHeader: 'Revenus récurrents', whichIncomePlaceholder: 'Quel revenu ?', monthlyOnDayOption: 'Mensuel, le jour...', every4WeeksOption: 'Toutes les 4 semaines, à partir de...', firstDateLabel: 'Première date :', addIncomeSourceBtn: '+ Ajouter une source de revenu', dragGoalHint: 'Faites glisser un objectif par sa poignée pour le réorganiser. Définissez un montant mensuel pour voir combien de temps chaque objectif prendra.', savingsCategoriesHeader: "Catégories d'épargne", noCategoryOption: 'Aucune catégorie', ofEuro: 'de €', scheduleSavingsBtn: "Planifier l'épargne", saveEuroLabel: 'Épargner €', dayLabelShort: 'Jour :', addNewGoalHeader: 'Ajouter un nouvel objectif', goalNamePlaceholder: "Nom de l'objectif", targetEuroPlaceholder: 'Objectif €', addGoalBtn: '+ Ajouter un objectif', totalMonthlyBudgetHeader: 'Budget mensuel total', allocatedIncl: 'alloué (épargne incluse) ·', perMonthScheduled: '/ mois programmé', categoryBudgetsHeader: 'Budgets par catégorie', quitIntro: 'Choisissez une catégorie de dépenses que vous réduisez. Chaque jour sans dépense enregistrée y ajoute votre dépense quotidienne habituelle à la cagnotte ci-dessous.', noSpendingIn: 'Aucune dépense en', sinceWord: 'depuis', savedSoFar: "économisé jusqu'à présent", perDayAvoided: '/ jour évité', noPastSpending: "Aucune dépense passée trouvée dans cette catégorie, il n'y a donc rien à comparer.", newGoalHeader: 'Nouvel objectif', pickCategoryToCutBack: 'Choisissez une catégorie à réduire...', goalNameQuitPlaceholder: "Nom de l'objectif (p. ex. Arrêter de fumer)", startDateColon: 'Date de début :', startGoalBtn: "Démarrer l'objectif", suggestionsLabel: 'Suggestions :', calcFixedFromHistoryHeader: 'À partir de l\u2019historique enregistré', noCategoryHint: 'Pas encore de catégorie — ajoutez-en une avec le bouton + ci-dessus', every3MonthsOption: 'Tous les 3 mois, à partir de...', every6MonthsOption: 'Tous les 6 mois, à partir de...', yearlyOption: 'Annuel, à partir de...', flexibleOption: 'Flexible (dates variables)...', lastChargeDate: 'Dernière date de prélèvement :', nextChargeDate: 'Prochaine date de prélèvement :', editBtn: 'Modifier', doneEditBtn: 'Terminé', incomeCategoriesHeader: 'Catégories de revenus', incomeCategorySuggestions: ['Salaire', 'Allocation', 'Prime', 'Freelance', 'Autre'], historyMonthsPlaceholder: 'Mois', allLoggedMonthsOption: 'Tous les mois enregistrés', calcAutoFixedRowLabel: 'Automatique (modifier dans Solo)', totalSavedLabel: 'Total épargné', calcSurplusPlannerNote: 'Les dépenses variables sont désormais basées sur vos budgets du Planificateur.', currentIncomeMinusExpenses: 'Revenu actuel moins dépenses actuelles', colNextCharge: 'Prochain prélèvement le', colDescription: 'Description', colFrequency: 'Fréquence', colCategory: 'Catégorie', colStatus: 'Statut', colTotal: 'Total', colMyShare: 'Ma part', colPartnerShare: 'Part du partenaire', colActions: 'Actions', addToFixedFromLog: '+ Ajouter aux charges fixes', statusPrivate: 'Privé', linkedToLabel: 'Lié avec', autoSaveHeader: 'Épargne automatique', autoSaveNoneOption: 'Pas d\u2019épargne automatique', autoSaveResultPrefix: 'Ce mois-ci, environ', autoSaveResultSuffix: 'va automatiquement vers', incomeVsSpendingSuffix: 'revenus vs dépenses', moveToSoloBtn: '\u2192 Solo', moveToSoloTooltip: 'Déplacer ce mois vers Solo'
   },
   es: { solo: 'Solo', shared: 'Compartido', navOverview: 'Resumen', navIncome: 'Ingresos', navSpending: 'Gastos', navSavings: 'Ahorros', navPlanner: 'Planificador', navQuit: 'Dejarlo & Ahorrar', loggedInAs: 'Sesión iniciada como', settings: 'Ajustes', signOut: 'Cerrar sesión', language: 'Idioma', done: 'Listo', pageOverview: 'Resumen', pageIncome: 'Ingresos', pageSpending: 'Gastos', pageSavings: 'Ahorros', pagePlanner: 'Planificador', pageQuit: 'Dejarlo & Ahorrar',
-    accounts: 'Cuentas', combined: 'Total:', addAccount: '+ Añadir cuenta', balanceLabel: 'Saldo', safeToSpendPerDay: 'Seguro para gastar por día', daysLeftSuffix: 'días restantes ·', budgetColon: 'presupuesto', savingsSpendingEmptyText: 'Todavía no hay historial. En cuanto registres un mes de actividad, verás aquí tu tendencia de ahorro y gasto.', resetDataBtn: 'Borrar todos los datos', spendingSuggestions: ['Compras', 'Salidas', 'Suscripciones', 'Transporte', 'Otro'], fixedCostSuggestions: ['Alquiler', 'Servicios', 'Seguro médico', 'Gastos de servicio', 'Suscripciones', 'Pago de deudas', 'Otro'], savingsSuggestions: ['Fondo de emergencia', 'Viaje', 'Portátil', 'Coche', 'Boda'], savingsGoalLabel: 'Objetivo de ahorro:', removeBtn: '− Quitar', addPlus: '+ Añadir', incomeVsSpending: 'Este mes: ingresos vs. gastos', received: 'Recibido €', expected: 'Previsto €', spentLabel: 'Gastado €', upcoming: 'Próximo €', savingsSpendingChart: 'Ahorros y gastos — últimos 4 meses', spendingByCategory: 'Gastos por categoría —', biggestExpense: 'Gasto más grande:', recurringPayments: 'Pagos recurrentes', next: 'próximo', storePlaceholder: 'Tienda', amountPlaceholder: 'Importe', addTransactionHeader: 'Añadir una transacción', addCategory: 'Añadir categoría', yourCategories: 'Tus categorías', changeColor: 'Cambiar color', newCategoryNamePlaceholder: 'Nombre de nueva categoría', addShort: 'Añadir', categoriesLabel: 'Categorías:', amountLabel: 'Importe:', minPlaceholder: 'Mín €', maxPlaceholder: 'Máx €', totalLabel: 'Total: €', noTransactions: 'Aún no hay transacciones en esta categoría.', fixedCostCategoriesHeader: 'Categorías de costos fijos', whichBillPlaceholder: 'Descripción', amountEuroPlaceholder: 'Importe €', dayOfMonth: 'Día del mes:', firstChargeDate: 'Primera fecha de cargo:', addFixedCost: '+ Añadir costo fijo', autoAddedTooltip: 'Añadido automáticamente desde Pagos recurrentes', addIncomeHeader: 'Añadir ingreso', thisMonthColon: 'Este mes: €', sourcePlaceholder: 'Fuente', incomeThisMonthHeader: 'Ingresos este mes', noIncomeText: 'Aún no se ha registrado ningún ingreso este mes.', recurringIncomeHeader: 'Ingresos recurrentes', whichIncomePlaceholder: '¿Qué ingreso?', monthlyOnDayOption: 'Mensual, el día...', every4WeeksOption: 'Cada 4 semanas, a partir de...', firstDateLabel: 'Primera fecha:', addIncomeSourceBtn: '+ Añadir fuente de ingreso', dragGoalHint: 'Arrastra un objetivo por su asa para reordenarlo. Establece una cantidad mensual para ver cuánto tardará cada objetivo.', savingsCategoriesHeader: 'Categorías de ahorro', noCategoryOption: 'Sin categoría', ofEuro: 'de €', scheduleSavingsBtn: 'Programar ahorro', saveEuroLabel: 'Ahorrar €', dayLabelShort: 'Día:', addNewGoalHeader: 'Añadir un nuevo objetivo', goalNamePlaceholder: 'Nombre del objetivo', targetEuroPlaceholder: 'Meta €', addGoalBtn: '+ Añadir objetivo', totalMonthlyBudgetHeader: 'Presupuesto mensual total', allocatedIncl: 'asignado (incl. ahorros) ·', perMonthScheduled: '/ mes programado', categoryBudgetsHeader: 'Presupuestos por categoría', quitIntro: 'Elige una categoría de gasto que estés reduciendo. Cada día sin gasto registrado en ella añade tu gasto diario habitual al bote de abajo.', noSpendingIn: 'Sin gastos en', sinceWord: 'desde', savedSoFar: 'ahorrado hasta ahora', perDayAvoided: '/ día evitado', noPastSpending: 'Aún no se encontraron gastos anteriores en esta categoría, así que no hay nada con qué comparar.', newGoalHeader: 'Nuevo objetivo', pickCategoryToCutBack: 'Elige una categoría para reducir...', goalNameQuitPlaceholder: 'Nombre del objetivo (p. ej. Dejar de fumar)', startDateColon: 'Fecha de inicio:', startGoalBtn: 'Iniciar objetivo', suggestionsLabel: 'Sugerencias:', calcFixedFromHistoryHeader: 'Del historial registrado', noCategoryHint: 'Aún sin categoría — añade una con el botón + de arriba', every3MonthsOption: 'Cada 3 meses, a partir de...', every6MonthsOption: 'Cada 6 meses, a partir de...', yearlyOption: 'Anual, a partir de...', flexibleOption: 'Flexible (fechas variables)...', lastChargeDate: 'Última fecha de cargo:', nextChargeDate: 'Próxima fecha de cargo:', editBtn: 'Editar', doneEditBtn: 'Listo', incomeCategoriesHeader: 'Categorías de ingresos', incomeCategorySuggestions: ['Salario', 'Subsidio', 'Bono', 'Freelance', 'Otro'], historyMonthsPlaceholder: 'Meses', allLoggedMonthsOption: 'Todos los meses registrados', calcAutoFixedRowLabel: 'Automático (editar en Solo)', totalSavedLabel: 'Total ahorrado', calcSurplusPlannerNote: 'Los gastos variables ahora se basan en tus presupuestos del Planificador.', currentIncomeMinusExpenses: 'Ingresos actuales menos gastos actuales', colNextCharge: 'Próximo cargo el', colDescription: 'Descripción', colFrequency: 'Frecuencia', colCategory: 'Categoría', colStatus: 'Estado', colTotal: 'Total', colMyShare: 'Mi parte', colPartnerShare: 'Parte de la pareja', colActions: 'Acciones', addToFixedFromLog: '+ Añadir a gastos fijos', statusPrivate: 'Privado', linkedToLabel: 'Vinculado con'
+    accounts: 'Cuentas', combined: 'Total:', addAccount: '+ Añadir cuenta', balanceLabel: 'Saldo', safeToSpendPerDay: 'Seguro para gastar por día', daysLeftSuffix: 'días restantes ·', budgetColon: 'presupuesto', savingsSpendingEmptyText: 'Todavía no hay historial. En cuanto registres un mes de actividad, verás aquí tu tendencia de ahorro y gasto.', resetDataBtn: 'Borrar todos los datos', spendingSuggestions: ['Compras', 'Salidas', 'Suscripciones', 'Transporte', 'Otro'], fixedCostSuggestions: ['Alquiler', 'Servicios', 'Seguro médico', 'Gastos de servicio', 'Suscripciones', 'Pago de deudas', 'Otro'], savingsSuggestions: ['Fondo de emergencia', 'Viaje', 'Portátil', 'Coche', 'Boda'], savingsGoalLabel: 'Objetivo de ahorro:', removeBtn: '− Quitar', addPlus: '+ Añadir', incomeVsSpending: 'Este mes: ingresos vs. gastos', received: 'Recibido €', expected: 'Previsto €', spentLabel: 'Gastado €', upcoming: 'Próximo €', savingsSpendingChart: 'Ahorros y gastos — últimos 4 meses', spendingByCategory: 'Gastos por categoría —', biggestExpense: 'Gasto más grande:', recurringPayments: 'Pagos recurrentes', next: 'próximo', storePlaceholder: 'Tienda', amountPlaceholder: 'Importe', addTransactionHeader: 'Añadir una transacción', addCategory: 'Añadir categoría', yourCategories: 'Tus categorías', changeColor: 'Cambiar color', newCategoryNamePlaceholder: 'Nombre de nueva categoría', addShort: 'Añadir', categoriesLabel: 'Categorías:', amountLabel: 'Importe:', minPlaceholder: 'Mín €', maxPlaceholder: 'Máx €', totalLabel: 'Total: €', noTransactions: 'Aún no hay transacciones en esta categoría.', fixedCostCategoriesHeader: 'Categorías de costos fijos', whichBillPlaceholder: 'Descripción', amountEuroPlaceholder: 'Importe €', dayOfMonth: 'Día del mes:', firstChargeDate: 'Primera fecha de cargo:', addFixedCost: '+ Añadir costo fijo', autoAddedTooltip: 'Añadido automáticamente desde Pagos recurrentes', addIncomeHeader: 'Añadir ingreso', thisMonthColon: 'Este mes: €', sourcePlaceholder: 'Fuente', incomeThisMonthHeader: 'Ingresos este mes', noIncomeText: 'Aún no se ha registrado ningún ingreso este mes.', recurringIncomeHeader: 'Ingresos recurrentes', whichIncomePlaceholder: '¿Qué ingreso?', monthlyOnDayOption: 'Mensual, el día...', every4WeeksOption: 'Cada 4 semanas, a partir de...', firstDateLabel: 'Primera fecha:', addIncomeSourceBtn: '+ Añadir fuente de ingreso', dragGoalHint: 'Arrastra un objetivo por su asa para reordenarlo. Establece una cantidad mensual para ver cuánto tardará cada objetivo.', savingsCategoriesHeader: 'Categorías de ahorro', noCategoryOption: 'Sin categoría', ofEuro: 'de €', scheduleSavingsBtn: 'Programar ahorro', saveEuroLabel: 'Ahorrar €', dayLabelShort: 'Día:', addNewGoalHeader: 'Añadir un nuevo objetivo', goalNamePlaceholder: 'Nombre del objetivo', targetEuroPlaceholder: 'Meta €', addGoalBtn: '+ Añadir objetivo', totalMonthlyBudgetHeader: 'Presupuesto mensual total', allocatedIncl: 'asignado (incl. ahorros) ·', perMonthScheduled: '/ mes programado', categoryBudgetsHeader: 'Presupuestos por categoría', quitIntro: 'Elige una categoría de gasto que estés reduciendo. Cada día sin gasto registrado en ella añade tu gasto diario habitual al bote de abajo.', noSpendingIn: 'Sin gastos en', sinceWord: 'desde', savedSoFar: 'ahorrado hasta ahora', perDayAvoided: '/ día evitado', noPastSpending: 'Aún no se encontraron gastos anteriores en esta categoría, así que no hay nada con qué comparar.', newGoalHeader: 'Nuevo objetivo', pickCategoryToCutBack: 'Elige una categoría para reducir...', goalNameQuitPlaceholder: 'Nombre del objetivo (p. ej. Dejar de fumar)', startDateColon: 'Fecha de inicio:', startGoalBtn: 'Iniciar objetivo', suggestionsLabel: 'Sugerencias:', calcFixedFromHistoryHeader: 'Del historial registrado', noCategoryHint: 'Aún sin categoría — añade una con el botón + de arriba', every3MonthsOption: 'Cada 3 meses, a partir de...', every6MonthsOption: 'Cada 6 meses, a partir de...', yearlyOption: 'Anual, a partir de...', flexibleOption: 'Flexible (fechas variables)...', lastChargeDate: 'Última fecha de cargo:', nextChargeDate: 'Próxima fecha de cargo:', editBtn: 'Editar', doneEditBtn: 'Listo', incomeCategoriesHeader: 'Categorías de ingresos', incomeCategorySuggestions: ['Salario', 'Subsidio', 'Bono', 'Freelance', 'Otro'], historyMonthsPlaceholder: 'Meses', allLoggedMonthsOption: 'Todos los meses registrados', calcAutoFixedRowLabel: 'Automático (editar en Solo)', totalSavedLabel: 'Total ahorrado', calcSurplusPlannerNote: 'Los gastos variables ahora se basan en tus presupuestos del Planificador.', currentIncomeMinusExpenses: 'Ingresos actuales menos gastos actuales', colNextCharge: 'Próximo cargo el', colDescription: 'Descripción', colFrequency: 'Frecuencia', colCategory: 'Categoría', colStatus: 'Estado', colTotal: 'Total', colMyShare: 'Mi parte', colPartnerShare: 'Parte de la pareja', colActions: 'Acciones', addToFixedFromLog: '+ Añadir a gastos fijos', statusPrivate: 'Privado', linkedToLabel: 'Vinculado con', autoSaveHeader: 'Ahorro automático', autoSaveNoneOption: 'Sin ahorro automático', autoSaveResultPrefix: 'Este mes, aproximadamente', autoSaveResultSuffix: 'va automáticamente a', incomeVsSpendingSuffix: 'ingresos vs. gastos', moveToSoloBtn: '\u2192 Solo', moveToSoloTooltip: 'Mover este mes a Solo'
   }
 };
 const CALC_TRANSLATIONS = {
@@ -1934,6 +1924,7 @@ class Component extends DCLogic {
         balance: 0,
         budgetMonthly: 0,
         budgetManuallySet: false,
+        autoSaveGoalId: null,
         categoryOptions,
         transactions: [],
         recurring: [],
@@ -1965,6 +1956,7 @@ class Component extends DCLogic {
       balance: 0,
       budgetMonthly: 0,
       budgetManuallySet: false,
+      autoSaveGoalId: null,
       categoryOptions,
       transactions: [],
       recurring: [],
@@ -2228,10 +2220,12 @@ class Component extends DCLogic {
       //   owner and shown (not split) under that person's name in Gedeeld.
       const recFixedVisible = (personalWs.recurring || []).filter(r => r.visible && !r.joint).map(r => ({
         id: 'mirror_recfix_' + r.id, name: r.name, amount: r.amount, categoryId: r.category,
+        frequency: r.frequency, day: r.day, startDate: r.startDate, lastKnownDate: r.lastKnownDate, intervalDays: r.intervalDays,
         mirrorOwner: myId, mirrorSourceId: r.id, isRecurringFixedMirror: true
       }));
       const recFixedJoint = (personalWs.recurring || []).filter(r => r.joint).map(r => ({
         id: 'mirror_recfixjoint_' + r.id, name: r.name, amount: r.amount, categoryId: r.category,
+        frequency: r.frequency, day: r.day, startDate: r.startDate, lastKnownDate: r.lastKnownDate, intervalDays: r.intervalDays,
         jointMirrorOwner: myId, mirrorSourceId: r.id, isRecurringFixedMirror: true
       }));
       // Same pattern for "Uit gelogde geschiedenis" fixed-cost categories: recompute the current
@@ -2259,11 +2253,16 @@ class Component extends DCLogic {
       // Merge each partner's own categories (Vaste lasten, Budgetcalculator, Inkomen) into a
       // shared pool, so both accounts see every category either person has created — not just
       // categories on items that happen to be joint/visible. Deduplicated by lowercase label.
+      // Includes localSharedWs (your own not-yet-persisted shared list) so a category you just
+      // added while already browsing Gedeeld isn't wiped out by this merge before it ever saves.
       const mergeCategoryList = (listKey) => {
-        const existing = sharedWs[listKey] || [];
-        const existingLabels = new Set(existing.map(c => c.label.toLowerCase()));
-        const mine = (personalWs[listKey] || []).filter(c => !existingLabels.has(c.label.toLowerCase()));
-        return [...existing, ...mine];
+        const seenLabels = new Set();
+        const result = [];
+        [...(sharedWs[listKey] || []), ...(localSharedWs[listKey] || []), ...(personalWs[listKey] || [])].forEach(c => {
+          const key = c.label.toLowerCase();
+          if (!seenLabels.has(key)) { seenLabels.add(key); result.push(c); }
+        });
+        return result;
       };
       patch.fixedCostCategories = mergeCategoryList('fixedCostCategories');
       patch.calcFixedCategories = mergeCategoryList('calcFixedCategories');
@@ -2635,7 +2634,14 @@ class Component extends DCLogic {
     const startDate = new Date(goal.startDate + 'T00:00:00');
     const today = new Date(this.todayStr() + 'T00:00:00');
 
-    const priorTx = ws.transactions.filter(t => t.category === goal.category && new Date(t.date + 'T00:00:00') < startDate);
+    // Combine live transactions with manually logged history ("Vorige maanden loggen") for this
+    // category — history-only categories (nothing logged as a live transaction yet) should still
+    // count as having a comparison baseline.
+    const historyItems = (ws.spendHistory || []).flatMap(h => (h.items || []).filter(it => it.category === goal.category && it.date));
+    const priorTx = [
+      ...ws.transactions.filter(t => t.category === goal.category && new Date(t.date + 'T00:00:00') < startDate),
+      ...historyItems.filter(it => new Date(it.date + 'T00:00:00') < startDate)
+    ];
     let dailyRate = 0;
     if (priorTx.length) {
       const earliest = priorTx.reduce((min, t) => (t.date < min ? t.date : min), priorTx[0].date);
@@ -2648,7 +2654,8 @@ class Component extends DCLogic {
     let saved = 0;
     for (let d = new Date(startDate); d <= today; d.setDate(d.getDate() + 1)) {
       const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      const spentThatDay = ws.transactions.some(t => t.category === goal.category && t.date === dateStr);
+      const spentThatDay = ws.transactions.some(t => t.category === goal.category && t.date === dateStr)
+        || historyItems.some(it => it.date === dateStr);
       if (spentThatDay) {
         days.push({ title: this.tf(`${dateStr}: spent on ${cat.label.toLowerCase()}`, `${dateStr}: uitgegeven aan ${cat.label.toLowerCase()}`, `${dateStr}: ausgegeben für ${cat.label.toLowerCase()}`, `${dateStr}: dépensé pour ${cat.label.toLowerCase()}`, `${dateStr}: gastado en ${cat.label.toLowerCase()}`), bg: '#BC6F52' });
       } else {
@@ -2720,6 +2727,7 @@ class Component extends DCLogic {
   setName(e) { this.setState({ name: e.target.value }, () => { this.persist(); this.syncDisplayNameToHousehold(); }); }
   setBalance(e) { this.setWs({ balance: this.parseAmt(e.target.value) || 0 }, () => this.persist()); }
   setBudget(e) { this.setWs({ budgetMonthly: this.parseAmt(e.target.value) || 0, budgetManuallySet: true }, () => this.persist()); }
+  setAutoSaveGoal(e) { this.setWs({ autoSaveGoalId: e.target.value || null }, () => this.persist()); }
 
   toggleCalcAddCategory() { this.setState(s => ({ showCalcAddCategory: !s.showCalcAddCategory })); }
   setNewCalcFixedCategoryName(e) { this.setState({ newCalcFixedCategoryName: this.cap(e.target.value) }); }
@@ -3024,6 +3032,25 @@ class Component extends DCLogic {
     if (!window.confirm(this.tf('Delete this month\'s log entries?', 'Deze maand met gegevens verwijderen?', 'Diesen Monatseintrag löschen?', 'Supprimer les données de ce mois ?', '¿Eliminar los datos de este mes?'))) return;
     this.setWs(ws => ({ spendHistory: (ws.spendHistory || []).filter(h => h.key !== key) }), () => this.persist());
   }
+  moveSpendHistoryMonthToSolo(key) {
+    if (this.state.mode !== 'shared') return;
+    const sharedMonth = (this.state.workspaces.shared.spendHistory || []).find(h => h.key === key);
+    if (!sharedMonth) return;
+    this.setState(s => {
+      const personalList = s.workspaces.personal.spendHistory || [];
+      const existing = personalList.find(h => h.key === key);
+      const newPersonalList = existing
+        ? personalList.map(h => h.key === key ? { ...h, items: [...(h.items || []), ...(sharedMonth.items || [])] } : h)
+        : [...personalList, sharedMonth].sort((a, b) => (a.key < b.key ? -1 : 1));
+      return {
+        workspaces: {
+          ...s.workspaces,
+          personal: { ...s.workspaces.personal, spendHistory: newPersonalList },
+          shared: { ...s.workspaces.shared, spendHistory: (s.workspaces.shared.spendHistory || []).filter(h => h.key !== key) }
+        }
+      };
+    }, () => { this._sharedDirtyKeys.add('spendHistory'); this.persist(); });
+  }
   toggleSpendHistoryMonth(key) {
     this.setState(s => ({ expandedSpendHistoryKey: s.expandedSpendHistoryKey === key ? null : key }));
   }
@@ -3033,14 +3060,27 @@ class Component extends DCLogic {
   setNewSpendHistoryItemDate(e) { this.setState({ newSpendHistoryItemDate: e.target.value }); }
   setNewSpendHistoryItemCategory(e) { this.setState({ newSpendHistoryItemCategory: e.target.value }); }
   addSpendHistoryItem() {
-    const key = this.state.expandedSpendHistoryKey;
     const name = this.state.newSpendHistoryItemName.trim();
     const amount = this.parseAmt(this.state.newSpendHistoryItemAmount);
-    if (!key || !name || !amount) return;
-    const date = this.state.newSpendHistoryItemDate || (key + '-01');
+    const expandedKey = this.state.expandedSpendHistoryKey;
+    if (!name || !amount) return;
+    // Derive the target month from the entered date itself, not from whichever month section
+    // happens to be expanded — otherwise an item dated in August could silently end up filed
+    // under May just because that was the open section at the time.
+    const date = this.state.newSpendHistoryItemDate || (expandedKey ? expandedKey + '-01' : '');
+    if (!date) return;
+    const key = date.slice(0, 7);
     const item = { id: 'sh' + Date.now(), name, tag: '', amount, date, category: this.state.newSpendHistoryItemCategory || '' };
-    this.setWs(ws => ({ spendHistory: (ws.spendHistory || []).map(h => h.key === key ? { ...h, items: [...(h.items || []), item] } : h) }), () => this.persist());
-    this.setState({ newSpendHistoryItemName: '', newSpendHistoryItemTag: '', newSpendHistoryItemAmount: '', newSpendHistoryItemDate: '', newSpendHistoryItemCategory: '' });
+    this.setWs(ws => {
+      const list = ws.spendHistory || [];
+      if (list.some(h => h.key === key)) {
+        return { spendHistory: list.map(h => h.key === key ? { ...h, items: [...(h.items || []), item] } : h) };
+      }
+      // No logged-month entry for this item's month yet — create it on the fly.
+      const label = this.monthValueLabel(key);
+      return { spendHistory: [...list, { key, label, items: [item] }].sort((a, b) => (a.key < b.key ? -1 : 1)) };
+    }, () => this.persist());
+    this.setState({ newSpendHistoryItemName: '', newSpendHistoryItemTag: '', newSpendHistoryItemAmount: '', newSpendHistoryItemDate: '', newSpendHistoryItemCategory: '', expandedSpendHistoryKey: key });
   }
   onSpendHistoryItemKeyDown(e) { if (e.key === 'Enter') this.addSpendHistoryItem(); }
   removeSpendHistoryItem(key, id) {
@@ -3069,14 +3109,23 @@ class Component extends DCLogic {
   setNewIncomeHistoryItemAmount(e) { this.setState({ newIncomeHistoryItemAmount: e.target.value }); }
   setNewIncomeHistoryItemDate(e) { this.setState({ newIncomeHistoryItemDate: e.target.value }); }
   addIncomeHistoryItem() {
-    const key = this.state.expandedIncomeHistoryKey;
     const name = this.state.newIncomeHistoryItemName.trim();
     const amount = this.parseAmt(this.state.newIncomeHistoryItemAmount);
-    if (!key || !name || !amount) return;
-    const date = this.state.newIncomeHistoryItemDate || (key + '-01');
+    const expandedKey = this.state.expandedIncomeHistoryKey;
+    if (!name || !amount) return;
+    const date = this.state.newIncomeHistoryItemDate || (expandedKey ? expandedKey + '-01' : '');
+    if (!date) return;
+    const key = date.slice(0, 7);
     const item = { id: 'ih' + Date.now(), name, tag: '', amount, date };
-    this.setWs(ws => ({ incomeHistory: (ws.incomeHistory || []).map(h => h.key === key ? { ...h, items: [...(h.items || []), item] } : h) }), () => this.persist());
-    this.setState({ newIncomeHistoryItemName: '', newIncomeHistoryItemTag: '', newIncomeHistoryItemAmount: '', newIncomeHistoryItemDate: '' });
+    this.setWs(ws => {
+      const list = ws.incomeHistory || [];
+      if (list.some(h => h.key === key)) {
+        return { incomeHistory: list.map(h => h.key === key ? { ...h, items: [...(h.items || []), item] } : h) };
+      }
+      const label = this.monthValueLabel(key);
+      return { incomeHistory: [...list, { key, label, items: [item] }].sort((a, b) => (a.key < b.key ? -1 : 1)) };
+    }, () => this.persist());
+    this.setState({ newIncomeHistoryItemName: '', newIncomeHistoryItemTag: '', newIncomeHistoryItemAmount: '', newIncomeHistoryItemDate: '', expandedIncomeHistoryKey: key });
   }
   onIncomeHistoryItemKeyDown(e) { if (e.key === 'Enter') this.addIncomeHistoryItem(); }
   removeIncomeHistoryItem(key, id) {
@@ -3933,6 +3982,11 @@ class Component extends DCLogic {
   renderVals() {
     const ws = this.ws();
     const t = TRANSLATIONS[this.state.language] || TRANSLATIONS.en;
+    const localeMap = { nl: 'nl-NL', en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES' };
+    const currentMonthFullName = (() => {
+      const raw = new Date().toLocaleDateString(localeMap[this.state.language] || 'en-US', { month: 'long' });
+      return raw.charAt(0).toUpperCase() + raw.slice(1);
+    })();
     // Merge both partners' categories (deduplicated by label) so either account can pick a
     // category the other one created. Used for dropdown OPTIONS only — the "manage categories"
     // panels (with remove buttons) still show just your own list, since removing a category you
@@ -4052,18 +4106,22 @@ class Component extends DCLogic {
           const isJointMirror = !!it.jointMirrorOwner;
           const isMine = it.mirrorOwner === myUserIdForMirrorRows;
           const cat = fixedCatMap[it.categoryId] || { label: t.calcGeneralGroup, color: '#634031' };
+          const statusLabel = isJointMirror ? t.calcJointLabel : (isMine ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader));
+          const statusBg = isJointMirror ? '#634031' : 'rgba(102,113,90,.22)';
+          const statusColor = isJointMirror ? '#F6F1E7' : '#4F5B49';
+          const hasScheduleInfo = !!(it.frequency && (it.day || it.startDate || it.lastKnownDate));
+          const mirrorTarget = hasScheduleInfo ? this.nextOccurrence(it) : new Date(8640000000000000);
           return {
             id: it.id, name: it.name, amountStr: this.fmt(it.amount),
-            nextDate: new Date(8640000000000000), nextLabel: '—',
-            freqLabel: t.calcAutoFixedRowLabel,
+            nextDate: mirrorTarget,
+            nextLabel: hasScheduleInfo ? `${MONTHS_SHORT[mirrorTarget.getMonth()]} ${mirrorTarget.getDate()}` : '—',
+            freqLabel: hasScheduleInfo ? this.frequencyLabel(it.frequency) : '',
+            statusLabel, statusBg, statusColor,
             categoryLabel: cat.label, categoryColor: cat.color,
-            jointLabel: isJointMirror ? t.calcJointLabel : (isMine ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader)),
-            jointBg: isJointMirror ? '#634031' : '#7A5941', jointColor: '#F6F1E7',
-            toggleJoint: () => {}, showVisibleToggle: false,
-            visibleLabel: '', visibleBg: 'transparent', visibleColor: '#7A5941', toggleVisible: () => {},
-            isEditing: false, notEditing: true, editButtonLabel: '', editableDay: false,
-            toggleEdit: () => {}, setEditName: () => {}, setEditAmount: () => {}, setEditDay: () => {},
-            setEditCategory: () => {}, setEditFlexNext: () => {}, editCategories: [],
+            toggleJoint: () => {}, showVisibleToggle: false, visibleOn: false, toggleVisible: () => {},
+            isEditing: false, notEditing: true, editableDay: false, editableDateBased: false, isFlexible: false,
+            setEditName: () => {}, setEditAmount: () => {}, setEditDay: () => {},
+            setEditCategory: () => {}, setEditFrequency: () => {}, setEditStartDate: () => {}, setEditFlexNext: () => {}, editCategories: [],
             showOwnerSelect: false, ownerSelectValue: 'me', setOwner: () => {}, myOwnerLabel: '', partnerOwnerLabel: '',
             remove: () => {}
           };
@@ -4201,6 +4259,10 @@ class Component extends DCLogic {
     // Sparen never factors into Planner's totals — savings goals live only in the Sparen tab.
     const plannerAllocated = Object.values(categoryBudgets).reduce((s, v) => s + (v || 0), 0);
     const plannerUnallocated = effectiveBudget - plannerAllocated;
+    // "Automatisch sparen": purely a planning display — shows what would go to the chosen goal
+    // based on this month's leftover. Never written back into any totals or goal.saved automatically.
+    const autoSaveGoal = ws.savingsGoals.find(g => g.id === ws.autoSaveGoalId) || null;
+    const autoSaveAmount = Math.max(0, plannerUnallocated);
 
     const futureRecurringBillsThisMonth = ws.recurring.reduce((sum, r) => {
       if (r.frequency === 'every4weeks' && r.startDate) {
@@ -4485,6 +4547,7 @@ class Component extends DCLogic {
           setEditName: (e) => this.updateRecurringIncomeField(ri.id, 'name', e),
           setEditAmount: (e) => this.updateRecurringIncomeField(ri.id, 'amount', e),
           setEditDay: (e) => this.updateRecurringIncomeField(ri.id, 'day', e),
+          setEditFrequency: (e) => this.updateRecurringIncomeField(ri.id, 'frequency', e),
           setEditCategory: (e) => this.updateRecurringIncomeField(ri.id, 'category', e),
           editableDay: ri.frequency !== 'every4weeks',
           editCategories: incomeCategoriesMerged
@@ -4879,6 +4942,7 @@ class Component extends DCLogic {
       dailyAllowanceStr: this.fmt(Math.max(0, dailyAllowance)),
       todayLabel: now.toLocaleDateString(this.tf('en-US', 'nl-NL', 'de-DE', 'fr-FR', 'es-ES'), { weekday: 'short', month: 'short', day: 'numeric' }),
       monthLabel: MONTHS_SHORT[m],
+      currentMonthFullName,
       categories,
       recurring,
       categoryOptions: ws.categoryOptions,
@@ -4986,6 +5050,8 @@ class Component extends DCLogic {
         expanded: this.state.expandedSpendHistoryKey === h.key,
         toggle: () => this.toggleSpendHistoryMonth(h.key),
         remove: (e) => { e.stopPropagation(); this.removeSpendHistoryEntry(h.key); },
+        showMoveToSolo: this.state.mode === 'shared',
+        moveToSolo: (e) => { e.stopPropagation(); this.moveSpendHistoryMonthToSolo(h.key); },
         noItems: (h.items || []).length === 0,
         items: (h.items || []).map(it => {
           const cat = it.category ? ws.categoryOptions.find(c => c.id === it.category) : null;
@@ -5088,6 +5154,12 @@ class Component extends DCLogic {
       plannerUnallocatedStr: this.fmt(Math.abs(plannerUnallocated)),
       plannerUnallocatedLabel: plannerUnallocated < 0 ? this.tf('over-allocated', 'over-toegewezen', 'über-zugewiesen', 'sur-alloué', 'sobre-asignado') : this.tf('unallocated', 'niet-toegewezen', 'nicht zugewiesen', 'non alloué', 'no asignado'),
       plannerUnallocatedColor: plannerUnallocated < 0 ? '#BC6F52' : '#634031',
+      autoSaveGoalId: ws.autoSaveGoalId || '',
+      setAutoSaveGoal: (e) => this.setAutoSaveGoal(e),
+      savingsGoalOptions: ws.savingsGoals,
+      hasAutoSaveGoal: !!autoSaveGoal,
+      autoSaveGoalLabel: autoSaveGoal ? autoSaveGoal.label : '',
+      autoSaveAmountStr: this.fmt(autoSaveAmount),
       incomeActualPx: Math.round(incomeTotal * overviewScale),
       incomeExpectedPx: Math.round(futureRecurringIncomeThisMonth * overviewScale),
       spendActualPx: Math.round(spentMonth * overviewScale),
