@@ -18,6 +18,36 @@
   input[type="text" inputmode="decimal"]::-webkit-outer-spin-button,input[type="text" inputmode="decimal"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   input[type="text" inputmode="decimal"]{-moz-appearance:textfield}
   @keyframes toastIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+  .fixed-grid{
+    display:grid;
+    grid-template-columns: 78px minmax(120px,1.7fr) minmax(100px,.9fr) minmax(84px,.7fr) minmax(110px,.9fr) 78px 34px;
+    align-items:center;
+    column-gap:12px;
+    row-gap:6px;
+  }
+  .fixed-grid.head{padding:0 0 8px;font-size:9.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.05em}
+  .fixed-grid.row{padding:11px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:12.5px;min-height:20px}
+  .fixed-grid .col-amt{text-align:right;font-variant-numeric:tabular-nums}
+  .fixed-grid .col-actions{text-align:right}
+  .chip{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 9px;border-radius:6px;font-size:9.5px;font-weight:600;line-height:1;white-space:nowrap;box-sizing:border-box}
+  .income-grid{
+    display:grid;
+    grid-template-columns: 54px minmax(110px,1.6fr) 90px minmax(80px,.8fr) 100px 62px;
+    align-items:center;
+    column-gap:12px;
+  }
+  .income-grid.head{padding:0 0 8px;font-size:9.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.05em}
+  .income-grid.row{padding:10px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:13px;min-height:20px}
+  .income-grid .col-amt{text-align:right;font-variant-numeric:tabular-nums}
+  .income-grid .col-actions{text-align:right;white-space:nowrap}
+  .joint-grid{
+    display:grid;
+    grid-template-columns: minmax(90px,1.5fr) 74px 66px 66px 72px;
+    align-items:center;
+    column-gap:10px;
+  }
+  .joint-grid.head{padding:0 0 6px;font-size:9px;font-weight:700;color:#C7B49A;text-transform:uppercase;letter-spacing:.05em}
+  .joint-grid .col-r{text-align:right;font-variant-numeric:tabular-nums}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </helmet>
@@ -95,8 +125,8 @@
     <div><div style="font-size:16px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#F6F1E7">GRIP</div><div style="font-size:10px;color:#C7B49A;margin-top:1px">on your money</div></div>
 
     <div style="display:flex;background:#3A261D;border-radius:10px;padding:3px;gap:2px">
-      <button onClick="{{ setModePersonal }}" style="flex:1;border:none;border-radius:8px;padding:8px 0;font-size:12px;font-weight:600;background:{{ personalModeBg }};color:{{ personalModeColor }}">{{ t.solo }}</button>
-      <button onClick="{{ setModeShared }}" style="flex:1;border:none;border-radius:8px;padding:8px 0;font-size:12px;font-weight:600;background:{{ sharedModeBg }};color:{{ sharedModeColor }}">{{ t.shared }}</button>
+      <button onClick="{{ setModePersonal }}" style="flex:1;border:none;border-radius:7px;padding:7px 0;font-size:11.5px;font-weight:600;background:{{ personalModeBg }};color:{{ personalModeColor }};transition:background .18s ease, color .18s ease">{{ t.solo }}</button>
+      <button onClick="{{ setModeShared }}" style="flex:1;border:none;border-radius:7px;padding:7px 0;font-size:11.5px;font-weight:600;background:{{ sharedModeBg }};color:{{ sharedModeColor }};transition:background .18s ease, color .18s ease">{{ t.shared }}</button>
     </div>
 
     <div style="display:flex;flex-direction:column;gap:4px">
@@ -209,23 +239,23 @@
       </div>
     </sc-if>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:22px">
-      <div style="background:#EEE6D8;border-radius:16px;padding:18px 20px">
-        <div style="font-size:12px;color:#634031;margin-bottom:6px">{{ t.balanceLabel }}</div>
-        <div style="display:flex;align-items:baseline;gap:2px;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums">
+    <div style="display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px;margin-bottom:22px">
+      <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;border-top:3px solid #5A3B2D">
+        <div style="font-size:12px;color:#634031;margin-bottom:8px;font-weight:600">{{ t.balanceLabel }}</div>
+        <div style="display:flex;align-items:baseline;gap:2px;font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;color:#3A261D">
           <span>€ {{ balance }}</span>
         </div>
-        <div style="font-size:11px;color:#634031;margin-top:6px">{{ t.currentIncomeMinusExpenses }}</div>
+        <div style="font-size:11px;color:#7A5941;margin-top:8px">{{ t.currentIncomeMinusExpenses }}</div>
       </div>
       <div style="background:#EEE6D8;border-radius:16px;padding:18px 20px">
-        <div style="font-size:12px;color:#634031;margin-bottom:6px">{{ t.safeToSpendPerDay }}</div>
-        <div style="font-size:26px;font-weight:700;color:#634031;font-variant-numeric:tabular-nums">€ {{ dailyAllowanceStr }}</div>
-        <div style="font-size:11px;color:#634031;margin-top:4px;line-height:1.6">{{ daysLeft }} {{ t.daysLeftSuffix }}<br>{{ t.budgetColon }} € <input type="text" inputmode="decimal" value="{{ budgetMonthly }}" onChange="{{ setBudget }}" style="width:44px;display:inline-block;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;font-size:11px;color:inherit;padding:0;vertical-align:baseline"></div>
+        <div style="font-size:11.5px;color:#7A5941;margin-bottom:6px">{{ t.safeToSpendPerDay }}</div>
+        <div style="font-size:22px;font-weight:700;color:#634031;font-variant-numeric:tabular-nums">€ {{ dailyAllowanceStr }}</div>
+        <div style="font-size:11px;color:#7A5941;margin-top:4px;line-height:1.6">{{ daysLeft }} {{ t.daysLeftSuffix }}<br>{{ t.budgetColon }} € <input type="text" inputmode="decimal" value="{{ budgetMonthly }}" onChange="{{ setBudget }}" style="width:44px;display:inline-block;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;font-size:11px;color:inherit;padding:0;vertical-align:baseline"></div>
       </div>
-      <div style="background:#EEE6D8;border-radius:16px;padding:18px 20px;border-left:3px solid #66715A">
-        <div style="font-size:12px;color:#634031;margin-bottom:6px">{{ t.savingsGoalLabel }} <input type="text" value="{{ primaryGoal.label }}" onChange="{{ setGoalLabel }}" style="width:80px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></div>
-        <div style="font-size:26px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ primaryGoalSavedStr }} <span style="font-size:13px;font-weight:500;color:#634031">/ € <input type="text" inputmode="decimal" value="{{ primaryGoal.target }}" onChange="{{ setGoalTarget }}" style="width:56px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></span></div>
-        <div style="height:6px;border-radius:4px;background:rgba(99,64,49,.18);margin-top:8px;overflow:hidden"><div style="height:100%;background:#66715A;width:{{ primaryGoalPct }}%"></div></div>
+      <div style="background:#EEE6D8;border-radius:16px;padding:18px 20px">
+        <div style="font-size:11.5px;color:#7A5941;margin-bottom:6px">{{ t.savingsGoalLabel }} <input type="text" value="{{ primaryGoal.label }}" onChange="{{ setGoalLabel }}" style="width:80px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></div>
+        <div style="font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;color:#634031">€ {{ primaryGoalSavedStr }} <span style="font-size:12px;font-weight:500;color:#7A5941">/ € <input type="text" inputmode="decimal" value="{{ primaryGoal.target }}" onChange="{{ setGoalTarget }}" style="width:56px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></span></div>
+        <div style="height:6px;border-radius:4px;background:rgba(99,64,49,.18);margin-top:9px;overflow:hidden"><div style="height:100%;background:#66715A;width:{{ primaryGoalPct }}%"></div></div>
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
           <span style="font-size:12px">€</span>
           <input type="text" inputmode="decimal" step="0.01" value="{{ savingsAmount }}" onChange="{{ setSavingsAmount }}" style="width:40px;border:1px solid #63403155;border-radius:6px;padding:6px 4px;font-size:12px;background:transparent;color:#634031">
@@ -238,23 +268,23 @@
     <sc-if value="{{ hasOverviewActivity }}" hint-placeholder-val="{{ false }}">
     <div style="display:flex;gap:20px;margin-bottom:20px;align-items:stretch">
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px">{{ t.incomeVsSpending }}</div>
-        <div style="display:flex;gap:36px;align-items:flex-end;justify-content:center;height:170px">
-          <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:170px;gap:6px">
-            <div style="font-size:12px;font-weight:700">€ {{ incomeTotalAllStr }}</div>
-            <div style="display:flex;flex-direction:column-reverse;width:56px;border-radius:8px 8px 0 0;overflow:hidden">
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.incomeVsSpending }}</div>
+        <div style="display:flex;gap:44px;align-items:flex-end;justify-content:center;height:150px">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:150px;gap:6px">
+            <div style="font-size:12.5px;font-weight:700;color:#3A261D">€ {{ incomeTotalAllStr }}</div>
+            <div style="display:flex;flex-direction:column-reverse;width:64px;border-radius:10px 10px 3px 3px;overflow:hidden">
               <div style="width:100%;background:#66715A;height:{{ incomeActualPx }}px"></div>
               <div style="width:100%;background:#7C8972;height:{{ incomeExpectedPx }}px"></div>
             </div>
-            <div style="font-size:12px;font-weight:700">{{ t.navIncome }}</div>
+            <div style="font-size:11.5px;font-weight:600;color:#7A5941">{{ t.navIncome }}</div>
           </div>
-          <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:170px;gap:6px">
-            <div style="font-size:12px;font-weight:700">€ {{ spendTotalAllStr }}</div>
-            <div style="display:flex;flex-direction:column-reverse;width:56px;border-radius:8px 8px 0 0;overflow:hidden">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:150px;gap:6px">
+            <div style="font-size:12.5px;font-weight:700;color:#3A261D">€ {{ spendTotalAllStr }}</div>
+            <div style="display:flex;flex-direction:column-reverse;width:64px;border-radius:10px 10px 3px 3px;overflow:hidden">
               <div style="width:100%;background:#BC6F52;height:{{ spendActualPx }}px"></div>
               <div style="width:100%;background:#C99A93;height:{{ spendExpectedPx }}px"></div>
             </div>
-            <div style="font-size:12px;font-weight:700">{{ t.navSpending }}</div>
+            <div style="font-size:11.5px;font-weight:600;color:#7A5941">{{ t.navSpending }}</div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;gap:16px;font-size:11px;color:#634031;margin-top:14px">
@@ -271,10 +301,10 @@
 
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;flex:1;min-width:0">
         <div style="margin-bottom:12px">
-          <div style="font-size:13px;font-weight:700">{{ t.savingsSpendingChart }}</div>
+          <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.savingsSpendingChart }}</div>
         </div>
         <sc-if value="{{ hasSavingsSpendingData }}" hint-placeholder-val="{{ true }}">
-        <svg viewBox="0 0 300 80" preserveAspectRatio="none" style="width:100%;height:170px;display:block">
+        <svg viewBox="0 0 300 80" preserveAspectRatio="none" style="width:100%;height:150px;display:block">
           <polyline points="{{ spendPoints }}" fill="none" stroke="#634031" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
           <polyline points="{{ savingsPoints }}" fill="none" stroke="#4F5B49" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
           <circle cx="290" cy="{{ spendLastY }}" r="3.5" fill="#634031"></circle>
@@ -285,7 +315,7 @@
         </div>
         </sc-if>
         <sc-if value="{{ noSavingsSpendingData }}" hint-placeholder-val="{{ false }}">
-        <div style="height:170px;display:flex;align-items:center;justify-content:center;text-align:center">
+        <div style="height:150px;display:flex;align-items:center;justify-content:center;text-align:center">
           <div style="font-size:12px;color:#7A5941;max-width:220px;line-height:1.5">{{ t.savingsSpendingEmptyText }}</div>
         </div>
         </sc-if>
@@ -296,16 +326,16 @@
       </div>
     </div>
 
-    <div style="display:flex;gap:20px">
+    <div style="display:flex;gap:20px;align-items:stretch">
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px">{{ t.spendingByCategory }} {{ monthLabel }}</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.spendingByCategory }} {{ monthLabel }}</div>
         <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
           <div style="margin-bottom:12px;cursor:pointer" onClick="{{ cat.toggle }}">
             <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
-              <span>{{ cat.label }}</span>
+              <span style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:{{ cat.color }};display:inline-block;flex:none"></span>{{ cat.label }}</span>
               <span style="font-variant-numeric:tabular-nums;font-weight:600;color:#BC6F52">-€ {{ cat.amountStr }}</span>
             </div>
-            <div style="height:7px;border-radius:4px;background:rgba(99,64,49,.18)"><div style="height:100%;border-radius:4px;background:#A7AD9B;width:{{ cat.pct }}%"></div></div>
+            <div style="height:7px;border-radius:4px;background:rgba(99,64,49,.18)"><div style="height:100%;border-radius:4px;background:{{ cat.color }};width:{{ cat.pct }}%"></div></div>
             <sc-if value="{{ cat.expanded }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#634031;margin-top:5px">{{ t.biggestExpense }} {{ cat.top }}</div>
             </sc-if>
@@ -325,7 +355,7 @@
       </div>
 
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px">{{ t.recurringPayments }}</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.recurringPayments }}</div>
         <sc-for list="{{ recurring }}" as="r" hint-placeholder-count="4">
           <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:12.5px;gap:8px">
             <div style="min-width:0;flex:1">
@@ -349,39 +379,46 @@
     <sc-if value="{{ isIncome }}" hint-placeholder-val="{{ false }}">
       <sc-if value="{{ isShared }}" hint-placeholder-val="{{ false }}">
         <div style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
-          <div style="font-size:13px;font-weight:700;margin-bottom:10px">{{ t.calcJointIncomeLabel }}</div>
-          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px">{{ t.calcJointIncomeLabel }}</div>
+          <div class="joint-grid head">
+            <span>{{ t.colDescription }}</span>
+            <span>{{ t.colStatus }}</span>
+            <span class="col-r">{{ calcTableMeLabel }}</span>
+            <span class="col-r">{{ calcTablePartnerLabel }}</span>
+            <span class="col-r">{{ t.colTotal }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px">
             <sc-for list="{{ calcTableIncomeRows }}" as="sri" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:10px;background:#634031;border-radius:8px;padding:7px 10px">
-                <span style="font-size:12.5px;flex:1">{{ sri.name }}</span>
-                <span style="font-size:11px;color:#C7B49A">{{ sri.ownerLabel }}</span>
-                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B49A;width:56px;text-align:right">€ {{ sri.meStr }}</span>
-                <span style="font-size:12px;font-variant-numeric:tabular-nums;color:#C7B49A;width:56px;text-align:right">€ {{ sri.partnerStr }}</span>
-                <span style="font-size:12.5px;font-variant-numeric:tabular-nums;font-weight:600;width:60px;text-align:right">€ {{ sri.totalStr }}</span>
+              <div class="joint-grid" style="background:#634031;border-radius:8px;padding:9px 10px">
+                <span style="font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sri.name }}</span>
+                <span style="font-size:10.5px;color:#C7B49A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ sri.ownerLabel }}</span>
+                <span class="col-r" style="font-size:12px;color:#C7B49A">€ {{ sri.meStr }}</span>
+                <span class="col-r" style="font-size:12px;color:#C7B49A">€ {{ sri.partnerStr }}</span>
+                <span class="col-r" style="font-size:12.5px;font-weight:600">€ {{ sri.totalStr }}</span>
               </div>
             </sc-for>
             <sc-if value="{{ noCalcTableIncomeRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#C7B49A">{{ t.calcIncomeItemsEmpty }}</div>
             </sc-if>
           </div>
-          <div style="display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid #F6F1E744">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:12px;border-top:1px solid #F6F1E744">
             <span style="font-size:13px;font-weight:700">{{ t.calcIncomeTotalLabel }}</span>
-            <span style="font-size:16px;font-weight:700">€ {{ calcTableIncomeTotalStr }}</span>
+            <span style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ calcTableIncomeTotalStr }}</span>
           </div>
         </div>
       </sc-if>
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
-          <div style="font-size:13px;font-weight:700">{{ t.addIncomeHeader }}</div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <button onClick="{{ toggleIncomeCategoryForm }}" style="border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addCategory }}</button>
-            <div style="font-size:13px;font-weight:600">{{ t.thisMonthColon }} {{ incomeTotalStr }}</div>
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.addIncomeHeader }}</div>
+            <div style="font-size:12.5px;font-weight:600;color:#634031">{{ t.thisMonthColon }} {{ incomeTotalStr }}</div>
           </div>
+          <button onClick="{{ toggleIncomeCategoryForm }}" style="border:none;background:transparent;color:#7A5941;font-size:11.5px;font-weight:600;text-decoration:underline;padding:0">{{ t.addCategory }}</button>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newIncomeSource }}" onChange="{{ setNewIncomeSource }}" style="width:120px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
-          <input type="text" inputmode="decimal" placeholder="{{ t.amountPlaceholder }}" value="{{ newIncomeAmount }}" onChange="{{ setNewIncomeAmount }}" style="width:90px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
-          <select value="{{ newIncomeCategory }}" onChange="{{ setNewIncomeCategory }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newIncomeSource }}" onChange="{{ setNewIncomeSource }}" style="height:32px;width:120px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
+          <input type="text" inputmode="decimal" placeholder="{{ t.amountPlaceholder }}" value="{{ newIncomeAmount }}" onChange="{{ setNewIncomeAmount }}" style="height:32px;width:90px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
+          <select value="{{ newIncomeCategory }}" onChange="{{ setNewIncomeCategory }}" style="height:32px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
             <option value="">{{ t.calcGeneralGroup }}</option>
             <sc-for list="{{ incomeCategoriesMerged }}" as="ic" hint-placeholder-count="5">
               <option value="{{ ic.id }}">{{ ic.label }}</option>
@@ -391,8 +428,10 @@
           <sc-if value="{{ noIncomeCategories }}" hint-placeholder-val="{{ false }}">
             <span style="font-size:11px;color:#7A5941;align-self:center">{{ t.noCategoryHint }}</span>
           </sc-if>
-          <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#634031;cursor:pointer"><input type="checkbox" checked="{{ newIncomeJoint }}" onChange="{{ setNewIncomeJoint }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
-          <button onClick="{{ addIncome }}" disabled="{{ addIncomeDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addPlus }}</button>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#634031;cursor:pointer;height:32px">
+            <input type="checkbox" checked="{{ newIncomeJoint }}" onChange="{{ setNewIncomeJoint }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}
+          </label>
+          <button onClick="{{ addIncome }}" disabled="{{ addIncomeDisabled }}" style="height:32px;border:none;border-radius:8px;padding:0 16px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7;box-sizing:border-box">{{ t.addPlus }}</button>
         </div>
 
         <sc-if value="{{ showIncomeCategoryForm }}" hint-placeholder-val="{{ false }}">
@@ -429,48 +468,53 @@
       </div>
 
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px">{{ t.incomeThisMonthHeader }}</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.incomeThisMonthHeader }}</div>
         <sc-if value="{{ incomeEntries.length }}" hint-placeholder-val="{{ true }}">
-          <div style="display:flex;align-items:center;gap:10px;padding-bottom:8px;font-size:9.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.05em">
-            <span style="width:52px;flex:none">{{ t.colNextCharge }}</span>
-            <span style="flex:1;min-width:60px">{{ t.colDescription }}</span>
-            <span style="width:90px;flex:none">{{ t.colCategory }}</span>
-            <span style="width:80px;flex:none;text-align:right">{{ t.colTotal }}</span>
-            <span style="width:90px;flex:none">{{ t.colStatus }}</span>
-            <span style="width:70px;flex:none"></span>
+          <div class="income-grid head">
+            <span>{{ t.colNextCharge }}</span>
+            <span>{{ t.colDescription }}</span>
+            <span>{{ t.colCategory }}</span>
+            <span class="col-amt">{{ t.colTotal }}</span>
+            <span>{{ t.colStatus }}</span>
+            <span></span>
           </div>
         </sc-if>
         <sc-if value="{{ incomeEntries.length }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ incomeEntries }}" as="inc" hint-placeholder-count="4">
-            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:13px">
-              <div style="width:52px;flex:none;color:#634031;font-size:11.5px">{{ inc.dateLabel }}</div>
+            <div class="income-grid row">
+              <div style="color:#634031;font-size:11.5px">{{ inc.dateLabel }}</div>
+
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
-                <div style="flex:1;min-width:60px;font-weight:600">{{ inc.source }}</div>
-                <div style="width:90px;flex:none">
-                  <sc-if value="{{ inc.categoryLabel }}" hint-placeholder-val="{{ false }}">
-                    <span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:{{ inc.categoryColor }};color:#F6F1E7">{{ inc.categoryLabel }}</span>
-                  </sc-if>
-                </div>
+                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ inc.source }}</div>
               </sc-if>
               <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
-                <input type="text" value="{{ inc.source }}" onChange="{{ inc.setEditSource }}" style="flex:1;min-width:80px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-                <select value="{{ inc.category }}" onChange="{{ inc.setEditCategory }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                <input type="text" value="{{ inc.source }}" onChange="{{ inc.setEditSource }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+              </sc-if>
+
+              <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
+                <sc-if value="{{ inc.categoryLabel }}" hint-placeholder-val="{{ false }}">
+                  <span class="chip" style="color:#F6F1E7;background:{{ inc.categoryColor }};justify-self:start">{{ inc.categoryLabel }}</span>
+                </sc-if>
+              </sc-if>
+              <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
+                <select value="{{ inc.category }}" onChange="{{ inc.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
                   <option value="">{{ t.calcGeneralGroup }}</option>
                   <sc-for list="{{ inc.editCategories }}" as="iec" hint-placeholder-count="5">
                     <option value="{{ iec.id }}">{{ iec.label }}</option>
                   </sc-for>
                 </select>
-                <input type="text" inputmode="decimal" value="{{ inc.amountStr }}" onChange="{{ inc.setEditAmount }}" style="width:64px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right">
               </sc-if>
-              <div style="width:80px;flex:none;text-align:right">
-                <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
-                  <span style="font-variant-numeric:tabular-nums;font-weight:600;color:#66715A">+€ {{ inc.amountStr }}</span>
-                </sc-if>
-              </div>
-              <div style="width:90px;flex:none">
-                <span onClick="{{ inc.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};white-space:nowrap">{{ inc.jointLabel }}</span>
-              </div>
-              <div style="width:70px;flex:none;text-align:right;white-space:nowrap">
+
+              <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
+                <div class="col-amt" style="font-weight:600;color:#66715A">+€ {{ inc.amountStr }}</div>
+              </sc-if>
+              <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
+                <input type="text" inputmode="decimal" value="{{ inc.amountStr }}" onChange="{{ inc.setEditAmount }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right;box-sizing:border-box">
+              </sc-if>
+
+              <span onClick="{{ inc.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};justify-self:start">{{ inc.jointLabel }}</span>
+
+              <div class="col-actions">
                 <button onClick="{{ inc.toggleEdit }}" style="border:none;background:transparent;color:#634031;font-size:11px;text-decoration:underline">{{ inc.editButtonLabel }}</button>
                 <button onClick="{{ inc.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button>
               </div>
@@ -483,58 +527,83 @@
       </div>
 
       <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px">
-        <div style="font-size:13px;font-weight:700;margin-bottom:14px">{{ t.recurringIncomeHeader }}</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.recurringIncomeHeader }}</div>
+        <sc-if value="{{ recurringIncome.length }}" hint-placeholder-val="{{ false }}">
+          <div class="income-grid head">
+            <span>{{ t.colNextCharge }}</span>
+            <span>{{ t.colDescription }}</span>
+            <span>{{ t.colCategory }}</span>
+            <span class="col-amt">{{ t.colTotal }}</span>
+            <span>{{ t.colStatus }}</span>
+            <span></span>
+          </div>
+        </sc-if>
         <sc-for list="{{ recurringIncome }}" as="ri" hint-placeholder-count="2">
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:12.5px;flex-wrap:wrap;gap:6px">
+          <div class="income-grid row">
+            <div style="color:#634031;font-size:11.5px">{{ ri.nextLabel }}</div>
+
             <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
-              <div>
-                <div style="font-weight:600">{{ ri.name }}
-                  <sc-if value="{{ ri.categoryLabel }}" hint-placeholder-val="{{ false }}">
-                    <span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:{{ ri.categoryColor }};color:#F6F1E7;margin-left:6px">{{ ri.categoryLabel }}</span>
-                  </sc-if>
-                </div>
-                <div style="color:#634031;font-size:11px;margin-top:2px">{{ t.next }} {{ ri.nextLabel }} · {{ ri.freqLabel }}</div>
+              <div style="overflow:hidden">
+                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ri.name }}</div>
+                <div style="color:#7A5941;font-size:10.5px;margin-top:1px">{{ ri.freqLabel }}</div>
               </div>
             </sc-if>
             <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
-              <input type="text" value="{{ ri.name }}" onChange="{{ ri.setEditName }}" style="min-width:80px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-              <select value="{{ ri.category }}" onChange="{{ ri.setEditCategory }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+              <input type="text" value="{{ ri.name }}" onChange="{{ ri.setEditName }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+            </sc-if>
+
+            <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ ri.categoryLabel }}" hint-placeholder-val="{{ false }}">
+                <span class="chip" style="color:#F6F1E7;background:{{ ri.categoryColor }};justify-self:start">{{ ri.categoryLabel }}</span>
+              </sc-if>
+            </sc-if>
+            <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
+              <select value="{{ ri.category }}" onChange="{{ ri.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
                 <option value="">{{ t.calcGeneralGroup }}</option>
                 <sc-for list="{{ ri.editCategories }}" as="riec" hint-placeholder-count="5">
                   <option value="{{ riec.id }}">{{ riec.label }}</option>
                 </sc-for>
               </select>
-              <sc-if value="{{ ri.editableDay }}" hint-placeholder-val="{{ true }}">
-                <span style="font-size:11px;color:#634031">{{ t.dayOfMonth }}</span>
-                <input type="text" inputmode="decimal" value="{{ ri.day }}" onChange="{{ ri.setEditDay }}" style="width:44px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-              </sc-if>
             </sc-if>
-            <div style="display:flex;align-items:center;gap:8px">
-              <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
-                <input type="text" inputmode="decimal" value="{{ ri.amountStr }}" onChange="{{ ri.setEditAmount }}" style="width:64px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right">
-              </sc-if>
-              <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
-                <div style="font-variant-numeric:tabular-nums;font-weight:600;color:#66715A">+€ {{ ri.amountStr }}</div>
-              </sc-if>
-              <span onClick="{{ ri.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ ri.jointBg }};color:{{ ri.jointColor }}">{{ ri.jointLabel }}</span>
+
+            <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
+              <div class="col-amt" style="font-weight:600;color:#66715A">+€ {{ ri.amountStr }}</div>
+            </sc-if>
+            <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
+              <input type="text" inputmode="decimal" value="{{ ri.amountStr }}" onChange="{{ ri.setEditAmount }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right;box-sizing:border-box">
+            </sc-if>
+
+            <span onClick="{{ ri.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ ri.jointBg }};color:{{ ri.jointColor }};justify-self:start">{{ ri.jointLabel }}</span>
+
+            <div class="col-actions">
               <button onClick="{{ ri.toggleEdit }}" style="border:none;background:transparent;color:#634031;font-size:11px;text-decoration:underline">{{ ri.editButtonLabel }}</button>
               <button onClick="{{ ri.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button>
             </div>
+
+            <sc-if value="{{ ri.isEditing }}" hint-placeholder-val="{{ false }}">
+              <sc-if value="{{ ri.editableDay }}" hint-placeholder-val="{{ true }}">
+                <div style="grid-column:1/-1;display:flex;align-items:center;gap:8px;padding-top:2px">
+                  <span style="font-size:11px;color:#634031">{{ t.dayOfMonth }}</span>
+                  <input type="text" inputmode="decimal" value="{{ ri.day }}" onChange="{{ ri.setEditDay }}" style="width:44px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                </div>
+              </sc-if>
+            </sc-if>
           </div>
         </sc-for>
 
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(99,64,49,.18)">
+        <div style="margin-top:16px;padding-top:16px;border-top:1px dashed rgba(99,64,49,.3)">
+          <div style="font-size:11px;font-weight:600;color:#7A5941;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">{{ t.addIncomeSourceBtn }}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-            <input type="text" placeholder="{{ t.whichIncomePlaceholder }}" value="{{ newRecIncomeName }}" onChange="{{ setNewRecIncomeName }}" style="width:110px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
-            <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newRecIncomeAmount }}" onChange="{{ setNewRecIncomeAmount }}" style="width:74px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
-            <select value="{{ newRecIncomeCategory }}" onChange="{{ setNewRecIncomeCategory }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
+            <input type="text" placeholder="{{ t.whichIncomePlaceholder }}" value="{{ newRecIncomeName }}" onChange="{{ setNewRecIncomeName }}" style="height:32px;width:110px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
+            <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newRecIncomeAmount }}" onChange="{{ setNewRecIncomeAmount }}" style="height:32px;width:74px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
+            <select value="{{ newRecIncomeCategory }}" onChange="{{ setNewRecIncomeCategory }}" style="height:32px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
               <option value="">{{ t.calcGeneralGroup }}</option>
               <sc-for list="{{ incomeCategoriesMerged }}" as="ric" hint-placeholder-count="5">
                 <option value="{{ ric.id }}">{{ ric.label }}</option>
               </sc-for>
               <option value="__add_category__">+ {{ t.addCategory }}...</option>
             </select>
-            <select value="{{ newRecIncomeFrequency }}" onChange="{{ setNewRecIncomeFrequency }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
+            <select value="{{ newRecIncomeFrequency }}" onChange="{{ setNewRecIncomeFrequency }}" style="height:32px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
               <option value="monthly">{{ t.monthlyOnDayOption }}</option>
               <option value="every4weeks">{{ t.every4WeeksOption }}</option>
             </select>
@@ -542,14 +611,14 @@
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <sc-if value="{{ isRecIncomeFreqMonthly }}" hint-placeholder-val="{{ true }}">
               <span style="font-size:12px;color:#634031">{{ t.dayOfMonth }}</span>
-              <input type="text" inputmode="decimal" min="1" max="31" placeholder="e.g. 25" value="{{ newRecIncomeDay }}" onChange="{{ setNewRecIncomeDay }}" style="width:56px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
+              <input type="text" inputmode="decimal" min="1" max="31" placeholder="e.g. 25" value="{{ newRecIncomeDay }}" onChange="{{ setNewRecIncomeDay }}" style="height:32px;width:56px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
             </sc-if>
             <sc-if value="{{ isRecIncomeFreqEvery4Weeks }}" hint-placeholder-val="{{ false }}">
               <span style="font-size:12px;color:#634031">{{ t.firstDateLabel }}</span>
-              <input type="date" value="{{ newRecIncomeStartDate }}" onChange="{{ setNewRecIncomeStartDate }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
+              <input type="date" value="{{ newRecIncomeStartDate }}" onChange="{{ setNewRecIncomeStartDate }}" style="height:32px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
             </sc-if>
-            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#634031;cursor:pointer"><input type="checkbox" checked="{{ newRecIncomeJoint }}" onChange="{{ setNewRecIncomeJoint }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
-            <button onClick="{{ addRecurringIncome }}" disabled="{{ addRecIncomeDisabled }}" style="margin-left:auto;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addIncomeSourceBtn }}</button>
+            <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#634031;cursor:pointer;height:32px"><input type="checkbox" checked="{{ newRecIncomeJoint }}" onChange="{{ setNewRecIncomeJoint }}" style="width:13px;height:13px">{{ t.shareVisibleLabel }}</label>
+            <button onClick="{{ addRecurringIncome }}" disabled="{{ addRecIncomeDisabled }}" style="margin-left:auto;height:32px;border:none;border-radius:8px;padding:0 16px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7;box-sizing:border-box">{{ t.addIncomeSourceBtn }}</button>
           </div>
         </div>
       </div>
@@ -727,7 +796,7 @@
                 </sc-if>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ tx.note }}</span>
               </div>
-              <div style="font-size:11px;color:#F6F1E7;background:{{ tx.categoryColor }};padding:3px 8px;border-radius:6px">{{ tx.categoryLabel }}</div>
+              <div class="chip" style="color:#F6F1E7;background:{{ tx.categoryColor }}">{{ tx.categoryLabel }}</div>
               <div style="width:70px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:#BC6F52">-€ {{ tx.amountStr }}</div>
               <button onClick="{{ tx.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button>
             </div>
@@ -747,34 +816,32 @@
           </div>
         </div>
         <sc-if value="{{ recurring.length }}" hint-placeholder-val="{{ false }}">
-          <div style="display:flex;align-items:flex-start;gap:10px;padding:0 0 8px;font-size:10.5px;font-weight:700;color:#7A5941;flex-wrap:wrap;line-height:1.3">
-            <span style="width:80px;flex:none">{{ t.colNextCharge }}</span>
-            <span style="flex:1;min-width:100px">{{ t.colDescription }}</span>
-            <span style="width:90px;flex:none">{{ t.colFrequency }}</span>
-            <span style="width:80px;flex:none">{{ t.colCategory }}</span>
-            <span style="width:150px;flex:none">{{ t.colStatus }}</span>
-            <span style="width:70px;text-align:right;flex:none">{{ t.colTotal }}</span>
-            <span style="width:60px;flex:none">{{ t.colActions }}</span>
+          <div class="fixed-grid head">
+            <span>{{ t.colNextCharge }}</span>
+            <span>{{ t.colDescription }}</span>
+            <span>{{ t.colFrequency }}</span>
+            <span>{{ t.colCategory }}</span>
+            <span>{{ t.colStatus }}</span>
+            <span class="col-amt">{{ t.colTotal }}</span>
+            <span></span>
           </div>
         </sc-if>
         <sc-for list="{{ recurring }}" as="r" hint-placeholder-count="4">
-          <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(99,64,49,.18);font-size:12.5px;flex-wrap:wrap">
-            <div style="width:70px;flex:none;color:#634031;font-size:11.5px">{{ t.next }} {{ r.nextLabel }}</div>
+          <div class="fixed-grid row">
+            <div style="color:#634031;font-size:11.5px">{{ t.next }} {{ r.nextLabel }}</div>
 
             <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-              <div style="flex:1;font-weight:600;color:#634031">{{ r.name }}</div>
-              <div style="font-size:11.5px;color:#634031;font-weight:600">{{ r.freqLabel }}</div>
-              <div style="font-size:11px;color:#F6F1E7;background:{{ r.categoryColor }};padding:3px 8px;border-radius:6px">{{ r.categoryLabel }}</div>
+              <div style="font-weight:600;color:#634031;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ r.name }}</div>
             </sc-if>
             <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
-              <input type="text" value="{{ r.name }}" onChange="{{ r.setEditName }}" style="flex:1;min-width:80px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-              <select value="{{ r.category }}" onChange="{{ r.setEditCategory }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-                <option value="">{{ t.calcGeneralGroup }}</option>
-                <sc-for list="{{ r.editCategories }}" as="ec" hint-placeholder-count="5">
-                  <option value="{{ ec.id }}">{{ ec.label }}</option>
-                </sc-for>
-              </select>
-              <select value="{{ r.frequency }}" onChange="{{ r.setEditFrequency }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+              <input type="text" value="{{ r.name }}" onChange="{{ r.setEditName }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+            </sc-if>
+
+            <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:11.5px;color:#634031;font-weight:600">{{ r.freqLabel }}</div>
+            </sc-if>
+            <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
+              <select value="{{ r.frequency }}" onChange="{{ r.setEditFrequency }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
                 <option value="monthly">{{ t.monthlyOnDayOption }}</option>
                 <option value="every4weeks">{{ t.every4WeeksOption }}</option>
                 <option value="every3months">{{ t.every3MonthsOption }}</option>
@@ -782,45 +849,66 @@
                 <option value="yearly">{{ t.yearlyOption }}</option>
                 <option value="flexible">{{ t.flexibleOption }}</option>
               </select>
-              <sc-if value="{{ r.editableDay }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:11px;color:#634031">{{ t.dayOfMonth }}</span>
-                <input type="text" inputmode="decimal" value="{{ r.day }}" onChange="{{ r.setEditDay }}" style="width:44px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-              </sc-if>
-              <sc-if value="{{ r.editableDateBased }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:11px;color:#634031">{{ t.firstChargeDate }}</span>
-                <input type="date" value="{{ r.startDate }}" onChange="{{ r.setEditStartDate }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-              </sc-if>
-              <sc-if value="{{ r.isFlexible }}" hint-placeholder-val="{{ false }}">
-                <span style="font-size:11px;color:#634031">{{ t.nextChargeDate }}</span>
-                <input type="date" onChange="{{ r.setEditFlexNext }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-              </sc-if>
-              <sc-if value="{{ r.showOwnerSelect }}" hint-placeholder-val="{{ false }}">
-                <select value="{{ r.ownerSelectValue }}" onChange="{{ r.setOwner }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-                  <option value="me">{{ r.myOwnerLabel }}</option>
-                  <option value="partner">{{ r.partnerOwnerLabel }}</option>
-                </select>
-              </sc-if>
             </sc-if>
 
             <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-              <span style="font-size:9.5px;font-weight:600;padding:3px 7px;border-radius:6px;background:{{ r.statusBg }};color:{{ r.statusColor }}">{{ r.statusLabel }}</span>
+              <span class="chip" style="color:#F6F1E7;background:{{ r.categoryColor }};justify-self:start">{{ r.categoryLabel }}</span>
             </sc-if>
             <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
-              <span onClick="{{ r.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ r.statusBg }};color:{{ r.statusColor }}">{{ t.calcJointLabel }}</span>
-              <sc-if value="{{ r.showVisibleToggle }}" hint-placeholder-val="{{ true }}">
-                <label style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:#634031;cursor:pointer"><input type="checkbox" checked="{{ r.visibleOn }}" onChange="{{ r.toggleVisible }}" style="width:12px;height:12px">{{ t.shareVisibleLabel }}</label>
-              </sc-if>
+              <select value="{{ r.category }}" onChange="{{ r.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+                <option value="">{{ t.calcGeneralGroup }}</option>
+                <sc-for list="{{ r.editCategories }}" as="ec" hint-placeholder-count="5">
+                  <option value="{{ ec.id }}">{{ ec.label }}</option>
+                </sc-for>
+              </select>
             </sc-if>
 
-            <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
-              <input type="text" inputmode="decimal" value="{{ r.amountStr }}" onChange="{{ r.setEditAmount }}" style="width:64px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right">
-            </sc-if>
             <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
-              <div style="width:70px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:#BC6F52">-€ {{ r.amountStr }}</div>
+              <span class="chip" style="color:{{ r.statusColor }};background:{{ r.statusBg }};justify-self:start">{{ r.statusLabel }}</span>
+            </sc-if>
+            <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span onClick="{{ r.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ r.statusBg }};color:{{ r.statusColor }}">{{ t.calcJointLabel }}</span>
+                <sc-if value="{{ r.showVisibleToggle }}" hint-placeholder-val="{{ true }}">
+                  <label style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:#634031;cursor:pointer;white-space:nowrap"><input type="checkbox" checked="{{ r.visibleOn }}" onChange="{{ r.toggleVisible }}" style="width:12px;height:12px">{{ t.shareVisibleLabel }}</label>
+                </sc-if>
+              </div>
             </sc-if>
 
+            <sc-if value="{{ r.notEditing }}" hint-placeholder-val="{{ true }}">
+              <div class="col-amt" style="font-weight:600;color:#BC6F52">-€ {{ r.amountStr }}</div>
+            </sc-if>
             <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ r.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button>
+              <input type="text" inputmode="decimal" value="{{ r.amountStr }}" onChange="{{ r.setEditAmount }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right;box-sizing:border-box">
+            </sc-if>
+
+            <div class="col-actions">
+              <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ r.remove }}" style="border:none;background:transparent;color:#634031;font-size:13px">✕</button>
+              </sc-if>
+            </div>
+
+            <sc-if value="{{ r.isEditing }}" hint-placeholder-val="{{ false }}">
+              <div style="grid-column:1/-1;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:2px">
+                <sc-if value="{{ r.editableDay }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11px;color:#634031">{{ t.dayOfMonth }}</span>
+                  <input type="text" inputmode="decimal" value="{{ r.day }}" onChange="{{ r.setEditDay }}" style="width:44px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                </sc-if>
+                <sc-if value="{{ r.editableDateBased }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11px;color:#634031">{{ t.firstChargeDate }}</span>
+                  <input type="date" value="{{ r.startDate }}" onChange="{{ r.setEditStartDate }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                </sc-if>
+                <sc-if value="{{ r.isFlexible }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11px;color:#634031">{{ t.nextChargeDate }}</span>
+                  <input type="date" onChange="{{ r.setEditFlexNext }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                </sc-if>
+                <sc-if value="{{ r.showOwnerSelect }}" hint-placeholder-val="{{ false }}">
+                  <select value="{{ r.ownerSelectValue }}" onChange="{{ r.setOwner }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                    <option value="me">{{ r.myOwnerLabel }}</option>
+                    <option value="partner">{{ r.partnerOwnerLabel }}</option>
+                  </select>
+                </sc-if>
+              </div>
             </sc-if>
           </div>
         </sc-for>
@@ -1052,14 +1140,16 @@
                 <div style="font-size:13px;color:#634031">{{ t.ofEuro }} <input type="text" inputmode="decimal" value="{{ g.target }}" onChange="{{ g.setTarget }}" style="width:64px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></div>
               </div>
 
-              <div style="height:7px;border-radius:4px;background:rgba(99,64,49,.18);overflow:hidden;margin-bottom:12px"><div style="height:100%;background:#66715A;width:{{ g.pct }}%"></div></div>
+              <div style="height:7px;border-radius:4px;background:rgba(99,64,49,.18);overflow:hidden;margin-bottom:14px"><div style="height:100%;background:#66715A;width:{{ g.pct }}%"></div></div>
 
-              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-                <span style="font-size:12px">€</span>
-                <input type="text" inputmode="decimal" step="0.01" value="{{ g.amount }}" onChange="{{ g.setAmount }}" style="width:44px;border:1px solid #63403155;border-radius:6px;padding:6px 4px;font-size:12px;background:transparent;color:#634031">
-                <button onClick="{{ g.withdraw }}" style="padding:7px 12px;border-radius:8px;border:1px solid #634031;background:transparent;color:#634031;font-size:12px;font-weight:600;white-space:nowrap">{{ t.removeBtn }}</button>
-                <button onClick="{{ g.deposit }}" style="padding:7px 12px;border-radius:8px;border:none;background:#5A3B2D;color:#F6F1E7;font-size:12px;font-weight:600;white-space:nowrap">{{ t.addPlus }}</button>
-                <button onClick="{{ g.toggleSchedule }}" style="margin-left:auto;padding:7px 12px;border-radius:8px;border:1px dashed #634031;background:transparent;color:#634031;font-size:12px;font-weight:600;white-space:nowrap">{{ t.scheduleSavingsBtn }}</button>
+              <div style="border-top:1px solid rgba(99,64,49,.14);padding-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <div style="display:flex;align-items:center;gap:4px;border:1px solid rgba(99,64,49,.3);border-radius:8px;padding:0 8px;height:34px;box-sizing:border-box">
+                  <span style="font-size:12px;color:#634031">€</span>
+                  <input type="text" inputmode="decimal" step="0.01" value="{{ g.amount }}" onChange="{{ g.setAmount }}" style="width:44px;border:none;background:transparent;color:#634031;font-size:12px;padding:0">
+                </div>
+                <button onClick="{{ g.withdraw }}" style="height:34px;padding:0 14px;border-radius:8px;border:1px solid #634031;background:transparent;color:#634031;font-size:12px;font-weight:600;white-space:nowrap;box-sizing:border-box">{{ t.removeBtn }}</button>
+                <button onClick="{{ g.deposit }}" style="height:34px;padding:0 14px;border-radius:8px;border:none;background:#5A3B2D;color:#F6F1E7;font-size:12px;font-weight:600;white-space:nowrap;box-sizing:border-box">{{ t.addPlus }}</button>
+                <button onClick="{{ g.toggleSchedule }}" style="margin-left:auto;height:34px;padding:0 14px;border-radius:8px;border:1px dashed #634031;background:transparent;color:#634031;font-size:12px;font-weight:600;white-space:nowrap;box-sizing:border-box">{{ t.scheduleSavingsBtn }}</button>
               </div>
 
               <sc-if value="{{ g.scheduleOpen }}" hint-placeholder-val="{{ false }}">
@@ -3898,8 +3988,8 @@ class Component extends DCLogic {
         const cat = fixedCatMap[r.category] || fixedCatMap.other || { label: t.calcGeneralGroup, color: '#634031' };
         // Single, clear sharing status instead of two badges shown at once.
         const statusLabel = r.joint ? t.calcJointLabel : (r.visible ? t.shareVisibleLabel : t.statusPrivate);
-        const statusBg = r.joint ? '#634031' : (r.visible ? 'rgba(216,199,171,.22)' : 'transparent');
-        const statusColor = r.joint ? '#F6F1E7' : '#634031';
+        const statusBg = r.joint ? '#634031' : (r.visible ? 'rgba(102,113,90,.22)' : 'transparent');
+        const statusColor = r.joint ? '#F6F1E7' : (r.visible ? '#4F5B49' : '#634031');
         return {
           ...r,
           amountStr: this.fmt(r.amount),
@@ -4051,8 +4141,8 @@ class Component extends DCLogic {
         categoryLabel: cat ? cat.label : '',
         categoryColor: cat ? cat.color : '#7A5941',
         jointLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
-        jointBg: isMirror ? '#7A5941' : (inc.joint ? 'rgba(216,199,171,.16)' : 'transparent'),
-        jointColor: '#F6F1E7',
+        jointBg: isMirror ? '#7A5941' : (inc.joint ? 'rgba(102,113,90,.22)' : 'transparent'),
+        jointColor: isMirror ? '#F6F1E7' : (inc.joint ? '#4F5B49' : '#7A5941'),
         toggleJoint: isMirror ? () => {} : () => this.toggleIncomeEntryJoint(inc.id),
         remove: isMirror ? () => {} : () => this.removeIncome(inc.id),
         isEditing, notEditing: !isEditing, isMirror,
@@ -4142,13 +4232,13 @@ class Component extends DCLogic {
       }));
     const jointPill = (joint) => ({
       jointLabel: joint ? t.calcJointLabel : t.calcMeLabel,
-      jointBg: joint ? 'rgba(216,199,171,.16)' : 'transparent',
+      jointBg: joint ? '#634031' : 'transparent',
       jointColor: joint ? '#F6F1E7' : '#7A5941'
     });
     const visiblePill = (visible, joint) => ({
       visibleLabel: (visible || joint) ? t.shareVisibleLabel : t.sharePrivateLabel,
-      visibleBg: (visible || joint) ? 'rgba(216,199,171,.16)' : 'transparent',
-      visibleColor: (visible || joint) ? '#F6F1E7' : '#7A5941',
+      visibleBg: (visible || joint) ? 'rgba(102,113,90,.22)' : 'transparent',
+      visibleColor: (visible || joint) ? '#4F5B49' : '#7A5941',
       visibleDisabled: !!joint
     });
     const calcOtherCategoryRows = this.getOtherCatEntries(ws).filter(e => !e.joint).map(e => {
@@ -4372,8 +4462,8 @@ class Component extends DCLogic {
           categoryLabel: cat ? cat.label : '',
           categoryColor: cat ? cat.color : '#7A5941',
           jointLabel: isMirror ? ownerLabelFor(ri.mirrorOwner) : (ri.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
-          jointBg: isMirror ? '#7A5941' : (ri.joint ? 'rgba(216,199,171,.16)' : 'transparent'),
-          jointColor: '#F6F1E7',
+          jointBg: isMirror ? '#7A5941' : (ri.joint ? 'rgba(102,113,90,.22)' : 'transparent'),
+          jointColor: isMirror ? '#F6F1E7' : (ri.joint ? '#4F5B49' : '#7A5941'),
           toggleJoint: isMirror ? () => {} : () => this.toggleRecurringIncomeJoint(ri.id),
           remove: isMirror ? () => {} : () => this.removeRecurringIncome(ri.id),
           isEditing, notEditing: !isEditing, isMirror,
@@ -4527,10 +4617,10 @@ class Component extends DCLogic {
       isShared: this.state.mode === 'shared',
       setModePersonal: () => this.setMode('personal'),
       setModeShared: () => this.setMode('shared'),
-      personalModeBg: this.state.mode === 'personal' ? 'rgba(216,199,171,.16)' : 'transparent',
-      personalModeColor: this.state.mode === 'personal' ? '#F6F1E7' : 'rgba(246,241,231,.55)',
-      sharedModeBg: this.state.mode === 'shared' ? 'rgba(216,199,171,.16)' : 'transparent',
-      sharedModeColor: this.state.mode === 'shared' ? '#F6F1E7' : 'rgba(246,241,231,.55)',
+      personalModeBg: this.state.mode === 'personal' ? '#D8C7AB' : 'transparent',
+      personalModeColor: this.state.mode === 'personal' ? '#3A261D' : 'rgba(246,241,231,.45)',
+      sharedModeBg: this.state.mode === 'shared' ? '#D8C7AB' : 'transparent',
+      sharedModeColor: this.state.mode === 'shared' ? '#3A261D' : 'rgba(246,241,231,.45)',
       accounts,
       accountsTotalStr: this.fmt(accountsTotal),
       addAccount: () => this.addAccount(),
