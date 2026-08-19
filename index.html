@@ -89,6 +89,10 @@
   .grip-trend-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
   .grip-trend-line{width:20px;border-top:2px solid #76564C;display:inline-block}
   .grip-trend-line.expected{border-top-width:1.5px;border-top-style:dashed;opacity:.72}
+  .grip-category-split-bar{height:9px;border-radius:5px;background:rgba(99,64,49,.16);display:flex;overflow:hidden}
+  .grip-category-segment{height:100%;box-sizing:border-box;transition:width .18s ease}
+  .grip-category-segment-solo{background:color-mix(in srgb,var(--category-color) 52%,var(--grip-bone));box-shadow:inset -1px 0 rgba(246,241,231,.82)}
+  .grip-category-segment-shared{background:color-mix(in srgb,var(--category-color) 90%,var(--grip-rich-brown-dark))}
   .grip-overview-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:12px;row-gap:5px;font-size:10.5px;color:var(--grip-chestnut);margin-top:14px}
   .grip-overview-legend>div{display:contents}
   .grip-overview-legend span{white-space:nowrap}
@@ -188,7 +192,7 @@
   .grip-overview-balance-amount,.grip-overview-goal-current{font-family:inherit;font-weight:700!important;font-variant-numeric:tabular-nums}
   .grip-income-spend-value,.grip-overview-utility [style*="font-variant-numeric"]{font-family:inherit;font-weight:600!important;font-variant-numeric:tabular-nums}
   .grip-overview-balance-details .grip-overview-metric,.grip-overview-balance-details>div:last-child,.grip-overview-goal-target,.grip-overview-goal-progress-meta,.grip-income-spend-detail-amount,.grip-overview-legend{font-family:inherit;font-weight:500!important;font-variant-numeric:tabular-nums}
-  .grip-sidebar{width:268px;flex:none;align-self:flex-start;position:sticky;top:30px;height:calc(100vh - 60px);max-height:calc(100vh - 60px);background:var(--grip-rich-brown);padding:24px 22px 20px;display:flex;flex-direction:column;gap:16px;color:var(--grip-bone);box-sizing:border-box;overflow:hidden;transition:width .22s ease,padding .22s ease,opacity .16s ease;z-index:15}
+  .grip-sidebar{width:268px;flex:none;position:fixed;inset:0 auto 0 0;height:100vh;height:100dvh;max-height:100dvh;background:var(--grip-rich-brown);padding:24px 22px 20px;display:flex;flex-direction:column;gap:16px;color:var(--grip-bone);box-sizing:border-box;overflow:hidden;transition:width .22s ease,padding .22s ease,opacity .16s ease;z-index:15}
   .grip-sidebar>div:nth-child(3){flex:1 1 auto;min-height:0;gap:2px!important}
   .grip-sidebar>div:nth-child(3)>div{padding:8px 12px!important}
   .grip-sidebar>div:last-child{flex:0 0 auto;margin-top:auto!important}
@@ -196,9 +200,11 @@
   .grip-sidebar-toggle{position:absolute;top:12px;left:248px;z-index:20;width:30px;height:30px;border:1px solid rgba(99,64,49,.20);border-radius:8px;background:var(--grip-bone);color:var(--grip-rich-brown);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 3px 10px rgba(58,38,29,.12);transition:left .22s ease}
   .grip-sidebar-toggle.is-closed{left:12px}
   .grip-main{flex:1;padding:30px 34px 34px;min-width:0;transition:padding-left .22s ease}
+  .grip-main.sidebar-open{margin-left:268px}
   .grip-main.sidebar-closed{padding-left:54px}
   @media (max-width:979px){
     .grip-sidebar.is-open{position:fixed;inset:0 auto 0 0;height:100dvh;max-height:100dvh;box-shadow:8px 0 24px rgba(58,38,29,.18)}
+    .grip-main.sidebar-open{margin-left:0}
   }
   @media (max-height:560px){.grip-sidebar{overflow-y:auto;gap:10px}.grip-sidebar>div:nth-child(3)>div{padding:6px 12px!important}}
   .dv-card-wrap{margin:0 auto}
@@ -557,8 +563,8 @@
         <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.spendingByCategory }} {{ currentMonthFullName }}</div>
         <sc-if value="{{ showCategorySplitLegend }}" hint-placeholder-val="{{ true }}">
           <div style="display:flex;gap:14px;align-items:center;margin:-5px 0 14px;font-size:10.5px;color:#725345">
-            <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:5px;border-radius:3px;background:#8A6855;opacity:.48"></span>{{ categorySplitSoloLabel }}</span>
-            <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:5px;border-radius:3px;background:#8A6855"></span>{{ categorySplitSharedLabel }}</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:7px;border-radius:4px;background:color-mix(in srgb,#8A6855 52%,var(--grip-bone))"></span>{{ categorySplitSoloLabel }}</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:7px;border-radius:4px;background:color-mix(in srgb,#8A6855 90%,var(--grip-rich-brown-dark))"></span>{{ categorySplitSharedLabel }}</span>
           </div>
         </sc-if>
         <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="5">
@@ -567,9 +573,9 @@
               <span style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:{{ cat.color }};display:inline-block;flex:none"></span>{{ cat.label }}</span>
               <span style="font-variant-numeric:tabular-nums;font-weight:600;color:#BC6F52">-€ {{ cat.amountStr }}</span>
             </div>
-            <div style="height:7px;border-radius:4px;background:rgba(99,64,49,.18);display:flex;overflow:hidden">
-              <div style="height:100%;background:{{ cat.color }};width:{{ cat.soloPct }}%;opacity:.48"></div>
-              <div style="height:100%;background:{{ cat.color }};width:{{ cat.sharedPct }}%"></div>
+            <div class="grip-category-split-bar" style="--category-color:{{ cat.color }}">
+              <div class="grip-category-segment grip-category-segment-solo" style="width:{{ cat.soloPct }}%"></div>
+              <div class="grip-category-segment grip-category-segment-shared" style="width:{{ cat.sharedPct }}%"></div>
             </div>
             <sc-if value="{{ cat.expanded }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#634031;margin-top:5px">{{ t.biggestExpense }} {{ cat.top }}</div>
@@ -1648,7 +1654,7 @@
         <input id="calc-scenario-month" type="month" value="{{ calcSelectedMonth }}" onInput="{{ setCalcSelectedMonth }}" class="grip-control" style="width:160px">
       </div>
 
-      <sc-if value="{{ calcIsFutureScenario }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ calcShowScenarioEditor }}" hint-placeholder-val="{{ false }}">
         <div class="grip-surface" style="margin-bottom:20px">
           <sc-for list="{{ calcScenarioGroups }}" as="scenarioGroup" hint-placeholder-count="3">
             <div style="margin-bottom:14px">
@@ -2018,7 +2024,7 @@
           </div>
         </div>
 
-        <sc-if value="{{ showCalcBulkEdit }}" hint-placeholder-val="{{ false }}">
+        <sc-if value="{{ showCalcStandardBulkEdit }}" hint-placeholder-val="{{ false }}">
           <div style="background:#F6F1E7;border-radius:16px;padding:18px 20px;margin-bottom:20px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
               <span style="font-size:13px;font-weight:700">{{ t.calcEditAllLabel }}</span>
@@ -5658,6 +5664,8 @@ class Component extends DCLogic {
       calcSelectedMonthLabel: this.tf('Calculation month', 'Berekeningsmaand', 'Berechnungsmonat', 'Mois de calcul', 'Mes de cálculo'),
       calcScenarioPrefillSummary: (() => { const scenario = (this.state.calcScenarios || {})[this.state.calcSelectedMonth]; return scenario ? this.tf(`${(scenario.recurringIncome || []).length} income · ${(scenario.fixedExpenses || []).length} fixed · ${(scenario.automaticSavings || []).length} automatic savings`, `${(scenario.recurringIncome || []).length} inkomen · ${(scenario.fixedExpenses || []).length} vaste lasten · ${(scenario.automaticSavings || []).length} automatisch sparen`, `${(scenario.recurringIncome || []).length} Einkommen · ${(scenario.fixedExpenses || []).length} Fixkosten · ${(scenario.automaticSavings || []).length} automatisches Sparen`, `${(scenario.recurringIncome || []).length} revenus · ${(scenario.fixedExpenses || []).length} charges fixes · ${(scenario.automaticSavings || []).length} épargne automatique`, `${(scenario.recurringIncome || []).length} ingresos · ${(scenario.fixedExpenses || []).length} gastos fijos · ${(scenario.automaticSavings || []).length} ahorro automático`) : ''; })(),
       calcIsFutureScenario: this.state.calcSelectedMonth > this.todayStr().slice(0, 7),
+      calcShowScenarioEditor: this.state.calcSelectedMonth > this.todayStr().slice(0, 7) && (calcIsPersonalMode || this.state.showCalcBulkEdit),
+      showCalcStandardBulkEdit: this.state.showCalcBulkEdit && this.state.calcSelectedMonth <= this.todayStr().slice(0, 7),
       calcScenarioGroups: (() => {
         const scenario = (this.state.calcScenarios || {})[this.state.calcSelectedMonth] || {};
         const editableRow = (groupKey, item, recurring) => ({
