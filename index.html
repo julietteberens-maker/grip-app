@@ -41,7 +41,9 @@
     --grip-control-height:32px;
     --grip-chip-height:22px;
   }
-  body{margin:0;background:var(--grip-bone);font-family:'Geist',-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;padding:48px 24px;box-sizing:border-box;overflow-x:auto}
+  body{margin:0;background:var(--grip-bone);font-family:'Geist',-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;padding:32px clamp(12px,2vw,28px);box-sizing:border-box;overflow-x:hidden}
+  html,body{scrollbar-width:none}
+  body::-webkit-scrollbar{display:none}
   .grip-surface{background:var(--grip-limestone);border-radius:var(--grip-radius-xl);padding:20px 22px;margin-bottom:20px}
   .grip-surface-card{background:var(--grip-bone);border:1px solid var(--grip-border);border-radius:var(--grip-radius-xl)}
   .grip-btn{min-height:var(--grip-control-height);border-radius:var(--grip-radius-md);padding:6px 12px;font:600 12px/1 'Geist',-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
@@ -199,7 +201,7 @@
   .grip-sidebar.is-closed{width:0;padding-left:0;padding-right:0;opacity:0;overflow:hidden;pointer-events:none}
   .grip-sidebar-toggle{position:absolute;top:12px;left:248px;z-index:20;width:30px;height:30px;border:1px solid rgba(99,64,49,.20);border-radius:8px;background:var(--grip-bone);color:var(--grip-rich-brown);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 3px 10px rgba(58,38,29,.12);transition:left .22s ease}
   .grip-sidebar-toggle.is-closed{left:12px}
-  .grip-main{flex:1;padding:30px 34px 34px;min-width:0;transition:padding-left .22s ease}
+  .grip-main{flex:1;padding:28px clamp(22px,2.4vw,40px) 34px;min-width:0;max-width:100%;box-sizing:border-box;overflow-x:hidden;transition:padding-left .22s ease}
   .grip-main.sidebar-open{margin-left:268px}
   .grip-main.sidebar-closed{padding-left:54px}
   @media (max-width:979px){
@@ -207,7 +209,7 @@
     .grip-main.sidebar-open{margin-left:0}
   }
   @media (max-height:560px){.grip-sidebar{overflow-y:auto;gap:10px}.grip-sidebar>div:nth-child(3)>div{padding:6px 12px!important}}
-  .dv-card-wrap{margin:0 auto}
+  .dv-card-wrap{width:min(1480px,100%)!important;max-width:100%!important;margin:0 auto;border-right:0!important;box-sizing:border-box}
   button{cursor:pointer;font-family:inherit}
   input,select{font-family:inherit}
   input[type="text" inputmode="decimal"]::-webkit-outer-spin-button,input[type="text" inputmode="decimal"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -250,9 +252,34 @@
   .grip-income-recurring{background:#F0EBE2!important;border:1px solid rgba(99,64,49,.11);box-shadow:0 4px 12px rgba(58,38,29,.045);border-radius:12px!important}
   .grip-income-recurring-head{padding-bottom:13px;border-bottom:1px solid rgba(99,64,49,.13);position:relative}
   .grip-income-recurring-head:after{content:"";position:absolute;left:0;bottom:-1px;width:52px;height:2px;background:#A97958}
+  .grip-expense-page-order{display:flex;flex-direction:column}
+  .grip-expense-variable-summary{order:10}
+  .grip-expense-shared-overview{order:11}
+  .grip-expense-transactions-title{order:12;margin:4px 2px 9px;font-size:13px;font-weight:700;color:#3A261D}
+  .grip-expense-variable-filters{order:13;margin-bottom:0!important;border-radius:14px 14px 0 0!important;border-bottom:1px solid rgba(99,64,49,.12);flex-wrap:wrap!important;overflow-x:visible!important;row-gap:8px!important}
+  .grip-expense-variable-filters>span:last-child{margin-left:0!important}
+  .grip-expense-variable-list{order:14;margin-bottom:14px!important;border-radius:0 0 14px 14px!important;padding-top:10px!important}
+  .grip-expense-variable-add{order:15;padding:14px 16px!important;border-radius:12px!important;margin-bottom:18px!important}
+  .grip-expense-variable-add>div:first-child{margin-bottom:10px!important}
+  .grip-expense-tools-title{order:19;margin:8px 2px 9px;font-size:11px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.05em}
+  .grip-expense-history{order:20}
+  .grip-expense-fixed{order:21}
+  .grip-expense-automatic{order:30}
+  .grip-expense-tool{margin:0 0 10px;border:1px solid rgba(99,64,49,.14);border-radius:12px;background:#EEE6D8;overflow:hidden}
+  .grip-expense-tool>summary{list-style:none;cursor:pointer;padding:12px 16px;font-size:12.5px;font-weight:700;color:#3A261D;display:flex;align-items:center;justify-content:space-between}
+  .grip-expense-tool>summary::-webkit-details-marker{display:none}
+  .grip-expense-tool>summary:after{content:'+';font-size:16px;font-weight:500;color:#7A5941}
+  .grip-expense-tool[open]>summary:after{content:'−'}
+  .grip-expense-tool[open]>summary{border-bottom:1px solid rgba(99,64,49,.12)}
+  .grip-expense-tool .grip-expense-tool-body{margin:0!important;border-radius:0!important;box-shadow:none!important}
+  .grip-expense-history .grip-expense-tool-body>div:first-child{display:none}
   .grip-income-edit{background:#F6F1E7!important;box-shadow:0 2px 6px rgba(58,38,29,.05);border-radius:7px!important}
   .grip-income-utility{margin:16px -8px -6px!important;padding:15px 10px 9px!important;border-top:1px solid rgba(99,64,49,.10)!important;border-radius:8px;background:#E5DAC9}
   .grip-income-history{background:#F4EFE8!important;border:1px solid rgba(99,64,49,.09);border-left:3px solid #9B7467;border-radius:12px!important}
+  .grip-income-entry-legacy{display:none!important}
+  .grip-income-entry-unified{margin-top:20px;padding:18px 20px;background:#E5DAC9;border:1px solid rgba(99,64,49,.12);border-radius:12px;position:relative;box-shadow:0 4px 12px rgba(58,38,29,.045)}
+  .grip-income-entry-unified-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:13px;margin-bottom:14px;border-bottom:1px solid rgba(99,64,49,.13)}
+  .grip-income-entry-unified-fields{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .grip-income-visible-toggle{padding:4px 8px!important;border-radius:7px;background:#E3E7DE;color:#55634B!important;font-weight:600;border:1px solid rgba(102,113,90,.16);min-height:28px;height:28px!important;box-sizing:border-box}
   .grip-income-visible-toggle input{accent-color:#71806A}
   .grip-income-action .grip-btn-primary,.grip-income-utility button{box-shadow:0 4px 10px rgba(90,59,45,.16)}
@@ -648,7 +675,7 @@
           </div>
         </div>
       </sc-if>
-      <div class="grip-income-action" style="background:#D8C7AB;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
+      <div class="grip-income-action grip-income-entry-legacy" style="background:#D8C7AB;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
         <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
           <div style="display:flex;align-items:baseline;gap:10px">
             <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.addIncomeHeader }}</div>
@@ -724,10 +751,10 @@
           <sc-for list="{{ incomeEntries }}" as="inc" hint-placeholder-count="4">
             <div class="income-current-grid row">
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="true">
-                <div style="color:#634031;font-size:11.5px">{{ inc.dateLabel }}</div>
+                <div style="display:flex;flex-direction:column;gap:2px;color:#634031;font-size:11.5px"><span>{{ inc.dateLabel }}</span><span style="font-size:9.5px;font-weight:600;color:#66715A">{{ inc.receiptLabel }}</span></div>
               </sc-if>
               <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="false">
-                <input type="date" value="{{ inc.date }}" onChange="{{ inc.setEditDate }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px;font-size:10px;background:#F6F1E7;color:#634031;box-sizing:border-box">
+                <input type="date" value="{{ inc.date }}" onInput="{{ inc.setEditDate }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px;font-size:10px;background:#F6F1E7;color:#634031;box-sizing:border-box">
               </sc-if>
 
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
@@ -807,7 +834,7 @@
         </sc-if>
         <sc-for list="{{ recurringIncome }}" as="ri" hint-placeholder-count="2">
           <div class="income-grid row">
-            <div style="color:#634031;font-size:11.5px">{{ ri.nextLabel }}</div>
+            <div style="display:flex;flex-direction:column;gap:2px;color:#634031;font-size:11.5px"><span>{{ ri.nextLabel }}</span><span style="font-size:9.5px;font-weight:600;color:#9A7B65">{{ ri.timingLabel }}</span></div>
 
             <sc-if value="{{ ri.notEditing }}" hint-placeholder-val="{{ true }}">
               <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ ri.name }}</div>
@@ -880,7 +907,7 @@
           </div>
         </sc-for>
 
-        <div class="grip-income-utility" style="margin-top:16px;padding-top:16px;border-top:1px dashed rgba(99,64,49,.3)">
+        <div class="grip-income-utility grip-income-entry-legacy" style="margin-top:16px;padding-top:16px;border-top:1px dashed rgba(99,64,49,.3)">
           <div style="font-size:11px;font-weight:600;color:#7A5941;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">{{ t.addIncomeSourceBtn }}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
             <input type="text" placeholder="{{ t.whichIncomePlaceholder }}" value="{{ newRecIncomeName }}" onChange="{{ setNewRecIncomeName }}" onKeyDown="{{ onRecurringIncomeKeyDown }}" style="height:32px;width:110px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:0 10px;font-size:12px;background:#D8C7AB;color:#634031;box-sizing:border-box">
@@ -936,7 +963,7 @@
                   <sc-if value="{{ ih.noItems }}" hint-placeholder-val="{{ false }}">
                     <div style="font-size:11px;color:#7A5941">{{ t.historyNoItemsYet }}</div>
                   </sc-if>
-                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+                  <div class="grip-income-entry-legacy" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
                     <input type="text" placeholder="{{ t.historyItemNamePlaceholder }}" value="{{ newIncomeHistoryItemName }}" onChange="{{ setNewIncomeHistoryItemName }}" onKeyDown="{{ onIncomeHistoryItemKeyDown }}" style="flex:1;min-width:90px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#F6F1E7;color:#634031">
                     <input type="date" title="{{ t.dateLabel }}" value="{{ newIncomeHistoryItemDate }}" onChange="{{ setNewIncomeHistoryItemDate }}" onKeyDown="{{ onIncomeHistoryItemKeyDown }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#F6F1E7;color:#634031">
                     <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newIncomeHistoryItemAmount }}" onChange="{{ setNewIncomeHistoryItemAmount }}" onKeyDown="{{ onIncomeHistoryItemKeyDown }}" style="width:90px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#F6F1E7;color:#634031">
@@ -950,7 +977,7 @@
             <div style="font-size:11.5px;color:#7A5941">{{ t.historyLogNoEntries }}</div>
           </sc-if>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="grip-income-entry-legacy" style="display:flex;gap:8px;flex-wrap:wrap">
           <select value="{{ newIncomeHistoryMonth }}" onChange="{{ setNewIncomeHistoryMonth }}" style="flex:1;min-width:130px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
             <option value="">{{ t.historyLogMonthPlaceholder }}</option>
             <sc-for list="{{ pastMonthOptions }}" as="pmo" hint-placeholder-count="6">
@@ -960,10 +987,42 @@
           <button onClick="{{ addIncomeHistoryMonth }}" disabled="{{ addIncomeHistoryMonthDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">+</button>
         </div>
       </div>
+
+      <div class="grip-income-entry-unified">
+        <div class="grip-income-entry-unified-head">
+          <div style="font-size:13px;font-weight:700;color:#3A261D">{{ incomeAddUnifiedTitle }}</div>
+          <select value="{{ incomeAddType }}" onChange="{{ setIncomeAddType }}" aria-label="{{ incomeAddTypeLabel }}" class="grip-control" style="width:190px;background:#F6F1E7">
+            <option value="recurring">{{ incomeAddRecurringLabel }}</option>
+            <option value="variable">{{ incomeAddVariableLabel }}</option>
+            <option value="history">{{ incomeAddHistoryLabel }}</option>
+          </select>
+        </div>
+
+        <sc-if value="{{ showUnifiedVariableIncome }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px"><span style="font-size:11.5px;color:#7A5941">{{ t.thisMonthColon }} {{ incomeTotalStr }}</span><button onClick="{{ toggleIncomeCategoryForm }}" style="border:none;background:transparent;color:#7A5941;font-size:11.5px;font-weight:600;text-decoration:underline;padding:0">{{ t.addCategory }}</button></div>
+          <div class="grip-income-entry-unified-fields">
+            <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newIncomeSource }}" onChange="{{ setNewIncomeSource }}" onKeyDown="{{ onIncomeFormKeyDown }}" class="grip-control" style="width:150px;background:#F6F1E7"><input type="text" inputmode="decimal" placeholder="{{ t.amountPlaceholder }}" value="{{ newIncomeAmount }}" onChange="{{ setNewIncomeAmount }}" onKeyDown="{{ onIncomeFormKeyDown }}" class="grip-control" style="width:100px;background:#F6F1E7">
+            <select value="{{ newIncomeCategory }}" onChange="{{ setNewIncomeCategory }}" class="grip-control" style="min-width:170px;background:#F6F1E7"><option value="">{{ t.calcGeneralGroup }}</option><sc-for list="{{ incomeCategoriesMerged }}" as="uic" hint-placeholder-count="5"><option value="{{ uic.id }}">{{ uic.label }}</option></sc-for><option value="__add_category__">+ {{ t.addCategory }}...</option></select>
+            <label class="grip-income-visible-toggle" style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" checked="{{ newIncomeJoint }}" onChange="{{ setNewIncomeJoint }}">{{ t.shareVisibleLabel }}</label><button onClick="{{ addIncome }}" disabled="{{ addIncomeDisabled }}" class="grip-btn grip-btn-primary" style="margin-left:auto">{{ t.addPlus }}</button>
+          </div>
+          <sc-if value="{{ showIncomeCategoryForm }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:70px;right:20px;z-index:20;width:280px;background:#F6F1E7;border-radius:12px;padding:14px;box-shadow:0 10px 26px rgba(58,42,31,.22)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><div style="font-size:12.5px;font-weight:700">{{ t.incomeCategoriesHeader }}</div><button onClick="{{ toggleIncomeCategoryForm }}" style="border:none;background:transparent;color:#634031;font-size:14px">✕</button></div><div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px;max-height:220px;overflow-y:auto"><sc-for list="{{ incomeCategoriesWithUsage }}" as="uic2" hint-placeholder-count="5"><div style="background:#D8C7AB;border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:8px"><span style="width:10px;height:10px;border-radius:50%;background:{{ uic2.color }};display:inline-block"></span><span style="font-size:12px;font-weight:600;flex:1">{{ uic2.label }}</span><sc-if value="{{ uic2.canRemove }}" hint-placeholder-val="{{ false }}"><button onClick="{{ uic2.remove }}" style="border:none;background:transparent;color:#634031">✕</button></sc-if></div></sc-for></div><div style="display:flex;gap:6px"><input type="text" placeholder="{{ t.newCategoryNamePlaceholder }}" value="{{ newIncomeCategoryName }}" onChange="{{ setNewIncomeCategoryName }}" onKeyDown="{{ onIncomeCategoryKeyDown }}" class="grip-control" style="flex:1"><button onClick="{{ addIncomeCategory }}" disabled="{{ addIncomeCategoryDisabled }}" class="grip-btn grip-btn-primary">{{ t.addShort }}</button></div></div></sc-if>
+        </sc-if>
+
+        <sc-if value="{{ showUnifiedRecurringIncome }}" hint-placeholder-val="{{ false }}">
+          <div class="grip-income-entry-unified-fields" style="margin-bottom:8px"><input type="text" placeholder="{{ t.whichIncomePlaceholder }}" value="{{ newRecIncomeName }}" onChange="{{ setNewRecIncomeName }}" onKeyDown="{{ onRecurringIncomeKeyDown }}" class="grip-control" style="width:150px"><input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newRecIncomeAmount }}" onChange="{{ setNewRecIncomeAmount }}" onKeyDown="{{ onRecurringIncomeKeyDown }}" class="grip-control" style="width:100px"><select value="{{ newRecIncomeCategory }}" onChange="{{ setNewRecIncomeCategory }}" class="grip-control" style="min-width:155px"><option value="">{{ t.calcGeneralGroup }}</option><sc-for list="{{ incomeCategoriesMerged }}" as="uric" hint-placeholder-count="5"><option value="{{ uric.id }}">{{ uric.label }}</option></sc-for><option value="__add_category__">+ {{ t.addCategory }}...</option></select><select value="{{ newRecIncomeFrequency }}" onChange="{{ setNewRecIncomeFrequency }}" class="grip-control" style="min-width:180px"><option value="monthly">{{ t.monthlyOnDayOption }}</option><option value="every4weeks">{{ t.every4WeeksOption }}</option></select></div>
+          <div class="grip-income-entry-unified-fields"><sc-if value="{{ isRecIncomeFreqMonthly }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px">{{ t.dayOfMonth }}</span><input type="text" inputmode="decimal" min="1" max="31" placeholder="e.g. 25" value="{{ newRecIncomeDay }}" onChange="{{ setNewRecIncomeDay }}" onKeyDown="{{ onRecurringIncomeKeyDown }}" class="grip-control" style="width:74px"></sc-if><sc-if value="{{ isRecIncomeFreqEvery4Weeks }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px">{{ t.firstDateLabel }}</span><input type="date" value="{{ newRecIncomeStartDate }}" onChange="{{ setNewRecIncomeStartDate }}" onKeyDown="{{ onRecurringIncomeKeyDown }}" class="grip-control"></sc-if><label class="grip-income-visible-toggle" style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer"><input type="checkbox" checked="{{ newRecIncomeJoint }}" onChange="{{ setNewRecIncomeJoint }}">{{ t.shareVisibleLabel }}</label><button onClick="{{ addRecurringIncome }}" disabled="{{ addRecIncomeDisabled }}" class="grip-btn grip-btn-primary" style="margin-left:auto">{{ t.addIncomeSourceBtn }}</button></div>
+        </sc-if>
+
+        <sc-if value="{{ showUnifiedHistoryIncome }}" hint-placeholder-val="{{ false }}">
+          <div class="grip-income-entry-unified-fields" style="margin-bottom:10px"><select value="{{ newIncomeHistoryMonth }}" onChange="{{ setNewIncomeHistoryMonth }}" class="grip-control" style="min-width:190px"><option value="">{{ t.historyLogMonthPlaceholder }}</option><sc-for list="{{ pastMonthOptions }}" as="upmo" hint-placeholder-count="6"><option value="{{ upmo.value }}">{{ upmo.label }}</option></sc-for></select><button onClick="{{ addIncomeHistoryMonth }}" disabled="{{ addIncomeHistoryMonthDisabled }}" class="grip-btn grip-btn-secondary">{{ incomeAddHistoryMonthButton }}</button></div>
+          <div class="grip-income-entry-unified-fields"><input type="text" placeholder="{{ t.historyItemNamePlaceholder }}" value="{{ newIncomeHistoryItemName }}" onChange="{{ setNewIncomeHistoryItemName }}" onKeyDown="{{ onIncomeHistoryItemKeyDown }}" class="grip-control" style="min-width:170px;flex:1"><input type="date" title="{{ t.dateLabel }}" value="{{ newIncomeHistoryItemDate }}" onChange="{{ setNewIncomeHistoryItemDate }}" onKeyDown="{{ onIncomeHistoryItemKeyDown }}" class="grip-control"><input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newIncomeHistoryItemAmount }}" onChange="{{ setNewIncomeHistoryItemAmount }}" onKeyDown="{{ onIncomeHistoryItemKeyDown }}" class="grip-control" style="width:110px"><button onClick="{{ addIncomeHistoryItem }}" disabled="{{ addIncomeHistoryItemDisabled }}" class="grip-btn grip-btn-primary">{{ t.addPlus }}</button></div>
+        </sc-if>
+      </div>
     </sc-if>
 
     <sc-if value="{{ isSpending }}" hint-placeholder-val="{{ false }}">
-      <div style="background:#EEE6D8;border-radius:12px;padding:12px 16px;margin-bottom:16px">
+      <div class="grip-expense-page-order">
+      <div class="grip-expense-variable-summary" style="background:#EEE6D8;border-radius:12px;padding:12px 16px;margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:16px">
           <span style="font-size:12px;font-weight:600;color:#7A5941">{{ variableExpensesMonthLabel }}</span>
           <span style="font-size:18px;font-weight:700;color:#3A261D;font-variant-numeric:tabular-nums">€ {{ variableExpensesMonthStr }}</span>
@@ -992,7 +1051,7 @@
         </sc-if>
       </div>
       <sc-if value="{{ isShared }}" hint-placeholder-val="{{ false }}">
-        <div style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
+        <div class="grip-expense-shared-overview" style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
           <div style="font-size:13px;font-weight:700;margin-bottom:12px">{{ t.calcJointSectionHeader }}</div>
           <div class="joint-grid head" style="grid-template-columns:50px minmax(90px,1.5fr) 74px 66px 66px 72px">
             <span></span>
@@ -1026,7 +1085,8 @@
           </div>
         </div>
       </sc-if>
-      <div style="background:#D8C7AB;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
+      <div class="grip-expense-transactions-title">{{ spendingTransactionsTitle }}</div>
+      <div class="grip-expense-variable-add" style="background:#D8C7AB;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.addTransactionHeader }}</div>
           <button onClick="{{ toggleAddCategoryForm }}" style="border:none;background:transparent;color:#7A5941;font-size:11.5px;font-weight:600;text-decoration:underline;padding:0">{{ t.addCategory }}</button>
@@ -1089,7 +1149,7 @@
         </sc-if>
       </div>
 
-      <div style="background:#EEE6D8;border-radius:12px;padding:12px 16px;display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:nowrap;overflow-x:auto">
+      <div class="grip-expense-variable-filters" style="background:#EEE6D8;border-radius:12px;padding:12px 16px;display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:nowrap;overflow-x:auto">
         <sc-if value="{{ isShared }}" hint-placeholder-val="{{ false }}">
           <select value="{{ spendingFilter }}" onChange="{{ setSpendingFilter }}" class="grip-control" style="width:auto;min-width:118px;flex:none">
             <sc-for list="{{ spendingOwnerFilterOptions }}" as="ownerOption" hint-placeholder-count="4">
@@ -1110,12 +1170,12 @@
         <span style="margin-left:auto;font-size:14px;font-weight:700;color:#5A3B2D;flex:none;white-space:nowrap">{{ t.totalLabel }} {{ spendingTotalStr }}</span>
       </div>
 
-      <div class="grip-surface">
+      <div class="grip-surface grip-expense-variable-list">
         <sc-if value="{{ filteredTx.length }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ filteredTx }}" as="tx" hint-placeholder-count="6">
             <div class="income-grid row" style="grid-template-columns:52px minmax(100px,1.8fr) 90px 74px 34px">
               <sc-if value="{{ tx.isEditingDate }}" hint-placeholder-val="{{ false }}">
-                <input type="date" value="{{ tx.date }}" onChange="{{ tx.setDate }}" onBlur="{{ tx.stopEdit }}" autoFocus="{{ true }}" style="width:56px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:2px;font-size:10px;background:#D8C7AB;color:#634031">
+                <input type="date" value="{{ tx.date }}" onInput="{{ tx.setDate }}" onBlur="{{ tx.stopEdit }}" autoFocus="{{ true }}" style="width:56px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:2px;font-size:10px;background:#D8C7AB;color:#634031">
               </sc-if>
               <sc-if value="{{ tx.notEditingDate }}" hint-placeholder-val="{{ true }}">
                 <div onClick="{{ tx.startEdit }}" title="{{ tx.dateEditHint }}" style="color:#634031;font-size:11.5px;cursor:{{ tx.dateCursor }}">{{ tx.dateLabel }}</div>
@@ -1137,7 +1197,10 @@
         </sc-if>
       </div>
 
-      <div style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
+      <div class="grip-expense-tools-title">{{ spendingToolsTitle }}</div>
+      <details class="grip-expense-tool grip-expense-fixed">
+      <summary>{{ fixedManagementTitle }}</summary>
+      <div class="grip-expense-tool-body" style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.recurringPayments }}</div>
           <div style="display:flex;gap:8px">
@@ -1226,7 +1289,7 @@
                 </sc-if>
                 <sc-if value="{{ r.editableDateBased }}" hint-placeholder-val="{{ false }}">
                   <span style="font-size:11px;color:#634031">{{ t.firstChargeDate }}</span>
-                  <input type="date" value="{{ r.startDate }}" onChange="{{ r.setEditStartDate }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                  <input type="date" value="{{ r.startDate }}" onInput="{{ r.setEditStartDate }}" style="border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031">
                 </sc-if>
                 <sc-if value="{{ r.isFlexible }}" hint-placeholder-val="{{ false }}">
                   <span style="font-size:11px;color:#634031">{{ t.nextChargeDate }}</span>
@@ -1332,8 +1395,9 @@
           </div>
         </div>
       </div>
+      </details>
 
-      <sc-if value="{{ automaticSavingsPlans.length }}" hint-placeholder-val="{{ 0 }}">
+      <sc-if class="grip-expense-automatic" value="{{ automaticSavingsPlans.length }}" hint-placeholder-val="{{ 0 }}">
         <div class="grip-surface" style="margin-top:20px">
           <div style="font-size:11.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">{{ automaticSavingsHeader }}</div>
           <div style="display:flex;flex-direction:column;gap:0">
@@ -1350,7 +1414,9 @@
         </div>
       </sc-if>
 
-      <div style="background:#D8C7AB;border-radius:14px;padding:16px 18px;margin-top:20px">
+      <details class="grip-expense-tool grip-expense-history">
+      <summary>{{ t.historyLogHeader }}</summary>
+      <div class="grip-expense-tool-body" style="background:#D8C7AB;border-radius:14px;padding:16px 18px;margin-top:20px;margin-bottom:20px">
         <div style="font-size:11.5px;font-weight:700;margin-bottom:3px;color:#7A5941;text-transform:uppercase;letter-spacing:.04em">{{ t.historyLogHeader }}</div>
         <div style="font-size:11px;color:#7A5941;margin-bottom:12px">{{ t.historyLogIntroSpend }}</div>
         <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
@@ -1409,8 +1475,13 @@
           </select>
           <button onClick="{{ addSpendHistoryMonth }}" disabled="{{ addSpendHistoryMonthDisabled }}" style="width:32px;height:32px;flex:none;border:none;border-radius:8px;font-size:14px;font-weight:600;background:#5A3B2D;color:#F6F1E7;box-sizing:border-box">+</button>
         </div>
+        <div style="border-top:1px solid rgba(99,64,49,.16);margin-top:14px;padding-top:14px">
+          <sc-if value="{{ bankImportClosed }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openBankImport }}" class="grip-btn grip-btn-secondary" style="font-size:11.5px">{{ bankImportButtonLabel }}</button></sc-if><sc-if value="{{ bankImportHasResult }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:#526047;margin-left:10px">{{ bankImportResultMessage }}</span></sc-if>
+          <sc-if value="{{ bankImportOpen }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px"><div><div style="font-size:12.5px;font-weight:700;color:#3A261D">{{ bankImportButtonLabel }}</div><div style="font-size:10.5px;color:#7A5941;margin-top:2px">{{ bankImportPrivacyText }}</div></div><button onClick="{{ closeBankImport }}" aria-label="{{ bankImportCloseLabel }}" style="border:none;background:transparent;color:#634031;font-size:14px;padding:0">✕</button></div><label class="grip-btn grip-btn-secondary" style="display:inline-flex;cursor:pointer;font-size:11.5px">{{ bankImportChooseLabel }}<input type="file" accept=".csv,text/csv" onChange="{{ handleBankCsvFile }}" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></label><sc-if value="{{ bankImportHasFile }}" hint-placeholder-val="{{ false }}"><span style="font-size:10.5px;color:#7A5941;margin-left:8px">{{ bankImportFileName }}</span></sc-if><sc-if value="{{ bankImportHasRows }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toggleBankImportCategorize }}" class="grip-btn grip-btn-secondary" style="font-size:11.5px;margin-left:8px">{{ bankImportCategorizeButtonLabel }}</button></sc-if><sc-if value="{{ bankImportHasError }}" hint-placeholder-val="{{ false }}"><div style="margin-top:9px;padding:8px 10px;border-radius:7px;background:#E8D4CC;color:#794A45;font-size:11px">{{ bankImportError }}</div></sc-if><sc-if value="{{ bankImportHasRows }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ bankImportHasBulkMessage }}" hint-placeholder-val="{{ false }}"><div style="margin-top:9px;padding:8px 10px;border-radius:7px;background:#E1E5D9;color:#526047;font-size:11px;font-weight:600">{{ bankImportBulkMessage }}</div></sc-if><div style="margin-top:12px;overflow-x:auto;border:1px solid rgba(99,64,49,.14);border-radius:8px;background:#F6F1E7"><div style="display:grid;grid-template-columns:{{ bankImportGridColumns }};gap:10px;padding:8px 10px;background:#EEE6D8;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#7A5941"><span>{{ bankImportDateLabel }}</span><span>{{ bankImportDescriptionLabel }}</span><span>{{ bankImportDirectionLabel }}</span><span style="text-align:right">{{ bankImportAmountLabel }}</span><sc-if value="{{ bankImportCategorizeMode }}" hint-placeholder-val="{{ false }}"><span>{{ bankImportCategoryLabel }}</span><span>{{ bankImportStatusLabel }}</span></sc-if></div><sc-for list="{{ bankImportRows }}" as="bankRow" hint-placeholder-count="4"><div style="display:grid;grid-template-columns:{{ bankImportGridColumns }};gap:10px;align-items:center;padding:8px 10px;border-top:1px solid rgba(99,64,49,.10);font-size:11.5px;color:#634031"><span style="font-variant-numeric:tabular-nums">{{ bankRow.date }}</span><span>{{ bankRow.description }}</span><span>{{ bankRow.direction }}</span><span style="text-align:right;font-variant-numeric:tabular-nums">{{ bankRow.amount }}</span><sc-if value="{{ bankImportCategorizeMode }}" hint-placeholder-val="{{ false }}"><div style="display:grid;gap:5px;min-width:0"><div style="display:flex;align-items:center;gap:6px;min-width:0"><span style="width:8px;height:8px;border-radius:50%;background:{{ bankRow.categoryColor }};flex:none"></span><select value="{{ bankRow.category }}" onChange="{{ bankRow.setCategory }}" aria-label="{{ bankRow.categoryAriaLabel }}" class="grip-control" style="height:30px;min-width:0;flex:1;font-size:11px"><option value="">{{ bankImportNoCategoryLabel }}</option><sc-for list="{{ bankRow.categoryOptions }}" as="bankCategory" hint-placeholder-count="3"><option value="{{ bankCategory.value }}">{{ bankCategory.label }}</option></sc-for></select><button onClick="{{ bankRow.toggleOverride }}" title="{{ bankRow.overrideTitle }}" class="grip-btn grip-btn-secondary" style="height:30px;padding:0 8px;font-size:10px;white-space:nowrap">{{ bankRow.overrideLabel }}</button></div><label style="display:flex;align-items:center;gap:5px;font-size:9.5px;color:#7A5941"><input type="checkbox" checked="{{ bankRow.rememberChecked }}" disabled="{{ bankRow.rememberDisabled }}" onChange="{{ bankRow.toggleRemember }}">{{ bankRow.rememberLabel }}</label></div><span style="font-size:10.5px;font-weight:600;color:{{ bankRow.statusColor }}">{{ bankRow.statusLabel }}</span></sc-if></div></sc-for></div><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:10px;padding:10px 12px;border-radius:8px;background:#EEE6D8;color:#634031;font-size:11px"><strong>{{ bankImportReadyCount }} {{ bankImportSummaryReadyLabel }}</strong><span>{{ bankImportDuplicateCount }} {{ bankImportSummaryDuplicateLabel }}</span><span>{{ bankImportMissingCategoryCount }} {{ bankImportSummaryMissingLabel }}</span><sc-if value="{{ bankImportHasInvalid }}" hint-placeholder-val="{{ false }}"><span>{{ bankImportInvalidCount }} {{ bankImportSummaryInvalidLabel }}</span></sc-if><button onClick="{{ importReviewedBankRows }}" disabled="{{ bankImportImportDisabled }}" class="grip-btn grip-btn-primary" style="margin-left:auto;font-size:11.5px">{{ bankImportImportLabel }}</button></div><sc-if value="{{ bankImportIsShared }}" hint-placeholder-val="{{ false }}"><div style="font-size:10.5px;color:#A45E49;margin-top:7px">{{ bankImportSoloOnlyText }}</div></sc-if><div style="font-size:10.5px;color:#7A5941;margin-top:7px">{{ bankImportPreviewOnlyText }}</div></sc-if></sc-if>
+        </div>
       </div>
-
+      </details>
+      </div>
     </sc-if>
 
     <sc-if value="{{ isSavings }}" hint-placeholder-val="{{ false }}">
@@ -2400,6 +2471,7 @@ class Component extends DCLogic {
     calcAllocationSelected: {},
     calcSelectedMonth: this.todayStr().slice(0, 7),
     calcScenarios: {},
+    merchantCategoryRules: {},
     newCalcExtraLabel: '',
     newCalcExtraAmount: '',
     newCalcExtraType: 'income',
@@ -2448,12 +2520,21 @@ class Component extends DCLogic {
     newSpendHistoryItemAmount: '',
     newSpendHistoryItemDate: '',
     newSpendHistoryItemCategory: '',
+    bankImportOpen: false,
+    bankImportRows: [],
+    bankImportError: '',
+    bankImportFileName: '',
+    bankImportCategorizeMode: false,
+    bankImportManualOverrides: {},
+    bankImportBulkMessage: '',
+    bankImportResultMessage: '',
     newIncomeHistoryMonth: '',
     expandedIncomeHistoryKey: null,
     newIncomeHistoryItemName: '',
     newIncomeHistoryItemTag: '',
     newIncomeHistoryItemAmount: '',
     newIncomeHistoryItemDate: '',
+    incomeAddType: 'variable',
     newTxAmount: '',
     newTxNote: '',
     newTxVisible: false,
@@ -2560,13 +2641,13 @@ class Component extends DCLogic {
   }
 
   persist() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios, merchantCategoryRules: this.state.merchantCategoryRules }));
     if (supabaseClient && this.state.session) {
       clearTimeout(this._persistTimer);
       this._persistTimer = setTimeout(() => {
         supabaseClient.from('grip_dashboards').upsert({
           user_id: this.state.session.user.id,
-          data: { name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios },
+          data: { name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios, merchantCategoryRules: this.state.merchantCategoryRules },
           updated_at: new Date().toISOString()
         }).then(({ error }) => { if (error) console.error('Supabase save error', error); });
         if (this.state.householdId) this.syncMyMirrorsToShared();
@@ -2848,7 +2929,7 @@ class Component extends DCLogic {
       if (data && data.data) {
         const saved = data.data;
         const localSaved = this.localPersistedState();
-        this.setState({ name: saved.name || this.state.name, mode: localSaved.mode || saved.mode || 'personal', view: localSaved.view || saved.view || 'overview', language: saved.language || this.state.language, workspaces: saved.workspaces ? this.fillWorkspaceDefaults(saved.workspaces) : this.state.workspaces, calcSelectedMonth: localSaved.calcSelectedMonth || saved.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) } }, () => {
+        this.setState({ name: saved.name || this.state.name, mode: localSaved.mode || saved.mode || 'personal', view: localSaved.view || saved.view || 'overview', language: saved.language || this.state.language, workspaces: saved.workspaces ? this.fillWorkspaceDefaults(saved.workspaces) : this.state.workspaces, calcSelectedMonth: localSaved.calcSelectedMonth || saved.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) } }, () => {
           this.processDueRecurring(); this.scheduleAlertDismiss();
           this.loadHousehold(userId);
         });
@@ -2941,7 +3022,7 @@ class Component extends DCLogic {
       try {
         const saved = JSON.parse(raw);
         if (saved.workspaces) {
-          this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', view: saved.view || 'overview', language: saved.language || this.state.language, workspaces: this.fillWorkspaceDefaults(saved.workspaces), calcSelectedMonth: saved.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: saved.calcScenarios || {} }, () => { this.processDueRecurring(); this.scheduleAlertDismiss(); });
+          this.setState({ name: saved.name || this.state.name, mode: saved.mode || 'personal', view: saved.view || 'overview', language: saved.language || this.state.language, workspaces: this.fillWorkspaceDefaults(saved.workspaces), calcSelectedMonth: saved.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: saved.calcScenarios || {}, merchantCategoryRules: saved.merchantCategoryRules || {} }, () => { this.processDueRecurring(); this.scheduleAlertDismiss(); });
           return;
         }
         const migrated = this.migrateLegacyFlat(saved);
@@ -2958,6 +3039,8 @@ class Component extends DCLogic {
       if (window.innerWidth < 980 && this.state.sidebarOpen) this.setState({ sidebarOpen: false });
     };
     window.addEventListener('resize', this._handleSidebarResize);
+    this._handleRecurringVisibility = () => { if (document.visibilityState === 'visible') this.processDueRecurring(); };
+    document.addEventListener('visibilitychange', this._handleRecurringVisibility);
     this._handleSidebarResize();
     if (!supabaseClient) {
       // Supabase not configured yet: fall back to local-only mode (data stays in this browser).
@@ -3123,7 +3206,8 @@ class Component extends DCLogic {
     const ws = this.ws();
     if (listKey === 'categoryOptions') {
       const all = [...(this.state.workspaces.personal.categoryOptions || []), ...(this.state.workspaces.shared.categoryOptions || [])];
-      if (all.some(c => c.id === id)) return;
+      const normalizedLabel = label.trim().toLocaleLowerCase('nl-NL');
+      if (all.some(c => String(c.label || '').trim().toLocaleLowerCase('nl-NL') === normalizedLabel)) return;
       const color = this.colorPalette[all.length % this.colorPalette.length];
       const category = { id, label, color };
       this.setState(s => ({ workspaces: {
@@ -3142,6 +3226,13 @@ class Component extends DCLogic {
   addCategory() {
     const label = this.state.newCategoryName.trim();
     if (!label) return;
+    const normalizedLabel = label.toLocaleLowerCase('nl-NL');
+    const existing = [...(this.state.workspaces.personal.categoryOptions || []), ...(this.state.workspaces.shared.categoryOptions || [])]
+      .find(c => String(c.label || '').trim().toLocaleLowerCase('nl-NL') === normalizedLabel);
+    if (existing) {
+      this.setState({ newCategoryName: '', newTxCategory: existing.id });
+      return;
+    }
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().categoryOptions.length % this.colorPalette.length];
     this._sharedDirtyKeys.add('categoryOptions');
@@ -3414,7 +3505,7 @@ class Component extends DCLogic {
       const isDirectNative = it.isDirectRecurring || it.isDirectFixedHistory;
       let ownerLabel, ownerBg, meAmt, partnerAmt;
       if (it.mirrorOwner) {
-        const isMine = it.mirrorOwner === myUserId;
+        const isMine = it.mirrorOwner === myUserId || (!myUserId && it.mirrorOwner === '__local_personal__');
         ownerLabel = isMine ? meLabel : partnerLabel;
         ownerBg = isMine ? '#7C8972' : '#7A4A44';
         meAmt = isMine ? it.amount : 0;
@@ -3504,6 +3595,37 @@ class Component extends DCLogic {
     return opt ? opt.label : value;
   }
   setNewSpendHistoryMonth(e) { this.setState({ newSpendHistoryMonth: e.target.value }); }
+  openBankImport() { this.setState({ bankImportOpen: true, bankImportRows: [], bankImportError: '', bankImportFileName: '', bankImportCategorizeMode: false, bankImportManualOverrides: {}, bankImportBulkMessage: '', bankImportResultMessage: '' }); }
+  closeBankImport() { this.setState({ bankImportOpen: false, bankImportRows: [], bankImportError: '', bankImportFileName: '', bankImportCategorizeMode: false, bankImportManualOverrides: {}, bankImportBulkMessage: '' }); }
+  toggleBankImportCategorize() { this.setState({ bankImportCategorizeMode: !this.state.bankImportCategorizeMode, bankImportBulkMessage: '' }); }
+  bankImportMerchantKey(description) {
+    const noise = new Set(['PIN', 'BETALING', 'BETAALAUTOMAAT', 'SEPA', 'INCASSO', 'PAS', 'NR', 'UTRECHT', 'AMSTERDAM', 'ROTTERDAM', 'DENHAAG', 'EINDHOVEN', 'GRONINGEN']);
+    return String(description || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9 ]+/g, ' ').split(/\s+/).filter(token => token && !/^\d+$/.test(token) && !noise.has(token)).join(' ');
+  }
+  bankImportCanonicalCategoryId(categoryId) { const categories = [...(this.state.workspaces.personal.categoryOptions || []), ...(this.state.workspaces.shared.categoryOptions || [])]; const source = categories.find(category => category.id === categoryId); if (!source) return ''; const normalized = String(source.label || source.id).trim().toLocaleLowerCase('nl-NL'); const canonical = categories.find(category => String(category.label || category.id).trim().toLocaleLowerCase('nl-NL') === normalized); return canonical ? canonical.id : ''; }
+  applySavedBankImportRules(rows) { const rules = this.state.merchantCategoryRules || {}; return rows.map(row => { const merchantKey = this.bankImportMerchantKey(row.description); const category = this.bankImportCanonicalCategoryId(rules[merchantKey]); return { ...row, category, autoSuggested: !!category }; }); }
+  setBankImportRowCategory(index, e) {
+    const category = e.target.value;
+    const overrides = this.state.bankImportManualOverrides || {};
+    const key = this.bankImportMerchantKey((this.state.bankImportRows[index] || {}).description);
+    const matching = this.state.bankImportRows.reduce((items, row, rowIndex) => {
+      if (!overrides[rowIndex] && key && this.bankImportMerchantKey(row.description) === key) items.push(rowIndex);
+      return items;
+    }, []);
+    const targets = overrides[index] || !key ? [index] : matching;
+    const nextRows = this.state.bankImportRows.map((row, rowIndex) => targets.includes(rowIndex) ? { ...row, category, autoSuggested: false } : row); const remembered = !!(this.state.merchantCategoryRules || {})[key]; if (remembered && key) this.setState(s => ({ bankImportRows: nextRows, bankImportBulkMessage: targets.length > 1 ? this.tf(`${targets.length} similar rows were updated together.`, `${targets.length} vergelijkbare regels zijn samen bijgewerkt.`, `${targets.length} ähnliche Zeilen wurden gemeinsam aktualisiert.`, `${targets.length} lignes similaires ont été mises à jour ensemble.`, `${targets.length} filas similares se actualizaron juntas.`) : '', merchantCategoryRules: { ...s.merchantCategoryRules, [key]: category } }), () => this.persist()); else this.setState({ bankImportRows: nextRows, bankImportBulkMessage: targets.length > 1 ? this.tf(`${targets.length} similar rows were updated together.`, `${targets.length} vergelijkbare regels zijn samen bijgewerkt.`, `${targets.length} ähnliche Zeilen wurden gemeinsam aktualisiert.`, `${targets.length} lignes similaires ont été mises à jour ensemble.`, `${targets.length} filas similares se actualizaron juntas.`) : '' });
+  }
+  toggleBankImportRemember(index, e) { const row = this.state.bankImportRows[index] || {}; const key = this.bankImportMerchantKey(row.description); if (!key) return; const checked = e.target.checked; this.setState(s => { const rules = { ...(s.merchantCategoryRules || {}) }; if (checked && row.category) rules[key] = row.category; else delete rules[key]; return { merchantCategoryRules: rules, bankImportRows: s.bankImportRows.map(item => this.bankImportMerchantKey(item.description) === key ? { ...item, autoSuggested: false } : item) }; }, () => this.persist()); }
+  toggleBankImportRowOverride(index) { const next = { ...(this.state.bankImportManualOverrides || {}) }; if (next[index]) delete next[index]; else next[index] = true; this.setState({ bankImportManualOverrides: next, bankImportBulkMessage: '' }); }
+  normalizeBankImportDescription(value) { return String(value || '').trim().toLocaleLowerCase('nl-NL').replace(/\s+/g, ' '); }
+  parseBankImportDate(value) { const text = String(value || '').trim(); let match = text.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/); let year, month, day; if (match) { day = Number(match[1]); month = Number(match[2]); year = Number(match[3]); } else { match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/); if (!match) return ''; year = Number(match[1]); month = Number(match[2]); day = Number(match[3]); } const date = new Date(year, month - 1, day); if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return ''; return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`; }
+  bankImportDirection(value) { const direction = String(value || '').trim().toLocaleLowerCase('nl-NL'); if (['af', 'debit', 'cargo', 'soll'].includes(direction)) return 'expense'; if (['bij', 'credit', 'abono', 'haben'].includes(direction)) return 'income'; return ''; }
+  bankImportSignature(date, description, amount, direction) { return [date, this.normalizeBankImportDescription(description), Number(amount).toFixed(2), direction].join('|'); }
+  analyzeBankImportRows() { const personal = this.state.workspaces.personal; const seen = new Set([...(personal.transactions || []).map(item => this.bankImportSignature(item.date, item.note, item.amount, 'expense')), ...(personal.incomeEntries || []).map(item => this.bankImportSignature(item.date, item.source, item.amount, 'income'))]); let ready = 0, duplicate = 0, missingCategory = 0, invalid = 0; const rows = this.state.bankImportRows.map(row => { const date = this.parseBankImportDate(row.date); const amount = Math.abs(this.parseAmt(row.amount)); const direction = this.bankImportDirection(row.direction); let status = 'ready'; if (!date || !(amount > 0) || !direction) { status = 'invalid'; invalid++; } else if (!row.category) { status = 'missing'; missingCategory++; } else { const signature = this.bankImportSignature(date, row.description, amount, direction); if (seen.has(signature)) { status = 'duplicate'; duplicate++; } else { seen.add(signature); ready++; } } return { ...row, parsedDate: date, parsedAmount: amount, parsedDirection: direction, status }; }); return { rows, ready, duplicate, missingCategory, invalid }; }
+  importReviewedBankRows() { if (this.state.mode !== 'personal') return; const analysis = this.analyzeBankImportRows(); const approved = analysis.rows.filter(row => row.status === 'ready'); if (!approved.length) return; const stamp = Date.now(); const expenses = approved.filter(row => row.parsedDirection === 'expense').map((row, index) => ({ id: `banktx${stamp}_${index}`, category: row.category, amount: row.parsedAmount, note: row.description, date: row.parsedDate, visible: false })); const incomes = approved.filter(row => row.parsedDirection === 'income').map((row, index) => ({ id: `bankinc${stamp}_${index}`, source: row.description, amount: row.parsedAmount, joint: false, category: row.category, date: row.parsedDate })); this.setState(s => ({ workspaces: { ...s.workspaces, personal: { ...s.workspaces.personal, transactions: [...s.workspaces.personal.transactions, ...expenses], incomeEntries: [...s.workspaces.personal.incomeEntries, ...incomes] } }, bankImportOpen: false, bankImportRows: [], bankImportError: '', bankImportFileName: '', bankImportCategorizeMode: false, bankImportManualOverrides: {}, bankImportBulkMessage: '', bankImportResultMessage: this.tf(`${approved.length} transactions imported.`, `${approved.length} transacties geïmporteerd.`, `${approved.length} Transaktionen importiert.`, `${approved.length} transactions importées.`, `${approved.length} transacciones importadas.`) }), () => this.persist()); }
+  parseBankCsvLine(line, delimiter) { const cells = []; let cell = '', quoted = false; for (let i = 0; i < line.length; i++) { const char = line[i]; if (char === '"') { if (quoted && line[i + 1] === '"') { cell += '"'; i++; } else quoted = !quoted; } else if (char === delimiter && !quoted) { cells.push(cell.trim()); cell = ''; } else cell += char; } cells.push(cell.trim()); return cells; }
+  parseBankCsv(text, fileName) { const lines = String(text || '').replace(/^\uFEFF/, '').split(/\r?\n/).filter(line => line.trim()); const emptyError = this.tf('The CSV contains no usable rows.', 'Het CSV-bestand bevat geen bruikbare rijen.', 'Die CSV-Datei enthält keine verwendbaren Zeilen.', 'Le fichier CSV ne contient aucune ligne exploitable.', 'El CSV no contiene filas utilizables.'); if (lines.length < 2) { this.setState({ bankImportRows: [], bankImportFileName: fileName || '', bankImportError: emptyError }); return; } const delimiters = [';', ',', '\t']; const delimiter = delimiters.map(value => ({ value, count: this.parseBankCsvLine(lines[0], value).length })).sort((a, b) => b.count - a.count)[0].value; const headers = this.parseBankCsvLine(lines[0], delimiter).map(header => header.trim().toLocaleLowerCase('nl-NL').replace(/[_-]+/g, ' ').replace(/\s+/g, ' ')); const aliases = { date: ['datum', 'date', 'boekdatum', 'transactiedatum'], description: ['omschrijving', 'description', 'beschrijving', 'mededelingen'], direction: ['af/bij', 'af bij', 'bij/af', 'bij af', 'credit/debit', 'debit/credit'], amount: ['bedrag', 'amount', 'transactiebedrag'] }; const indexes = Object.fromEntries(Object.entries(aliases).map(([field, names]) => [field, headers.findIndex(header => names.includes(header))])); if (Object.values(indexes).some(index => index < 0)) { this.setState({ bankImportRows: [], bankImportFileName: fileName || '', bankImportError: this.tf('Could not safely identify Datum, Omschrijving, Af/Bij and Bedrag.', 'De kolommen Datum, Omschrijving, Af/Bij en Bedrag konden niet veilig worden herkend.', 'Datum, Beschreibung, Soll/Haben und Betrag konnten nicht sicher erkannt werden.', 'Impossible d’identifier de manière sûre Date, Description, Débit/Crédit et Montant.', 'No se pudieron identificar de forma segura Fecha, Descripción, Cargo/Abono e Importe.') }); return; } const rows = this.applySavedBankImportRules(lines.slice(1).map(line => this.parseBankCsvLine(line, delimiter)).filter(cells => cells.some(cell => cell.trim())).map(cells => ({ date: String(cells[indexes.date] || '').trim(), description: String(cells[indexes.description] || '').trim(), direction: String(cells[indexes.direction] || '').trim(), amount: String(cells[indexes.amount] || '').trim(), category: '' }))); this.setState({ bankImportRows: rows, bankImportError: rows.length ? '' : emptyError, bankImportFileName: fileName || '', bankImportCategorizeMode: false, bankImportManualOverrides: {}, bankImportBulkMessage: '' }); }
+  handleBankCsvFile(e) { const input = e.target; const file = input && input.files && input.files[0]; if (!file) return; if (!/\.csv$/i.test(file.name || '')) { this.setState({ bankImportRows: [], bankImportFileName: file.name || '', bankImportError: this.tf('Choose a CSV file.', 'Kies een CSV-bestand.', 'Wähle eine CSV-Datei.', 'Choisissez un fichier CSV.', 'Elige un archivo CSV.') }); input.value = ''; return; } const reader = new FileReader(); reader.onload = () => { this.parseBankCsv(String(reader.result || ''), file.name); input.value = ''; }; reader.onerror = () => { this.setState({ bankImportRows: [], bankImportFileName: file.name || '', bankImportError: this.tf('The CSV could not be read.', 'Het CSV-bestand kon niet worden gelezen.', 'Die CSV-Datei konnte nicht gelesen werden.', 'Le fichier CSV n’a pas pu être lu.', 'No se pudo leer el CSV.') }); input.value = ''; }; reader.readAsText(file); }
   addSpendHistoryMonth() {
     const value = this.state.newSpendHistoryMonth;
     if (!value) return;
@@ -3655,11 +3777,8 @@ class Component extends DCLogic {
       .filter(inc => matchJoint(inc.joint))
       .reduce((s, i) => s + i.amount, 0);
     const futureRecurringIncomeThisMonth = ws.recurringIncome.filter(ri => matchJoint(ri.joint)).reduce((sum, ri) => {
-      if (ri.frequency === 'every4weeks' && ri.startDate) {
-        const nd = this.nextOccurrence(ri);
-        return (nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today) ? sum + ri.amount : sum;
-      }
-      return ri.day > today ? sum + ri.amount : sum;
+      const nd = this.nextUnpostedIncomeOccurrence(ri);
+      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + ri.amount : sum;
     }, 0);
     return incomeTotal + futureRecurringIncomeThisMonth;
   }
@@ -3672,13 +3791,7 @@ class Component extends DCLogic {
       .map(inc => ({ id: 'auto_' + inc.id, sourceId: inc.id, sourceKind: 'oneoff', name: inc.source, amount: inc.amount, joint: !!inc.joint }));
     const recurring = ws.recurringIncome
       .filter(ri => matchJoint(ri.joint))
-      .filter(ri => {
-        if (ri.frequency === 'every4weeks' && ri.startDate) {
-          const nd = this.nextOccurrence(ri);
-          return nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today;
-        }
-        return ri.day > today;
-      })
+      .filter(ri => { const nd = this.nextUnpostedIncomeOccurrence(ri); return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today); })
       .map(ri => ({ id: 'auto_' + ri.id, sourceId: ri.id, sourceKind: 'recurring', name: ri.name, amount: ri.amount, joint: !!ri.joint }));
     return [...oneOff, ...recurring];
   }
@@ -4039,9 +4152,16 @@ class Component extends DCLogic {
       date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     };
     if (this.state.mode === 'personal') tx.visible = !!this.state.newTxVisible;
+    const sourceMode = this.state.mode;
     this.setWs(ws => ({
       transactions: [...ws.transactions, tx]
-    }), () => this.persist());
+    }), () => {
+      if (sourceMode === 'personal' && tx.visible) {
+        const ownerId = this.state.session ? this.state.session.user.id : '__local_personal__';
+        const mirror = { ...tx, id: 'mirror_tx_' + tx.id, mirrorOwner: ownerId, mirrorSourceId: tx.id };
+        this.setWsKey('shared', ws => ({ transactions: [...(ws.transactions || []).filter(it => it.mirrorSourceId !== tx.id), mirror] }), () => this.persist());
+      } else this.persist();
+    });
     this.setState({ newTxAmount: '', newTxNote: '', newTxVisible: false });
   }
 
@@ -4159,14 +4279,22 @@ class Component extends DCLogic {
   setTransactionDate(id, e) {
     const date = e.target.value;
     if (!date) return;
-    this.setWs(ws => ({ transactions: ws.transactions.map(t => t.id === id ? { ...t, date } : t) }), () => this.persist());
+    const sourceMode = this.state.mode;
+    this.setWs(ws => ({ transactions: ws.transactions.map(t => t.id === id ? { ...t, date } : t) }), () => {
+      if (sourceMode === 'personal') this.setWsKey('shared', shared => ({ transactions: (shared.transactions || []).map(t => t.mirrorSourceId === id ? { ...t, date } : t) }), () => this.persist());
+      else this.persist();
+    });
     this.setState({ editingTxId: null });
   }
 
   removeTransaction(id) {
+    const sourceMode = this.state.mode;
     this.setWs(ws => ({
       transactions: ws.transactions.filter(t => t.id !== id)
-    }), () => this.persist());
+    }), () => {
+      if (sourceMode === 'personal') this.setWsKey('shared', shared => ({ transactions: (shared.transactions || []).filter(t => t.mirrorSourceId !== id) }), () => this.persist());
+      else this.persist();
+    });
   }
 
   nextOccurrence(r) {
@@ -4195,6 +4323,14 @@ class Component extends DCLogic {
     let target = new Date(y, m, r.day);
     if (target < todayMidnight) target = new Date(y, m + 1, r.day);
     return target;
+  }
+
+  nextUnpostedIncomeOccurrence(r) {
+    const target = this.nextOccurrence(r);
+    const targetKey = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
+    if (r.lastPostedDate !== targetKey) return target;
+    if (r.frequency === 'every4weeks') return new Date(target.getFullYear(), target.getMonth(), target.getDate() + 28);
+    return new Date(target.getFullYear(), target.getMonth() + 1, r.day || target.getDate());
   }
 
   normalizeSeries(values) {
@@ -4275,16 +4411,25 @@ class Component extends DCLogic {
 
       const newIncome = [];
       const updatedRecurringIncome = (wsData.recurringIncome || []).map(ri => {
+        if (ri.mirrorOwner) return ri;
         const due = this.currentDueOccurrence(ri);
         if (!due) return ri;
         const dStr = dateStr(due);
+        const postedId = 'ritx' + ri.id + '_' + dStr;
+        const alreadyPosted = (wsData.incomeEntries || []).some(entry => entry.id === postedId || (entry.recurringSourceId === ri.id && entry.scheduledDate === dStr));
         if (ri.lastPostedDate === dStr) return ri;
+        if (alreadyPosted) { changed = true; return { ...ri, lastPostedDate: dStr }; }
         newIncome.push({
-          id: 'ritx' + ri.id + '_' + dStr,
+          id: postedId,
           source: ri.name,
           amount: ri.amount,
           date: dStr,
-          isRecurring: true
+          category: ri.category || '',
+          joint: !!ri.joint,
+          addedBy: ri.addedBy,
+          isRecurring: true,
+          recurringSourceId: ri.id,
+          scheduledDate: dStr
         });
         changed = true;
         return { ...ri, lastPostedDate: dStr };
@@ -4664,7 +4809,7 @@ class Component extends DCLogic {
       ri = { id: 'ri' + Date.now(), name: this.state.newRecIncomeName, amount, frequency: 'monthly', day, joint: this.state.newRecIncomeJoint, category };
     }
 
-    this.setWs(ws => ({ recurringIncome: [...ws.recurringIncome, ri] }), () => this.persist());
+    this.setWs(ws => ({ recurringIncome: [...ws.recurringIncome, ri] }), () => { this.persist(); this.processDueRecurring(); });
     this.setState({ newRecIncomeName: '', newRecIncomeAmount: '', newRecIncomeDay: '', newRecIncomeStartDate: '', newRecIncomeJoint: false, newRecIncomeCategory: '' });
   }
   onRecurringIncomeKeyDown(e) {
@@ -4702,8 +4847,26 @@ class Component extends DCLogic {
     const fixedCostCategoriesMerged = mergedCategoryList('fixedCostCategories');
     const calcFixedCategoryOptions = mergedCategoryList('calcFixedCategories');
     const incomeCategoriesMerged = mergedCategoryList('incomeCategories');
-    const expenseCategoriesMerged = [...this.state.workspaces.personal.categoryOptions, ...this.state.workspaces.shared.categoryOptions]
-      .filter((c, index, all) => all.findIndex(x => x.id === c.id) === index);
+    const normalizeExpenseCategoryName = value => String(value || '').trim().toLocaleLowerCase('nl-NL');
+    const expenseCategoryByName = new Map();
+    const expenseCategoryAliasMap = Object.create(null);
+    const expenseCategoryIdsByCanonical = Object.create(null);
+    const expenseCategoriesMerged = [];
+    [...this.state.workspaces.personal.categoryOptions, ...this.state.workspaces.shared.categoryOptions].forEach(category => {
+      const normalizedName = normalizeExpenseCategoryName(category.label || category.id);
+      if (!normalizedName) return;
+      let canonical = expenseCategoryByName.get(normalizedName);
+      if (!canonical) {
+        canonical = { ...category, label: String(category.label || category.id).trim() };
+        expenseCategoryByName.set(normalizedName, canonical);
+        expenseCategoriesMerged.push(canonical);
+        expenseCategoryIdsByCanonical[canonical.id] = [];
+      }
+      expenseCategoryAliasMap[category.id] = canonical.id;
+      if (!expenseCategoryIdsByCanonical[canonical.id].includes(category.id)) expenseCategoryIdsByCanonical[canonical.id].push(category.id);
+    });
+    const canonicalExpenseCategoryId = id => expenseCategoryAliasMap[id] || id;
+    const canonicalExpenseCategory = id => expenseCategoriesMerged.find(category => category.id === canonicalExpenseCategoryId(id));
     const now = new Date();
     const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const daysInMonth = new Date(y, m + 1, 0).getDate();
@@ -4765,10 +4928,10 @@ class Component extends DCLogic {
         )
       : '';
     const variableCategoryBudgets = ws.categoryBudgets || {};
-    const variableExpenseCategoryTotals = [...new Set(variableMonthTx.map(t => t.category))].map(categoryId => {
-      const category = expenseCategoriesMerged.find(opt => opt.id === categoryId);
-      const amount = variableMonthTx.filter(t => t.category === categoryId).reduce((s, t) => s + t.amount, 0);
-      const budget = variableCategoryBudgets[categoryId] || 0;
+    const variableExpenseCategoryTotals = [...new Set(variableMonthTx.map(t => canonicalExpenseCategoryId(t.category)))].map(categoryId => {
+      const category = canonicalExpenseCategory(categoryId);
+      const amount = variableMonthTx.filter(t => canonicalExpenseCategoryId(t.category) === categoryId).reduce((s, t) => s + t.amount, 0);
+      const budget = Math.max(0, ...(expenseCategoryIdsByCanonical[categoryId] || [categoryId]).map(id => variableCategoryBudgets[id] || 0));
       return {
         id: categoryId,
         label: category ? category.label : categoryId,
@@ -4812,7 +4975,7 @@ class Component extends DCLogic {
     expenseCategoriesMerged.forEach(opt => {
       const key = (opt.label || opt.id).trim().toLocaleLowerCase('nl-NL');
       if (!overviewCategoryMap.has(key)) overviewCategoryMap.set(key, { key, label: opt.label || opt.id, color: opt.color || '#634031', ids: new Set() });
-      overviewCategoryMap.get(key).ids.add(opt.id);
+      (expenseCategoryIdsByCanonical[opt.id] || [opt.id]).forEach(id => overviewCategoryMap.get(key).ids.add(id));
     });
     monthTx.forEach(tx => {
       if ([...overviewCategoryMap.values()].some(group => group.ids.has(tx.category))) return;
@@ -4989,8 +5152,8 @@ class Component extends DCLogic {
     // category the other one created. Used for dropdown OPTIONS only — the "manage categories"
     // panels (with remove buttons) still show just your own list, since removing a category you
     // don't own wouldn't work correctly.
-    const categoryLabelMap = Object.fromEntries(expenseCategoriesMerged.map(c => [c.id, c.label]));
-    const categoryColorMap = Object.fromEntries(expenseCategoriesMerged.map(c => [c.id, c.color || '#634031']));
+    const categoryLabelMap = Object.fromEntries(Object.keys(expenseCategoryAliasMap).map(id => { const category = canonicalExpenseCategory(id); return [id, category ? category.label : id]; }));
+    const categoryColorMap = Object.fromEntries(Object.keys(expenseCategoryAliasMap).map(id => { const category = canonicalExpenseCategory(id); return [id, (category && category.color) || '#634031']; }));
     const categoriesWithUsage = expenseCategoriesMerged.map(c => ({
       ...c,
       color: c.color || '#634031',
@@ -5016,7 +5179,7 @@ class Component extends DCLogic {
         if (this.state.spendingFilter === 'partner') return t.mirrorOwner === this.state.householdPartnerUserId;
         return true;
       })
-      .filter(t => activeCatFilters.length === 0 || activeCatFilters.includes(t.category))
+      .filter(t => activeCatFilters.length === 0 || activeCatFilters.includes(canonicalExpenseCategoryId(t.category)))
       .filter(t => isNaN(minAmt) || t.amount >= minAmt)
       .filter(t => isNaN(maxAmt) || t.amount <= maxAmt)
       .slice()
@@ -5084,7 +5247,8 @@ class Component extends DCLogic {
         setOwner: (e) => this.setIncomeEntryOwner(inc.id, e),
         myOwnerLabel: this.state.name || t.calcMeLabel,
         partnerOwnerLabel: this.state.householdPartnerName || t.calcPartnerColumnHeader,
-        editCategories: incomeCategoriesMerged
+        editCategories: incomeCategoriesMerged,
+        receiptLabel: this.tf('Received', 'Ontvangen', 'Erhalten', 'Reçu', 'Recibido')
       };
     });
     const incomeTotal = monthIncomeRaw.reduce((s, inc) => s + inc.amount, 0);
@@ -5139,11 +5303,8 @@ class Component extends DCLogic {
     const spendExpectedMore = futureRecurringBillsThisMonth + plannerRemaining;
 
     const futureRecurringIncomeThisMonth = ws.recurringIncome.reduce((sum, ri) => {
-      if (ri.frequency === 'every4weeks' && ri.startDate) {
-        const nd = this.nextOccurrence(ri);
-        return (nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today) ? sum + ri.amount : sum;
-      }
-      return ri.day > today ? sum + ri.amount : sum;
+      const nd = this.nextUnpostedIncomeOccurrence(ri);
+      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + ri.amount : sum;
     }, 0);
 
     const overviewMax = Math.max(incomeTotal + futureRecurringIncomeThisMonth, spentMonth + spendExpectedMore, 1);
@@ -5422,7 +5583,7 @@ class Component extends DCLogic {
 
     const recurringIncome = ws.recurringIncome
       .map(ri => {
-        const target = this.nextOccurrence(ri);
+        const target = this.nextUnpostedIncomeOccurrence(ri);
         const isMirror = !!ri.mirrorOwner;
         const isEditing = !!this.state.recurringIncomeEditMode && !isMirror;
         const cat = incomeCatMap[ri.category];
@@ -5455,7 +5616,8 @@ class Component extends DCLogic {
           myOwnerLabel: this.state.name || t.calcMeLabel,
           partnerOwnerLabel: this.state.householdPartnerName || t.calcPartnerColumnHeader,
           editableDay: ri.frequency !== 'every4weeks',
-          editCategories: incomeCategoriesMerged
+          editCategories: incomeCategoriesMerged,
+          timingLabel: this.tf('Upcoming', 'Verwacht', 'Anstehend', 'À venir', 'Próximo')
         };
       })
       .sort((a, b) => a.nextDate - b.nextDate);
@@ -5599,6 +5761,7 @@ class Component extends DCLogic {
 
     const isSignIn = this.state.authMode === 'signin';
     const isResetMode = this.state.authMode === 'reset';
+    const bankImportAnalysis = this.analyzeBankImportRows();
 
     return {
       showAuthScreen: SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
@@ -5980,7 +6143,7 @@ class Component extends DCLogic {
       incomeHistoryTitle: this.tf('Add income history', 'Inkomstenhistorie aanvullen', 'Einkommenshistorie ergänzen', "Compléter l’historique des revenus", 'Completar historial de ingresos'),
       categoryOptions: expenseCategoriesMerged,
       categoriesWithUsage,
-      categorySuggestions: t.spendingSuggestions.filter(label => !expenseCategoriesMerged.some(c => c.label === label)).map(label => ({ label, add: () => this.addSuggestedCategory('categoryOptions', label) })),
+      categorySuggestions: t.spendingSuggestions.filter(label => !expenseCategoriesMerged.some(c => normalizeExpenseCategoryName(c.label) === normalizeExpenseCategoryName(label))).map(label => ({ label, add: () => this.addSuggestedCategory('categoryOptions', label) })),
       newCategoryName: this.state.newCategoryName,
       setNewCategoryName: (e) => this.setNewCategoryName(e),
       addCategory: () => this.addCategory(),
@@ -6102,11 +6265,56 @@ class Component extends DCLogic {
         moveToSolo: (e) => { e.stopPropagation(); this.moveSpendHistoryMonthToSolo(h.key); },
         noItems: (h.items || []).length === 0,
         items: (h.items || []).map(it => {
-          const cat = it.category ? expenseCategoriesMerged.find(c => c.id === it.category) : null;
+          const cat = it.category ? canonicalExpenseCategory(it.category) : null;
           return { ...it, amountStr: this.fmt(it.amount), dateStr: this.formatDateShort(it.date), categoryLabel: cat ? cat.label : '', categoryColor: cat ? cat.color : '#7A5941', remove: () => this.removeSpendHistoryItem(h.key, it.id) };
         })
       })),
       noSpendHistoryRows: (ws.spendHistory || []).length === 0,
+      bankImportOpen: this.state.bankImportOpen,
+      bankImportClosed: !this.state.bankImportOpen,
+      openBankImport: () => this.openBankImport(),
+      closeBankImport: () => this.closeBankImport(),
+      handleBankCsvFile: (e) => this.handleBankCsvFile(e),
+      bankImportRows: bankImportAnalysis.rows.map((row, index) => { const category = row.category ? canonicalExpenseCategory(row.category) : null; return { ...row, categoryColor: category ? category.color : '#B9AA99', categoryOptions: expenseCategoriesMerged.map(item => ({ ...item, value: item.id })), categoryAriaLabel: this.tf(`Category for row ${index + 1}`, `Categorie voor regel ${index + 1}`, `Kategorie für Zeile ${index + 1}`, `Catégorie de la ligne ${index + 1}`, `Categoría de la fila ${index + 1}`), setCategory: (e) => this.setBankImportRowCategory(index, e), toggleRemember: (e) => this.toggleBankImportRemember(index, e), rememberChecked: !!(this.state.merchantCategoryRules || {})[this.bankImportMerchantKey(row.description)], rememberDisabled: !row.category, rememberLabel: this.tf('Remember this category for future imports', 'Onthoud deze categorie voor volgende imports', 'Diese Kategorie für zukünftige Importe merken', 'Mémoriser cette catégorie pour les prochains imports', 'Recordar esta categoría para futuras importaciones'), toggleOverride: () => this.toggleBankImportRowOverride(index), overrideLabel: (this.state.bankImportManualOverrides || {})[index] ? this.tf('Group', 'Groep', 'Gruppe', 'Groupe', 'Grupo') : this.tf('This row', 'Deze rij', 'Diese Zeile', 'Cette ligne', 'Esta fila'), overrideTitle: (this.state.bankImportManualOverrides || {})[index] ? this.tf('Use merchant group again', 'Gebruik merchantgroep weer', 'Händlergruppe wieder verwenden', 'Réutiliser le groupe marchand', 'Volver a usar el grupo') : this.tf('Override only this row', 'Alleen deze rij overschrijven', 'Nur diese Zeile überschreiben', 'Remplacer uniquement cette ligne', 'Sobrescribir solo esta fila'), statusLabel: row.status === 'duplicate' ? this.tf('Already exists', 'Bestaat al', 'Bereits vorhanden', 'Existe déjà', 'Ya existe') : row.status === 'missing' ? this.tf('Missing category', 'Mist categorie', 'Kategorie fehlt', 'Catégorie manquante', 'Falta categoría') : row.status === 'invalid' ? this.tf('Invalid row', 'Ongeldige regel', 'Ungültige Zeile', 'Ligne invalide', 'Fila no válida') : row.autoSuggested ? this.tf('Automatically suggested', 'Automatisch voorgesteld', 'Automatisch vorgeschlagen', 'Suggéré automatiquement', 'Sugerido automáticamente') : this.tf('Ready', 'Klaar', 'Bereit', 'Prêt', 'Listo'), statusColor: row.status === 'ready' ? '#66745A' : row.status === 'duplicate' ? '#7A5941' : '#A45E49' }; }),
+      bankImportHasRows: this.state.bankImportRows.length > 0,
+      bankImportHasError: !!this.state.bankImportError,
+      bankImportError: this.state.bankImportError,
+      bankImportHasFile: !!this.state.bankImportFileName,
+      bankImportFileName: this.state.bankImportFileName,
+      bankImportCategorizeMode: this.state.bankImportCategorizeMode,
+      bankImportGridColumns: this.state.bankImportCategorizeMode ? '100px minmax(180px,1fr) 80px 100px minmax(300px,360px) 110px' : '100px minmax(180px,1fr) 80px 100px',
+      toggleBankImportCategorize: () => this.toggleBankImportCategorize(),
+      bankImportCategorizeButtonLabel: this.state.bankImportCategorizeMode ? this.tf('Done categorizing', 'Categoriseren gereed', 'Kategorisierung fertig', 'Catégorisation terminée', 'Terminar categorización') : this.tf('Categorize', 'Categoriseren', 'Kategorisieren', 'Catégoriser', 'Categorizar'),
+      bankImportHasBulkMessage: !!this.state.bankImportBulkMessage,
+      bankImportBulkMessage: this.state.bankImportBulkMessage,
+      bankImportReadyCount: bankImportAnalysis.ready,
+      bankImportDuplicateCount: bankImportAnalysis.duplicate,
+      bankImportMissingCategoryCount: bankImportAnalysis.missingCategory,
+      bankImportInvalidCount: bankImportAnalysis.invalid,
+      bankImportHasInvalid: bankImportAnalysis.invalid > 0,
+      importReviewedBankRows: () => this.importReviewedBankRows(),
+      bankImportImportDisabled: this.state.mode !== 'personal' || bankImportAnalysis.ready === 0,
+      bankImportImportLabel: this.tf('Import', 'Importeren', 'Importieren', 'Importer', 'Importar'),
+      bankImportSummaryReadyLabel: this.tf('transactions ready to import', 'transacties klaar voor import', 'Transaktionen zum Import bereit', 'transactions prêtes à être importées', 'transacciones listas para importar'),
+      bankImportSummaryDuplicateLabel: this.tf('already exist', 'bestaan al', 'bereits vorhanden', 'existent déjà', 'ya existen'),
+      bankImportSummaryMissingLabel: this.tf('missing a category', 'missen een categorie', 'ohne Kategorie', 'sans catégorie', 'sin categoría'),
+      bankImportSummaryInvalidLabel: this.tf('invalid rows', 'ongeldige regels', 'ungültige Zeilen', 'lignes invalides', 'filas no válidas'),
+      bankImportSoloOnlyText: this.tf('Import is currently available in Solo only.', 'Importeren is momenteel alleen beschikbaar in Solo.', 'Import ist derzeit nur in Solo verfügbar.', 'L’import est actuellement disponible uniquement en Solo.', 'La importación está disponible actualmente solo en Solo.'),
+      bankImportIsShared: this.state.mode !== 'personal',
+      bankImportResultMessage: this.state.bankImportResultMessage,
+      bankImportHasResult: !!this.state.bankImportResultMessage,
+      bankImportButtonLabel: this.tf('Import bank file', 'Bankbestand importeren', 'Bankdatei importieren', 'Importer un fichier bancaire', 'Importar archivo bancario'),
+      bankImportChooseLabel: this.tf('Choose CSV', 'CSV kiezen', 'CSV auswählen', 'Choisir un CSV', 'Elegir CSV'),
+      bankImportCloseLabel: this.tf('Close import', 'Import sluiten', 'Import schließen', 'Fermer l’import', 'Cerrar importación'),
+      bankImportPrivacyText: this.tf('Processed only in this browser. The original file is not saved or uploaded.', 'Alleen verwerkt in deze browser. Het oorspronkelijke bestand wordt niet opgeslagen of geüpload.', 'Nur in diesem Browser verarbeitet. Die Originaldatei wird nicht gespeichert oder hochgeladen.', 'Traité uniquement dans ce navigateur. Le fichier original n’est ni enregistré ni envoyé.', 'Procesado solo en este navegador. El archivo original no se guarda ni se sube.'),
+      bankImportPreviewOnlyText: this.tf('Temporary preview only — nothing has been imported or saved.', 'Alleen tijdelijke preview — er is niets geïmporteerd of opgeslagen.', 'Nur temporäre Vorschau — nichts wurde importiert oder gespeichert.', 'Aperçu temporaire uniquement — rien n’a été importé ni enregistré.', 'Solo vista previa temporal: no se ha importado ni guardado nada.'),
+      bankImportDateLabel: this.tf('Date', 'Datum', 'Datum', 'Date', 'Fecha'),
+      bankImportDescriptionLabel: this.tf('Description', 'Omschrijving', 'Beschreibung', 'Description', 'Descripción'),
+      bankImportDirectionLabel: this.tf('Debit/Credit', 'Af/Bij', 'Soll/Haben', 'Débit/Crédit', 'Cargo/Abono'),
+      bankImportAmountLabel: this.tf('Amount', 'Bedrag', 'Betrag', 'Montant', 'Importe'),
+      bankImportCategoryLabel: this.tf('Category', 'Categorie', 'Kategorie', 'Catégorie', 'Categoría'),
+      bankImportNoCategoryLabel: this.tf('Choose category', 'Kies categorie', 'Kategorie wählen', 'Choisir une catégorie', 'Elegir categoría'),
+      bankImportStatusLabel: this.tf('Status', 'Status', 'Status', 'Statut', 'Estado'),
       newSpendHistoryItemCategory: this.state.newSpendHistoryItemCategory,
       setNewSpendHistoryItemCategory: (e) => this.setNewSpendHistoryItemCategory(e),
       newSpendHistoryMonth: this.state.newSpendHistoryMonth,
@@ -6135,6 +6343,17 @@ class Component extends DCLogic {
         items: (h.items || []).map(it => ({ ...it, amountStr: this.fmt(it.amount), dateStr: this.formatDateShort(it.date), remove: () => this.removeIncomeHistoryItem(h.key, it.id) }))
       })),
       noIncomeHistoryRows: (ws.incomeHistory || []).length === 0,
+      incomeAddType: this.state.incomeAddType,
+      setIncomeAddType: (e) => this.setState({ incomeAddType: e.target.value, showIncomeCategoryForm: false }),
+      showUnifiedVariableIncome: this.state.incomeAddType === 'variable',
+      showUnifiedRecurringIncome: this.state.incomeAddType === 'recurring',
+      showUnifiedHistoryIncome: this.state.incomeAddType === 'history',
+      incomeAddUnifiedTitle: this.tf('Add income', 'Inkomen toevoegen', 'Einkommen hinzufügen', 'Ajouter un revenu', 'Añadir ingreso'),
+      incomeAddTypeLabel: this.tf('Income type', 'Type inkomen', 'Einkommensart', 'Type de revenu', 'Tipo de ingreso'),
+      incomeAddRecurringLabel: this.tf('Fixed income', 'Vast inkomen', 'Festes Einkommen', 'Revenu fixe', 'Ingreso fijo'),
+      incomeAddVariableLabel: this.tf('Variable income', 'Variabel inkomen', 'Variables Einkommen', 'Revenu variable', 'Ingreso variable'),
+      incomeAddHistoryLabel: this.tf('Previous month', 'Vorige maand', 'Voriger Monat', 'Mois précédent', 'Mes anterior'),
+      incomeAddHistoryMonthButton: this.tf('Add month', 'Maand toevoegen', 'Monat hinzufügen', 'Ajouter le mois', 'Añadir mes'),
       newIncomeHistoryMonth: this.state.newIncomeHistoryMonth,
       setNewIncomeHistoryMonth: (e) => this.setNewIncomeHistoryMonth(e),
       newIncomeHistoryItemDate: this.state.newIncomeHistoryItemDate,
@@ -6238,6 +6457,9 @@ class Component extends DCLogic {
         'Dépenses variables ce mois-ci',
         'Gastos variables este mes'
       ),
+      spendingTransactionsTitle: this.tf('Transactions', 'Transacties', 'Transaktionen', 'Transactions', 'Transacciones'),
+      spendingToolsTitle: this.tf('Tools', 'Hulpmiddelen', 'Werkzeuge', 'Outils', 'Herramientas'),
+      fixedManagementTitle: this.tf('Manage fixed expenses', 'Vaste lasten beheren', 'Fixkosten verwalten', 'Gérer les charges fixes', 'Gestionar gastos fijos'),
 
     };
   }
