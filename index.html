@@ -339,6 +339,17 @@
   .grip-income-entry-unified{margin-top:0!important;padding:18px 20px!important;background:#E2D4BE!important;border:1px solid rgba(99,64,49,.13)!important;border-radius:12px!important;box-shadow:0 7px 18px rgba(58,38,29,.055)!important}
   .grip-income-entry-unified-head{border-bottom-color:rgba(99,64,49,.15)!important}
   .grip-income-month .income-current-grid.row,.grip-income-recurring .income-grid.row{background:transparent!important}
+  .grip-income-header-add{width:32px;height:32px;border:1px solid rgba(99,64,49,.22);border-radius:8px;background:#5A3B2D;color:#F6F1E7;font-size:18px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+  .grip-income-next{padding:15px 4px;border-top:1px solid rgba(99,64,49,.14);border-bottom:1px solid rgba(99,64,49,.14);margin:0 0 22px}
+  .grip-income-next-line{display:flex;align-items:center;gap:10px;min-height:34px;color:#634031}
+  .grip-income-next-line strong{font-size:13px;color:#3A261D}
+  .grip-income-next-separator{color:#B7A48E}
+  .grip-income-history-compact{margin-top:22px;border-top:1px solid rgba(99,64,49,.14);border-bottom:1px solid rgba(99,64,49,.14)}
+  .grip-income-history-compact>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;cursor:pointer;font-size:13px;font-weight:700;color:#3A261D}
+  .grip-income-history-compact>summary::-webkit-details-marker{display:none}
+  .grip-income-history-compact[open]>summary{border-bottom:1px solid rgba(99,64,49,.12)}
+  .grip-income-history-compact .grip-income-history{margin:0!important;padding:16px 4px!important;background:transparent!important;border-radius:0!important}
+  .grip-income-entry-unified.grip-income-entry-popover{margin:0 0 20px!important}
   /* App-wide editorial rhythm, benchmarked against the open Income page. */
   .grip-view-overview .grip-overview-chart{background:transparent!important;border:0!important;border-top:1px solid rgba(99,64,49,.13)!important;border-bottom:1px solid rgba(99,64,49,.13)!important;border-radius:0!important;box-shadow:none!important;padding:20px 4px 18px!important}
   .grip-view-overview .grip-trend-plot{background:rgba(238,230,216,.28)!important;border-color:rgba(99,64,49,.07)!important}
@@ -357,6 +368,58 @@
   .grip-view-calculator .grip-calculator-month,.grip-view-calculator .grip-calculator-scenario{background:#EEE6D8!important;border:1px solid rgba(99,64,49,.12)!important;border-radius:12px!important;padding:18px 20px!important;box-shadow:0 6px 16px rgba(58,38,29,.045)!important}
   .grip-view-calculator .grip-calculator-allocation{background:#E8DDCC!important;border:1px solid rgba(99,64,49,.12)!important;border-radius:12px!important;padding:18px 20px!important;box-shadow:0 6px 16px rgba(58,38,29,.045)!important}
   .grip-view-quit .grip-quit-goals{padding-top:2px;border-top:1px solid rgba(99,64,49,.13)}
+  /* Compact desktop Overview; smaller viewports retain the normal flowing page. */
+  @media (min-width:861px) and (min-height:680px){
+    .grip-main.grip-view-overview{padding-top:14px;padding-bottom:14px}
+    .grip-view-overview>div:first-child{margin-bottom:10px!important}
+    .grip-view-overview .grip-overview-kpis{gap:18px;margin-bottom:12px}
+    .grip-view-overview .grip-overview-balance{min-height:174px;padding:18px 22px 17px 19px}
+    .grip-view-overview .grip-overview-balance>div:first-child{margin-bottom:5px!important}
+    .grip-view-overview .grip-overview-balance .grip-overview-balance-amount{font-size:38px!important;margin-bottom:9px}
+    .grip-view-overview .grip-overview-balance-details{padding-top:10px;gap:22px}
+    .grip-view-overview .grip-overview-balance-details>div:first-child>div:first-child{margin-bottom:3px!important}
+    .grip-view-overview .grip-overview-goal{padding:16px 18px 14px}
+    .grip-view-overview .grip-overview-goal-summary{margin-top:7px}
+    .grip-view-overview .grip-overview-goal [style*="margin-top:14px"]{margin-top:7px!important}
+    .grip-view-overview .grip-overview-goal-progress-meta{margin-top:3px}
+    .grip-view-overview .grip-overview-goal-actions{margin-top:7px;padding-top:7px}
+    .grip-view-overview .grip-overview-row{gap:18px;margin-bottom:12px}
+    .grip-view-overview .grip-overview-chart{padding:10px 4px 9px!important}
+    .grip-view-overview .grip-income-spend-title{margin-bottom:7px}
+    .grip-view-overview .grip-income-spend-bars .grip-income-spend-group{height:94px}
+    .grip-view-overview .grip-income-spend-inner .grip-overview-legend{margin-top:7px;padding-top:6px;gap:12px}
+    .grip-view-overview .grip-income-spend-chart .grip-overview-legend>div{grid-auto-rows:15px;row-gap:2px}
+    .grip-view-overview .grip-trend-chart>div:first-child{margin-bottom:7px!important}
+    .grip-view-overview .grip-trend-plot{padding:5px 10px 4px}
+    .grip-view-overview .grip-trend-svg{height:76px}
+    .grip-view-overview .grip-trend-months{margin-top:1px}
+    .grip-view-overview .grip-trend-legend{margin-top:5px;padding-top:5px}
+    .grip-view-overview .grip-overview-utilities{gap:18px}
+    .grip-view-overview .grip-overview-utility{padding:10px 4px!important}
+    .grip-view-overview .grip-overview-utility>div:first-child{margin-bottom:7px!important}
+    .grip-view-overview .grip-overview-utility-limestone>div:nth-child(n+2):nth-child(-n+6){margin-bottom:4px!important}
+    .grip-view-overview .grip-overview-utility-limestone>div:nth-child(n+2):nth-child(-n+6)>div:first-child{margin-bottom:2px!important}
+    .grip-view-overview .grip-category-split-bar{height:7px}
+    .grip-view-overview .grip-overview-quick-entry{margin-top:7px!important;padding-top:7px!important}
+    .grip-view-overview .grip-overview-upcoming-title{margin-bottom:4px!important}
+    .grip-view-overview .grip-overview-upcoming-row{padding:6px 0!important}
+  }
+  @media (min-width:861px){
+    .grip-view-overview .grip-overview-row>.grip-overview-chart{min-height:170px}
+    .grip-view-overview .grip-income-spend-inner{width:100%;max-width:none;display:grid;grid-template-columns:minmax(0,1fr) 142px;align-items:center;gap:18px}
+    .grip-view-overview .grip-income-spend-inner .grip-income-spend-bars{width:100%;max-width:350px;margin:0 auto;gap:24px}
+    .grip-view-overview .grip-income-spend-bars .grip-income-spend-group{height:120px}
+    .grip-view-overview .grip-income-spend-inner .grip-overview-legend{width:auto;max-width:none;margin:0;padding:2px 0 2px 14px;border-top:0;border-left:1px solid rgba(99,64,49,.1);display:flex;flex-direction:column;justify-content:center;gap:10px;align-self:stretch}
+    .grip-view-overview .grip-income-spend-inner .grip-overview-legend>div{display:grid;grid-auto-rows:18px;row-gap:4px}
+    .grip-view-overview .grip-income-spend-inner .grip-income-spend-detail{grid-template-columns:8px minmax(0,1fr) auto}
+    .grip-view-overview .grip-trend-chart{display:grid;grid-template-columns:minmax(0,1fr) 126px;grid-template-rows:auto minmax(0,1fr);column-gap:18px;align-items:center;justify-content:stretch}
+    .grip-view-overview .grip-trend-chart>div:first-child{grid-column:1/-1;grid-row:1}
+    .grip-view-overview .grip-trend-chart>sc-if{grid-column:1;grid-row:2;min-width:0}
+    .grip-view-overview .grip-trend-plot{width:100%;padding:7px 12px 5px}
+    .grip-view-overview .grip-trend-svg{height:102px}
+    .grip-view-overview .grip-trend-legend{grid-column:2;grid-row:2;width:auto;margin:0;padding:2px 0 2px 14px;border-top:0;border-left:1px solid rgba(99,64,49,.1);align-self:stretch;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;flex-wrap:nowrap}
+    .grip-view-overview .grip-trend-legend-group{display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+  }
   @media (max-width:760px){
     .grip-view-overview .grip-overview-chart,.grip-view-overview .grip-overview-utility{padding-left:2px!important;padding-right:2px!important}
   }
@@ -531,7 +594,10 @@
           <span style="font-size:11px;font-weight:700;color:#F6F1E7;background:#5A3B2D;padding:3px 9px;border-radius:6px">{{ t.shared }}</span>
         </sc-if>
       </div>
-      <div style="font-size:12.5px;color:#634031">{{ todayLabel }}</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <sc-if value="{{ isIncome }}" hint-placeholder-val="{{ false }}"><button class="grip-income-header-add" onClick="{{ openVariableIncomeAdd }}" aria-label="{{ incomeAddVariableLabel }}" title="{{ incomeAddVariableLabel }}">+</button></sc-if>
+        <div style="font-size:12.5px;color:#634031">{{ todayLabel }}</div>
+      </div>
     </div>
 
     <sc-if value="{{ alerts.length }}" hint-placeholder-val="{{ false }}">
@@ -876,11 +942,15 @@
         </sc-if>
       </div>
 
-      <div class="grip-income-recurring" style="background:#EEE6D8;border-radius:16px;padding:20px 22px">
+      <div class="grip-income-recurring grip-income-next" style="background:#EEE6D8;border-radius:16px;padding:20px 22px">
         <div class="grip-income-recurring-head" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.recurringIncomeHeader }}</div>
-          <button class="grip-income-edit" onClick="{{ toggleRecurringIncomeEditMode }}" style="border:1px solid rgba(99,64,49,.25);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:transparent;color:#634031">{{ recurringIncomeEditModeLabel }}</button>
+          <div style="font-size:13px;font-weight:700;color:#3A261D">{{ incomeNextTitle }}</div>
+          <button class="grip-income-edit" onClick="{{ toggleRecurringIncomeManage }}" style="border:1px solid rgba(99,64,49,.25);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:transparent;color:#634031">{{ recurringIncomeManageLabel }}</button>
         </div>
+        <sc-if value="{{ hasNextRecurringIncome }}" hint-placeholder-val="{{ true }}"><div class="grip-income-next-line"><strong>{{ nextRecurringIncome.name }}</strong><span class="grip-income-next-separator">·</span><span>{{ nextRecurringIncome.nextLabel }}</span><span class="grip-income-next-separator">·</span><span class="grip-money">€ {{ nextRecurringIncome.amountStr }}</span></div></sc-if>
+        <sc-if value="{{ noNextRecurringIncome }}" hint-placeholder-val="{{ false }}"><div class="grip-income-next-line" style="color:#8A715D">{{ incomeNextEmpty }}</div></sc-if>
+        <sc-if value="{{ showRecurringIncomeManage }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin:12px 0 8px"><button class="grip-btn grip-btn-secondary" onClick="{{ toggleRecurringIncomeEditMode }}">{{ recurringIncomeEditModeLabel }}</button><button class="grip-btn grip-btn-primary" onClick="{{ openRecurringIncomeAdd }}">{{ t.addIncomeSourceBtn }}</button></div>
         <sc-if value="{{ recurringIncome.length }}" hint-placeholder-val="{{ false }}">
           <div class="income-grid head">
             <span>{{ incomeNextChargeLabel }}</span>
@@ -985,11 +1055,15 @@
             <button onClick="{{ addRecurringIncome }}" disabled="{{ addRecIncomeDisabled }}" style="margin-left:auto;height:32px;border:none;border-radius:8px;padding:0 16px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7;box-sizing:border-box">{{ t.addIncomeSourceBtn }}</button>
           </div>
         </div>
+        </sc-if>
       </div>
 
+      <details class="grip-income-history-compact">
+        <summary><span>{{ incomeHistoryCompactTitle }}</span><span style="font-size:11px;font-weight:600;color:#7A5941">{{ incomeHistoryOpenLabel }}</span></summary>
       <div class="grip-income-history" style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-top:20px">
         <div style="font-size:13px;font-weight:700;margin-bottom:4px">{{ incomeHistoryTitle }}</div>
         <div style="font-size:11.5px;color:#7A5941;margin-bottom:14px">{{ t.historyLogIntroIncome }}</div>
+        <button class="grip-btn grip-btn-secondary" onClick="{{ openIncomeHistoryAdd }}" style="margin-bottom:14px">{{ incomeAddHistoryLabel }}</button>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
           <sc-for list="{{ incomeHistoryRows }}" as="ih" hint-placeholder-count="2">
             <div style="background:#D8C7AB;border-radius:10px;overflow:hidden">
@@ -1035,15 +1109,13 @@
           <button onClick="{{ addIncomeHistoryMonth }}" disabled="{{ addIncomeHistoryMonthDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">+</button>
         </div>
       </div>
+      </details>
 
-      <div class="grip-income-entry-unified">
+      <sc-if value="{{ showIncomeAddPanel }}" hint-placeholder-val="{{ false }}">
+      <div class="grip-income-entry-unified grip-income-entry-popover">
         <div class="grip-income-entry-unified-head">
           <div style="font-size:13px;font-weight:700;color:#3A261D">{{ incomeAddUnifiedTitle }}</div>
-          <select value="{{ incomeAddType }}" onChange="{{ setIncomeAddType }}" aria-label="{{ incomeAddTypeLabel }}" class="grip-control" style="width:190px;background:#F6F1E7">
-            <option value="recurring">{{ incomeAddRecurringLabel }}</option>
-            <option value="variable">{{ incomeAddVariableLabel }}</option>
-            <option value="history">{{ incomeAddHistoryLabel }}</option>
-          </select>
+          <button onClick="{{ closeIncomeAddPanel }}" class="grip-btn grip-btn-secondary" aria-label="Sluiten">×</button>
         </div>
 
         <sc-if value="{{ showUnifiedVariableIncome }}" hint-placeholder-val="{{ true }}">
@@ -1101,6 +1173,7 @@
           </div>
         </sc-if>
       </div>
+    </sc-if>
     </sc-if>
 
     <sc-if value="{{ isSpending }}" hint-placeholder-val="{{ false }}">
@@ -1168,7 +1241,17 @@
           </div>
         </div>
       </sc-if>
-      <div class="grip-expense-transactions-title">{{ spendingTransactionsTitle }}</div>
+      <div class="grip-expense-transactions-title" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <span>{{ spendingTransactionsTitle }}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <sc-if value="{{ spendingTransactionsNotEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ startSpendingTransactionsEdit }}" class="grip-btn grip-btn-secondary" style="min-height:30px;padding:5px 11px">{{ t.editBtn }}</button></sc-if>
+          <sc-if value="{{ spendingTransactionsEditing }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ cancelSpendingTransactionsEdit }}" class="grip-btn grip-btn-secondary" style="min-height:30px;padding:5px 11px">Annuleren</button>
+            <button onClick="{{ saveSpendingTransactionsEdit }}" class="grip-btn grip-btn-primary" style="min-height:30px;padding:5px 11px">Opslaan</button>
+          </sc-if>
+        </div>
+      </div>
+      </sc-if>
       <div class="grip-expense-variable-add" style="background:#D8C7AB;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:12px">
           <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.addTransactionHeader }}</div>
@@ -1261,7 +1344,7 @@
       <div class="grip-surface grip-expense-variable-list">
         <sc-if value="{{ filteredTx.length }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ filteredTx }}" as="tx" hint-placeholder-count="6">
-            <div class="income-grid row" style="grid-template-columns:78px minmax(130px,1.8fr) 120px 92px 86px">
+            <div class="income-grid row" style="grid-template-columns:{{ tx.rowGridColumns }}">
               <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div style="color:#634031;font-size:11.5px">{{ tx.dateLabel }}</div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><input type="date" value="{{ tx.date }}" onInput="{{ tx.setDate }}" class="grip-control" style="width:100%;min-width:0;padding:0 5px;font-size:10px"></sc-if>
               <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div style="font-weight:600;color:#634031;display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden">
@@ -1270,31 +1353,30 @@
                 </sc-if>
                 <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ tx.note }}</span>
               </div></sc-if>
-              <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ tx.note }}" onChange="{{ tx.setNote }}" class="grip-control" style="width:100%;min-width:0"></sc-if>
+              <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:6px;min-width:0"><sc-if value="{{ tx.isRecurring }}" hint-placeholder-val="{{ false }}"><span title="{{ t.autoAddedTooltip }}" style="flex:none;font-size:11px;color:#8A7358">↻</span></sc-if><input type="text" value="{{ tx.note }}" onChange="{{ tx.setNote }}" class="grip-control" style="width:100%;min-width:0"></div></sc-if>
               <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div class="chip" style="color:#F6F1E7;background:{{ tx.categoryColor }};justify-self:stretch;width:100%">{{ tx.categoryLabel }}</div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><select value="{{ tx.category }}" onChange="{{ tx.setCategory }}" class="grip-control" style="width:100%;min-width:0"><sc-for list="{{ categoryOptions }}" as="c" hint-placeholder-count="5"><option value="{{ c.id }}">{{ c.label }}</option></sc-for></select></sc-if>
               <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div class="col-amt" style="font-weight:600;color:#BC6F52">-€ {{ tx.amountStr }}</div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ tx.amountStr }}" onChange="{{ tx.setAmount }}" class="grip-control" style="width:100%;min-width:0;text-align:right"></sc-if>
-              <div class="col-actions" style="display:flex;align-items:center;justify-content:flex-end;gap:5px">
-                <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ tx.startEdit }}" class="grip-btn grip-btn-secondary" style="min-height:28px;padding:4px 8px;font-size:11px">{{ t.editBtn }}</button></sc-if>
-                <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><button onClick="{{ tx.stopEdit }}" class="grip-btn grip-btn-primary" style="min-height:28px;padding:4px 8px;font-size:11px">{{ t.doneEditBtn }}</button></sc-if>
-                <button onClick="{{ tx.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button>
-              </div>
+              <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><div class="col-actions" style="display:flex;align-items:center;justify-content:flex-end;gap:5px">
+                <button onClick="{{ tx.stageRemove }}" title="Verwijderen" style="border:none;background:transparent;color:#634031;font-size:15px;padding:5px">✕</button>
+              </div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ tx.showVisibilityEdit }}" hint-placeholder-val="{{ false }}"><label style="grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;gap:5px;font-size:11px;color:#634031"><input type="checkbox" checked="{{ tx.visibleOn }}" onChange="{{ tx.setVisible }}">{{ t.shareVisibleLabel }}</label></sc-if></sc-if>
+              <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ tx.showOwnerEdit }}" hint-placeholder-val="{{ false }}"><label style="grid-column:1/-1;display:flex;align-items:center;justify-content:flex-end;gap:7px;font-size:11px;color:#634031"><span>{{ t.colStatus }}</span><select value="{{ tx.ownerValue }}" onChange="{{ tx.setOwner }}" class="grip-control" style="width:auto;min-width:118px"><sc-for list="{{ tx.ownerOptions }}" as="ownerOption" hint-placeholder-count="3"><option value="{{ ownerOption.value }}">{{ ownerOption.label }}</option></sc-for></select></label></sc-if></sc-if>
             </div>
           </sc-for>
         </sc-if>
         <sc-if value="{{ noFilteredTx }}" hint-placeholder-val="{{ false }}">
           <div style="font-size:13px;color:#634031;padding:10px 0">{{ t.noTransactions }}</div>
         </sc-if>
-        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-top:14px">
+        <sc-if value="{{ spendingTransactionsNotEditing }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;justify-content:center;gap:10px;padding-top:14px">
           <sc-if value="{{ showSpendingExpandAction }}" hint-placeholder-val="{{ false }}"><button onClick="{{ toggleSpendingTransactionsExpanded }}" class="grip-btn grip-btn-secondary">{{ spendingExpandLabel }}</button></sc-if>
           <sc-if value="{{ spendingTransactionsExpanded }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ spendingPreviousPage }}" disabled="{{ spendingPreviousPageDisabled }}" class="grip-btn grip-btn-secondary" style="min-width:34px">‹</button>
             <span style="font-size:11.5px;color:#7A5941;font-variant-numeric:tabular-nums">{{ spendingPageLabel }}</span>
             <button onClick="{{ spendingNextPage }}" disabled="{{ spendingNextPageDisabled }}" class="grip-btn grip-btn-secondary" style="min-width:34px">›</button>
           </sc-if>
-        </div>
+        </div></sc-if>
       </div>
 
       <div class="grip-expense-tools-title">{{ spendingToolsTitle }}</div>
@@ -1498,23 +1580,6 @@
       </div>
       </details>
 
-      <sc-if class="grip-expense-automatic" value="{{ automaticSavingsPlans.length }}" hint-placeholder-val="{{ 0 }}">
-        <div class="grip-surface" style="margin-top:20px">
-          <div style="font-size:11.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px">{{ automaticSavingsHeader }}</div>
-          <div style="display:flex;flex-direction:column;gap:0">
-            <sc-for list="{{ automaticSavingsPlans }}" as="automaticPlan" hint-placeholder-count="2">
-              <div style="display:grid;grid-template-columns:86px minmax(100px,1.5fr) 100px 76px 94px;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(99,64,49,.14);font-size:12px">
-                <span style="font-variant-numeric:tabular-nums;color:#7A5941">{{ automaticPlan.nextLabel }}</span>
-                <span style="font-weight:600">{{ automaticPlan.label }}</span>
-                <span>{{ automaticPlan.frequencyLabel }}</span>
-                <span style="font-weight:700;text-align:right;font-variant-numeric:tabular-nums">€ {{ automaticPlan.amountStr }}</span>
-                <span style="font-size:10px;font-weight:600;padding:3px 7px;border-radius:6px;background:{{ automaticPlan.ownerBg }};color:{{ automaticPlan.ownerColor }};text-align:center">{{ automaticPlan.ownerLabel }}</span>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </sc-if>
-
       <details class="grip-expense-tool grip-expense-history">
       <summary>{{ spendingHistoryTitle }}</summary>
       <div class="grip-expense-tool-body" style="background:#D8C7AB;border-radius:14px;padding:16px 18px;margin-top:20px;margin-bottom:20px">
@@ -1617,7 +1682,10 @@
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;position:relative">
         <div style="font-size:12.5px;color:#634031">{{ t.dragGoalHint }}</div>
-        <button onClick="{{ toggleSavingsCategoryForm }}" style="flex:none;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addCategory }}</button>
+        <div style="display:flex;gap:8px;align-items:center;flex:none">
+          <button onClick="{{ toggleSavingsCategoryForm }}" class="grip-btn grip-btn-secondary">{{ t.addCategory }}</button>
+          <button onClick="{{ toggleSavingsGoalForm }}" class="grip-btn grip-btn-primary">{{ t.addGoalBtn }}</button>
+        </div>
 
         <sc-if value="{{ showSavingsCategoryForm }}" hint-placeholder-val="{{ false }}">
           <div style="position:absolute;top:36px;right:0;z-index:20;width:280px;background:#F6F1E7;border-radius:12px;padding:14px;box-shadow:0 10px 26px rgba(58,42,31,.22)">
@@ -1742,12 +1810,13 @@
         </sc-for>
       </div>
 
-      <div class="grip-savings-add" style="background:#EEE6D8;border-radius:16px;padding:18px 20px">
+      <div class="grip-savings-add" style="display:{{ savingsGoalFormDisplay }};background:#EEE6D8;border-radius:16px;padding:18px 20px">
         <div style="font-size:13px;font-weight:700;margin-bottom:12px">{{ t.addNewGoalHeader }}</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <input type="text" placeholder="{{ t.goalNamePlaceholder }}" value="{{ newGoalName }}" onChange="{{ setNewGoalName }}" onKeyDown="{{ onGoalKeyDown }}" style="width:140px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
           <input type="text" inputmode="decimal" placeholder="{{ t.targetEuroPlaceholder }}" value="{{ newGoalTarget }}" onChange="{{ setNewGoalTarget }}" onKeyDown="{{ onGoalKeyDown }}" style="width:90px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
           <button onClick="{{ addGoal }}" disabled="{{ addGoalDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addGoalBtn }}</button>
+          <button onClick="{{ cancelSavingsGoalForm }}" class="grip-btn grip-btn-secondary">Annuleren</button>
         </div>
       </div>
     </sc-if>
@@ -2493,7 +2562,9 @@ const LANGUAGE_OPTIONS = [
 ];
 const SUPABASE_URL = 'https://vklrbcywimwefvflqxgf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_pZIRsJwhoVZtDAuBfAG8zA_JfLlfRjM';
-const SUPABASE_CONFIGURED = false; // preview harness only
+const SUPABASE_CONFIGURED = true;
+const PREVIEW_AUTH_BYPASS = ['127.0.0.1', 'localhost'].includes(window.location.hostname)
+  && new URLSearchParams(window.location.search).get('previewBypass') === '1';
 const supabaseClient = (SUPABASE_CONFIGURED && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
 class Component extends DCLogic {
@@ -2661,6 +2732,8 @@ class Component extends DCLogic {
     newIncomeHistoryItemAmount: '',
     newIncomeHistoryItemDate: '',
     incomeAddType: 'variable',
+    showIncomeAddPanel: false,
+    recurringIncomeManageOpen: false,
     newTxAmount: '',
     newTxNote: '',
     newTxVisible: false,
@@ -2694,6 +2767,7 @@ class Component extends DCLogic {
     goalAmounts: {},
     newGoalName: '',
     newGoalTarget: '',
+    showSavingsGoalForm: false,
     draggedGoalId: null,
     scheduleOpenFor: null,
     newIncomeSource: '',
@@ -2716,6 +2790,9 @@ class Component extends DCLogic {
     savingsColorPickerFor: null,
     newSavingsCategoryName: '',
     editingTxId: null,
+    spendingTransactionsEditing: false,
+    spendingTransactionDrafts: {},
+    spendingTransactionDeleteIds: [],
     newQuitCategory: '',
     newQuitName: '',
     newQuitStartDate: '',
@@ -2750,7 +2827,7 @@ class Component extends DCLogic {
   }
 
   setMode(mode) {
-    this.setState({ mode }, () => this.persist());
+    this.setState({ mode, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist());
   }
 
   fmt(n) {
@@ -3171,9 +3248,9 @@ class Component extends DCLogic {
     this._handleRecurringVisibility = () => { if (document.visibilityState === 'visible') this.processDueRecurring(); };
     document.addEventListener('visibilitychange', this._handleRecurringVisibility);
     this._handleSidebarResize();
-    if (!supabaseClient) {
+    if (!supabaseClient || PREVIEW_AUTH_BYPASS) {
       // Supabase not configured yet: fall back to local-only mode (data stays in this browser).
-      const hasSavedPreviewData = !!this.localPersistedState().workspaces;
+      const hasSavedPreviewData = !PREVIEW_AUTH_BYPASS && !!this.localPersistedState().workspaces;
       this.loadFromLocalStorage();
       // Preview-only sample data: keeps the real working index and its logic untouched.
       if (!hasSavedPreviewData) this.setState(s => ({
@@ -3184,36 +3261,113 @@ class Component extends DCLogic {
           ...s.workspaces,
           personal: {
             ...s.workspaces.personal,
+            balance: 4380,
+            budgetMonthly: 1850,
+            budgetManuallySet: true,
             categoryOptions: [
               { id: 'groceries', label: 'Boodschappen', color: '#A8714F' },
               { id: 'out', label: 'Uitgaan', color: '#BC6F52' },
-              { id: 'transport', label: 'Vervoer', color: '#7A5941' }
+              { id: 'transport', label: 'Vervoer', color: '#7A5941' },
+              { id: 'subscriptions', label: 'Abonnementen', color: '#7C8972' },
+              { id: 'shopping', label: 'Shoppen', color: '#9A6B62' }
             ],
-            fixedCostCategories: [{ id: 'housing', label: 'Wonen', color: '#7A5941' }],
+            fixedCostCategories: [
+              { id: 'housing', label: 'Wonen', color: '#7A5941' },
+              { id: 'insurance', label: 'Verzekeringen', color: '#7C8972' },
+              { id: 'utilities', label: 'Nutsvoorzieningen', color: '#A8714F' }
+            ],
+            categoryBudgets: { groceries: 650, out: 240, transport: 180, subscriptions: 120, shopping: 300 },
             transactions: [
-              { id: 'pv1', category: 'groceries', amount: 286, note: 'Boodschappen', date: '2026-08-08' },
-              { id: 'pv2', category: 'out', amount: 94, note: 'Uit eten', date: '2026-08-12' },
-              { id: 'pv3', category: 'transport', amount: 72, note: 'Trein', date: '2026-08-15' }
+              { id: 'pv1', category: 'groceries', amount: 86.42, note: 'Albert Heijn', date: '2026-10-03', visible: true },
+              { id: 'pv2', category: 'out', amount: 54, note: 'Diner met vrienden', date: '2026-10-02', visible: false },
+              { id: 'pv3', category: 'transport', amount: 32.5, note: 'NS Flex', date: '2026-10-02', visible: true },
+              { id: 'pv4', category: 'shopping', amount: 74.95, note: 'Nieuwe trui', date: '2026-10-01', visible: false },
+              { id: 'pv5', category: 'groceries', amount: 41.18, note: 'Lidl', date: '2026-10-01', visible: true },
+              { id: 'pv6', category: 'subscriptions', amount: 14.99, note: 'Streamingdienst', date: '2026-10-01', visible: false },
+              { id: 'pv7', category: 'out', amount: 18.5, note: 'Koffie', date: '2026-10-01', visible: false },
+              { id: 'pv8', category: 'transport', amount: 24.2, note: 'Tankstation', date: '2026-10-01', visible: true },
+              { id: 'pv9', category: 'groceries', amount: 63.8, note: 'Weekboodschappen', date: '2026-10-01', visible: false },
+              { id: 'pv10', category: 'shopping', amount: 39.95, note: 'Boekhandel', date: '2026-10-01', visible: false },
+              { id: 'pv11', category: 'out', amount: 27, note: 'Lunch', date: '2026-10-01', visible: true },
+              { id: 'pv12', category: 'groceries', amount: 52.7, note: 'Markt', date: '2026-10-01', visible: false }
             ],
             recurring: [
-              { id: 'pr1', name: 'Huur', amount: 1180, day: 1, frequency: 'monthly', category: 'housing' },
-              { id: 'pr2', name: 'Zorgverzekering', amount: 149, day: 24, frequency: 'monthly', category: 'housing' },
-              { id: 'pr3', name: 'Internet', amount: 54, day: 28, frequency: 'monthly', category: 'housing' },
-              { id: 'pr4', name: 'Energie', amount: 132, day: 3, frequency: 'monthly', category: 'housing' }
+              { id: 'pr1', name: 'Huur', amount: 1180, day: 1, frequency: 'monthly', category: 'housing', joint: false, visible: true },
+              { id: 'pr2', name: 'Zorgverzekering', amount: 149, day: 24, frequency: 'monthly', category: 'insurance', joint: false, visible: true },
+              { id: 'pr3', name: 'Internet', amount: 54, day: 28, frequency: 'monthly', category: 'utilities', joint: false, visible: false },
+              { id: 'pr4', name: 'Energie', amount: 132, day: 3, frequency: 'monthly', category: 'utilities', joint: false, visible: true }
             ],
-            incomeEntries: [{ id: 'pi1', source: 'Salaris', amount: 3280, date: '2026-08-01' }],
-            recurringIncome: [],
-            savingsGoals: [{ id: 'pg1', label: 'Noodbuffer', target: 5000, saved: 2840, favorite: true }],
+            incomeEntries: [{ id: 'pi1', source: 'Freelance opdracht', amount: 450, date: '2026-10-01', joint: false, category: 'freelance' }],
+            recurringIncome: [
+              { id: 'pri1', name: 'Salaris', amount: 3280, frequency: 'monthly', day: 2, joint: false, category: 'salary' },
+              { id: 'pri2', name: 'Toeslag', amount: 185, frequency: 'monthly', day: 20, joint: false, category: 'allowance' }
+            ],
+            incomeCategories: [
+              { id: 'salary', label: 'Salaris', color: '#66715A' },
+              { id: 'freelance', label: 'Freelance', color: '#A8714F' },
+              { id: 'allowance', label: 'Toeslag', color: '#C8A66B' }
+            ],
+            savingsCategories: [{ id: 'buffer', label: 'Buffer', color: '#7C8972' }, { id: 'travel', label: 'Reizen', color: '#9A6B62' }],
+            savingsGoals: [
+              { id: 'pg1', label: 'Noodbuffer', category: 'buffer', target: 7500, saved: 4280, favorite: true, savingStartDate: '2026-01-01', targetDate: '2027-12-31', contributionAmount: 250, contributionFrequency: 'monthly', contributionDay: 26, contributionOwnership: 'personal' },
+              { id: 'pg2', label: 'Japanreis', category: 'travel', target: 4200, saved: 1350, savingStartDate: '2026-04-01', targetDate: '2027-05-01', contributionAmount: 125, contributionFrequency: 'monthly', contributionDay: 15, contributionOwnership: 'personal' }
+            ],
+            quitGoals: [{ id: 'qg1', category: 'out', name: 'Minder afhalen', startDate: '2026-09-01' }],
             spendHistory: [
-              { key: '2026-05', label: 'Mei', items: [{ id: 'h1', amount: 1810 }] },
-              { key: '2026-06', label: 'Jun', items: [{ id: 'h2', amount: 1660 }] },
-              { key: '2026-07', label: 'Jul', items: [{ id: 'h3', amount: 1740 }] }
+              { key: '2026-07', label: 'Juli', items: [{ id: 'h1', category: 'groceries', amount: 460 }, { id: 'h1b', category: 'out', amount: 210 }] },
+              { key: '2026-08', label: 'Augustus', items: [{ id: 'h2', category: 'groceries', amount: 510 }, { id: 'h2b', category: 'transport', amount: 145 }] },
+              { key: '2026-09', label: 'September', items: [{ id: 'h3', category: 'groceries', amount: 485 }, { id: 'h3b', category: 'shopping', amount: 190 }] }
             ],
-            savingsHistory: [{ saved: 2140 }, { saved: 2360 }, { saved: 2590 }],
-            savingsAddedThisMonth: 250
+            incomeHistory: [{ key: '2026-09', total: 3465 }],
+            savingsHistory: [{ saved: 3440 }, { saved: 3720 }, { saved: 4010 }],
+            savingsAddedThisMonth: 375
+          },
+          shared: {
+            ...s.workspaces.shared,
+            balance: 6920,
+            budgetMonthly: 2600,
+            budgetManuallySet: true,
+            categoryOptions: [
+              { id: 'groceries', label: 'Boodschappen', color: '#A8714F' },
+              { id: 'out', label: 'Uitgaan', color: '#BC6F52' },
+              { id: 'transport', label: 'Vervoer', color: '#7A5941' },
+              { id: 'subscriptions', label: 'Abonnementen', color: '#7C8972' },
+              { id: 'shopping', label: 'Shoppen', color: '#9A6B62' }
+            ],
+            fixedCostCategories: [
+              { id: 'housing', label: 'Wonen', color: '#7A5941' },
+              { id: 'utilities', label: 'Nutsvoorzieningen', color: '#A8714F' }
+            ],
+            categoryBudgets: { groceries: 900, out: 320, transport: 220, subscriptions: 160, shopping: 350 },
+            transactions: [
+              { id: 'sv1', category: 'groceries', amount: 124.65, note: 'Gezamenlijke boodschappen', date: '2026-10-03', joint: true },
+              { id: 'sv2', category: 'out', amount: 82, note: 'Restaurant', date: '2026-10-02', joint: true },
+              { id: 'sv3', category: 'shopping', amount: 59.95, note: 'Woonaccessoires', date: '2026-10-01', joint: true }
+            ],
+            recurring: [
+              { id: 'sr1', name: 'Hypotheek', amount: 1650, day: 1, frequency: 'monthly', category: 'housing', joint: true, visible: true },
+              { id: 'sr2', name: 'Energie & water', amount: 215, day: 3, frequency: 'monthly', category: 'utilities', joint: true, visible: true },
+              { id: 'sr3', name: 'Internet thuis', amount: 62, day: 25, frequency: 'monthly', category: 'utilities', joint: true, visible: true }
+            ],
+            incomeEntries: [{ id: 'si1', source: 'Gezamenlijke teruggave', amount: 320, date: '2026-10-01', joint: true, category: 'other' }],
+            recurringIncome: [
+              { id: 'sri1', name: 'Salaris Tim', amount: 3280, frequency: 'monthly', day: 2, joint: true, category: 'salary' },
+              { id: 'sri2', name: 'Salaris Juliette', amount: 2950, frequency: 'monthly', day: 21, joint: true, category: 'salary' }
+            ],
+            incomeCategories: [{ id: 'salary', label: 'Salaris', color: '#66715A' }, { id: 'other', label: 'Overig', color: '#C8A66B' }],
+            savingsCategories: [{ id: 'home', label: 'Wonen', color: '#7C8972' }],
+            savingsGoals: [{ id: 'sg1', label: 'Verbouwing', category: 'home', target: 18000, saved: 6250, favorite: true, savingStartDate: '2026-02-01', targetDate: '2028-06-01', contributionAmount: 400, contributionFrequency: 'monthly', contributionDay: 26, contributionOwnership: 'shared' }],
+            quitGoals: [{ id: 'sq1', category: 'shopping', name: 'Bewuster interieur kopen', startDate: '2026-09-15' }],
+            spendHistory: [
+              { key: '2026-07', label: 'Juli', items: [{ id: 'sh1', category: 'groceries', amount: 720 }] },
+              { key: '2026-08', label: 'Augustus', items: [{ id: 'sh2', category: 'groceries', amount: 780 }] },
+              { key: '2026-09', label: 'September', items: [{ id: 'sh3', category: 'groceries', amount: 745 }] }
+            ],
+            savingsHistory: [{ saved: 5050 }, { saved: 5450 }, { saved: 5850 }],
+            savingsAddedThisMonth: 400
           }
         }
-      }));
+      }), () => { this.processDueRecurring(); this.persist(); });
       return;
     }
     supabaseClient.auth.getSession().then(({ data }) => {
@@ -3250,7 +3404,7 @@ class Component extends DCLogic {
     return lang === 'nl' ? nl : lang === 'de' ? de : lang === 'fr' ? fr : lang === 'es' ? es : en;
   }
 
-  setView(view) { this.setState({ view }, () => this.persist()); }
+  setView(view) { this.setState({ view, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist()); }
   toggleSettings() { this.setState(s => ({ showSettings: !s.showSettings })); }
   toggleSidebar() { this.setState(s => ({ sidebarOpen: !s.sidebarOpen })); }
   resetAllData() {
@@ -4593,6 +4747,104 @@ class Component extends DCLogic {
     this.setState({ editingTxId: null });
   }
 
+  startSpendingTransactionsEdit(transactions) {
+    const drafts = {};
+    (transactions || []).forEach(tx => {
+      drafts[tx.id] = {
+        date: tx.date || '',
+        note: tx.note || '',
+        category: tx.category || '',
+        amount: String(tx.amount == null ? '' : tx.amount),
+        visible: !!tx.visible,
+        owner: tx.mirrorOwner
+          ? (tx.mirrorOwner === (this.state.session ? this.state.session.user.id : '__local_personal__') ? 'me' : 'partner')
+          : 'joint'
+      };
+    });
+    this.setState({
+      spendingTransactionsEditing: true,
+      spendingTransactionDrafts: drafts,
+      spendingTransactionDeleteIds: []
+    });
+  }
+
+  updateSpendingTransactionDraft(id, field, e) {
+    const value = field === 'visible' ? !!e.target.checked : e.target.value;
+    this.setState(s => ({
+      spendingTransactionDrafts: {
+        ...s.spendingTransactionDrafts,
+        [id]: { ...(s.spendingTransactionDrafts[id] || {}), [field]: value }
+      }
+    }));
+  }
+
+  stageSpendingTransactionRemoval(id) {
+    this.setState(s => ({
+      spendingTransactionDeleteIds: s.spendingTransactionDeleteIds.includes(id)
+        ? s.spendingTransactionDeleteIds
+        : [...s.spendingTransactionDeleteIds, id]
+    }));
+  }
+
+  cancelSpendingTransactionsEdit() {
+    this.setState({
+      spendingTransactionsEditing: false,
+      spendingTransactionDrafts: {},
+      spendingTransactionDeleteIds: []
+    });
+  }
+
+  saveSpendingTransactionsEdit() {
+    const sourceMode = this.state.mode;
+    const drafts = this.state.spendingTransactionDrafts;
+    const deleteIds = this.state.spendingTransactionDeleteIds;
+    const changedIds = Object.keys(drafts);
+    this.setState(s => {
+      const workspaces = { ...s.workspaces };
+      const source = { ...workspaces[sourceMode] };
+      source.transactions = (source.transactions || [])
+        .filter(tx => !deleteIds.includes(tx.id))
+        .map(tx => {
+          const draft = drafts[tx.id];
+          if (!draft) return tx;
+          const amount = this.parseAmt(draft.amount);
+          const updated = {
+            ...tx,
+            date: draft.date || tx.date,
+            note: this.cap((draft.note || tx.note || '').trim()),
+            category: draft.category || tx.category,
+            amount: amount > 0 ? amount : tx.amount,
+            ...(sourceMode === 'personal' ? { visible: !!draft.visible } : {})
+          };
+          if (sourceMode === 'shared' && !tx.mirrorSourceId && draft.owner) {
+            delete updated.mirrorOwner;
+            if (draft.owner === 'me') updated.mirrorOwner = s.session ? s.session.user.id : '__local_personal__';
+            if (draft.owner === 'partner') updated.mirrorOwner = s.householdPartnerUserId || '__local_partner__';
+          }
+          return updated;
+        });
+      workspaces[sourceMode] = source;
+
+      if (sourceMode === 'personal') {
+        const shared = { ...workspaces.shared };
+        shared.transactions = (shared.transactions || []).filter(tx => !changedIds.includes(tx.mirrorSourceId) && !deleteIds.includes(tx.mirrorSourceId));
+        const ownerId = s.session ? s.session.user.id : '__local_personal__';
+        source.transactions.forEach(tx => {
+          if (!changedIds.includes(tx.id) || !tx.visible) return;
+          shared.transactions.push({ ...tx, id: 'mirror_tx_' + tx.id, mirrorOwner: ownerId, mirrorSourceId: tx.id });
+        });
+        workspaces.shared = shared;
+      }
+
+      return {
+        workspaces,
+        spendingTransactionsEditing: false,
+        spendingTransactionDrafts: {},
+        spendingTransactionDeleteIds: []
+      };
+    }, () => this.persist());
+  }
+
   updateTransactionField(id, field, e) {
     const sourceMode = this.state.mode;
     const raw = field === 'visible' ? !!e.target.checked : e.target.value;
@@ -4628,10 +4880,12 @@ class Component extends DCLogic {
     const now = new Date();
     const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const todayMidnight = new Date(y, m, today);
+    const occurrenceKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     if (r.frequency === 'every4weeks' && r.startDate) {
       const [sy, sm, sd] = r.startDate.split('-').map(Number);
       let cursor = new Date(sy, sm - 1, sd);
       while (cursor < todayMidnight) cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 28);
+      if (r.lastPostedDate === occurrenceKey(cursor)) cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + 28);
       return cursor;
     }
     if ((r.frequency === 'every3months' || r.frequency === 'every6months' || r.frequency === 'yearly') && r.startDate) {
@@ -4639,16 +4893,19 @@ class Component extends DCLogic {
       const [sy, sm, sd] = r.startDate.split('-').map(Number);
       let cursor = new Date(sy, sm - 1, sd);
       while (cursor < todayMidnight) cursor = new Date(cursor.getFullYear(), cursor.getMonth() + monthsStep, cursor.getDate());
+      if (r.lastPostedDate === occurrenceKey(cursor)) cursor = new Date(cursor.getFullYear(), cursor.getMonth() + monthsStep, cursor.getDate());
       return cursor;
     }
     if (r.frequency === 'flexible' && r.lastKnownDate && r.intervalDays) {
       const [ly, lm, ld] = r.lastKnownDate.split('-').map(Number);
       let cursor = new Date(ly, lm - 1, ld);
       while (cursor < todayMidnight) cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + r.intervalDays);
+      if (r.lastPostedDate === occurrenceKey(cursor)) cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() + r.intervalDays);
       return cursor;
     }
     let target = new Date(y, m, r.day);
     if (target < todayMidnight) target = new Date(y, m + 1, r.day);
+    if (r.lastPostedDate === occurrenceKey(target)) target = new Date(target.getFullYear(), target.getMonth() + 1, r.day);
     return target;
   }
 
@@ -4920,6 +5177,8 @@ class Component extends DCLogic {
 
   setNewGoalName(e) { this.setState({ newGoalName: this.cap(e.target.value) }); }
   setNewGoalTarget(e) { this.setState({ newGoalTarget: e.target.value }); }
+  toggleSavingsGoalForm() { this.setState(s => ({ showSavingsGoalForm: !s.showSavingsGoalForm })); }
+  cancelSavingsGoalForm() { this.setState({ showSavingsGoalForm: false, newGoalName: '', newGoalTarget: '' }); }
 
   addGoal() {
     const label = this.state.newGoalName.trim();
@@ -4927,7 +5186,7 @@ class Component extends DCLogic {
     if (!label || !target || target <= 0) return;
     const goal = { id: 'goal' + Date.now(), label, target, saved: 0, savingStartDate: this.todayStr(), targetDate: '', contributionAmount: 0, contributionFrequency: 'monthly', contributionDay: 1, contributionStartDate: '', contributionNextDate: '', contributionOwnership: this.state.mode === 'shared' ? 'shared' : 'personal' };
     this.setWs(ws => ({ savingsGoals: [...ws.savingsGoals, goal] }), () => this.persist());
-    this.setState({ newGoalName: '', newGoalTarget: '' });
+    this.setState({ newGoalName: '', newGoalTarget: '', showSavingsGoalForm: false });
   }
 
   onGoalDragStart(id) { this.setState({ draggedGoalId: id }); }
@@ -5035,6 +5294,11 @@ class Component extends DCLogic {
   toggleAllIncomeEntriesEdit() { this.setState(s => ({ editingIncomeEntryId: s.editingIncomeEntryId === '__all__' ? null : '__all__' })); }
   toggleEditRecurringIncome(id) { this.setState(s => ({ editingRecurringIncomeId: s.editingRecurringIncomeId === id ? null : id })); }
   toggleRecurringIncomeEditMode() { this.setState(s => ({ recurringIncomeEditMode: !s.recurringIncomeEditMode })); }
+  openVariableIncomeAdd() { this.setState({ showIncomeAddPanel: true, incomeAddType: 'variable', showIncomeCategoryForm: false }); }
+  openRecurringIncomeAdd() { this.setState({ showIncomeAddPanel: true, incomeAddType: 'recurring', showIncomeCategoryForm: false }); }
+  openIncomeHistoryAdd() { this.setState({ showIncomeAddPanel: true, incomeAddType: 'history', showIncomeCategoryForm: false }); }
+  closeIncomeAddPanel() { this.setState({ showIncomeAddPanel: false, showIncomeCategoryForm: false }); }
+  toggleRecurringIncomeManage() { this.setState(s => ({ recurringIncomeManageOpen: !s.recurringIncomeManageOpen, recurringIncomeEditMode: s.recurringIncomeManageOpen ? false : s.recurringIncomeEditMode })); }
   updateIncomeEntryField(id, field, e) {
     const raw = e.target.value;
     this.setWs(ws => ({
@@ -5488,36 +5752,53 @@ class Component extends DCLogic {
     const transactionPageSize = this.state.spendingTransactionsExpanded ? 10 : 6;
     const transactionPageCount = Math.max(1, Math.ceil(filteredTxRaw.length / transactionPageSize));
     const transactionPage = Math.min(this.state.spendingTransactionsPage, transactionPageCount - 1);
-    const visibleFilteredTxRaw = this.state.spendingTransactionsExpanded
+    const visibleFilteredTxRawPage = this.state.spendingTransactionsExpanded
       ? filteredTxRaw.slice(transactionPage * transactionPageSize, transactionPage * transactionPageSize + transactionPageSize)
       : filteredTxRaw.slice(0, transactionPageSize);
+    const visibleFilteredTxRaw = visibleFilteredTxRawPage.filter(t => !this.state.spendingTransactionDeleteIds.includes(t.id));
     const filteredTx = visibleFilteredTxRaw.map(t => {
       const dt = new Date(t.date + 'T00:00:00');
       const isRecurring = t.source === 'recurring';
-      const isEditing = this.state.editingTxId === t.id;
+      const isEditing = this.state.spendingTransactionsEditing;
+      const draft = this.state.spendingTransactionDrafts[t.id] || {
+        date: t.date || '', note: t.note || '', category: t.category || '', amount: String(t.amount == null ? '' : t.amount), visible: !!t.visible,
+        owner: t.mirrorOwner
+          ? (t.mirrorOwner === (this.state.session ? this.state.session.user.id : '__local_personal__') ? 'me' : 'partner')
+          : 'joint'
+      };
       return {
         ...t,
+        date: draft.date,
+        note: draft.note,
+        category: draft.category,
         dateLabel: this.formatDateShort(t.date),
         isEditing,
         notEditing: !isEditing,
+        rowGridColumns: isEditing ? '78px minmax(130px,1.8fr) 120px 92px 34px' : '78px minmax(130px,1.8fr) 120px 92px',
         dateCursor: 'pointer',
         dateEditHint: isRecurring
           ? this.tf('Auto-posted from a recurring payment', 'Automatisch toegevoegd vanuit een vast bedrag', 'Automatisch aus einer wiederkehrenden Zahlung hinzugefügt', "Ajouté automatiquement à partir d'un paiement récurrent", 'Añadido automáticamente desde un pago recurrente')
           : this.tf('Click to change the date', 'Klik om de datum te wijzigen', 'Klicken, um das Datum zu ändern', 'Cliquez pour changer la date', 'Haz clic para cambiar la fecha'),
-        setDate: (e) => this.updateTransactionField(t.id, 'date', e),
-        setNote: (e) => this.updateTransactionField(t.id, 'note', e),
-        setAmount: (e) => this.updateTransactionField(t.id, 'amount', e),
-        setCategory: (e) => this.updateTransactionField(t.id, 'category', e),
-        setVisible: (e) => this.updateTransactionField(t.id, 'visible', e),
-        startEdit: () => this.setState({ editingTxId: t.id }),
-        stopEdit: () => this.setState({ editingTxId: null }),
+        setDate: (e) => this.updateSpendingTransactionDraft(t.id, 'date', e),
+        setNote: (e) => this.updateSpendingTransactionDraft(t.id, 'note', e),
+        setAmount: (e) => this.updateSpendingTransactionDraft(t.id, 'amount', e),
+        setCategory: (e) => this.updateSpendingTransactionDraft(t.id, 'category', e),
+        setVisible: (e) => this.updateSpendingTransactionDraft(t.id, 'visible', e),
+        setOwner: (e) => this.updateSpendingTransactionDraft(t.id, 'owner', e),
         categoryLabel: categoryLabelMap[t.category] || (isRecurring ? (t.recurringCategoryLabel || 'Recurring') : t.category),
         categoryColor: categoryColorMap[t.category] || (isRecurring ? (t.recurringCategoryColor || '#634031') : '#634031'),
         isRecurring,
         showVisibilityEdit: this.state.mode === 'personal',
-        visibleOn: !!t.visible,
-        amountStr: this.fmt(t.amount),
-        remove: () => this.removeTransaction(t.id)
+        showOwnerEdit: this.state.mode === 'shared' && !t.mirrorSourceId,
+        ownerValue: draft.owner,
+        ownerOptions: [
+          { value: 'joint', label: t.calcJointLabel },
+          { value: 'me', label: this.state.name || t.calcMeLabel },
+          { value: 'partner', label: this.state.householdPartnerName || t.calcPartnerColumnHeader }
+        ],
+        visibleOn: !!draft.visible,
+        amountStr: isEditing ? draft.amount : this.fmt(t.amount),
+        stageRemove: () => this.stageSpendingTransactionRemoval(t.id)
       };
     });
     const spendingTotal = filteredTxRaw.reduce((s, t) => s + t.amount, 0);
@@ -6061,8 +6342,8 @@ class Component extends DCLogic {
     const bankImportAnalysis = this.analyzeBankImportRows();
 
     return {
-      showAuthScreen: SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
-      showApp: (!SUPABASE_CONFIGURED || (this.state.authChecked && !!this.state.session)) && !this.state.authRecoveryMode,
+      showAuthScreen: !PREVIEW_AUTH_BYPASS && SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
+      showApp: (PREVIEW_AUTH_BYPASS || !SUPABASE_CONFIGURED || (this.state.authChecked && !!this.state.session)) && !this.state.authRecoveryMode,
       showRecoveryScreen: SUPABASE_CONFIGURED && this.state.authRecoveryMode,
       newPasswordValue: this.state.newPasswordValue,
       setNewPasswordValue: (e) => this.setNewPasswordValue(e),
@@ -6412,6 +6693,11 @@ class Component extends DCLogic {
       spendingFilterButtonLabel: this.tf('Filter', 'Filter', 'Filter', 'Filtrer', 'Filtrar'),
       filteredTx,
       noFilteredTx: filteredTxRaw.length === 0,
+      spendingTransactionsEditing: this.state.spendingTransactionsEditing,
+      spendingTransactionsNotEditing: !this.state.spendingTransactionsEditing,
+      startSpendingTransactionsEdit: () => this.startSpendingTransactionsEdit(visibleFilteredTxRawPage),
+      cancelSpendingTransactionsEdit: () => this.cancelSpendingTransactionsEdit(),
+      saveSpendingTransactionsEdit: () => this.saveSpendingTransactionsEdit(),
       spendingTransactionsExpanded: this.state.spendingTransactionsExpanded,
       showSpendingExpandAction: filteredTxRaw.length > 6,
       toggleSpendingTransactionsExpanded: () => this.toggleSpendingTransactionsExpanded(),
@@ -6487,6 +6773,10 @@ class Component extends DCLogic {
       setNewGoalTarget: (e) => this.setNewGoalTarget(e),
       addGoal: () => this.addGoal(),
       addGoalDisabled: !(this.state.newGoalName.trim() && this.parseAmt(this.state.newGoalTarget) > 0),
+      showSavingsGoalForm: !!this.state.showSavingsGoalForm,
+      savingsGoalFormDisplay: this.state.showSavingsGoalForm ? 'block' : 'none',
+      toggleSavingsGoalForm: () => this.toggleSavingsGoalForm(),
+      cancelSavingsGoalForm: () => this.cancelSavingsGoalForm(),
       savingsCategories: ws.savingsCategories,
       savingsCategoriesWithUsage,
       savingsCategorySuggestions: t.savingsSuggestions.filter(label => !ws.savingsCategories.some(c => c.label === label)).map(label => ({ label, add: () => this.addSuggestedCategory('savingsCategories', label) })),
@@ -6550,6 +6840,14 @@ class Component extends DCLogic {
       fixedEditModeLabel: this.state.fixedEditMode ? t.doneEditBtn : t.editBtn,
       toggleRecurringIncomeEditMode: () => this.toggleRecurringIncomeEditMode(),
       recurringIncomeEditModeLabel: this.state.recurringIncomeEditMode ? t.doneEditBtn : t.editBtn,
+      toggleRecurringIncomeManage: () => this.toggleRecurringIncomeManage(),
+      showRecurringIncomeManage: !!this.state.recurringIncomeManageOpen,
+      recurringIncomeManageLabel: this.state.recurringIncomeManageOpen ? 'Beheer sluiten' : 'Vast inkomen beheren',
+      nextRecurringIncome: recurringIncome[0] || {},
+      hasNextRecurringIncome: recurringIncome.length > 0,
+      noNextRecurringIncome: recurringIncome.length === 0,
+      incomeNextTitle: 'Volgend inkomen',
+      incomeNextEmpty: 'Geen volgend vast inkomen gepland.',
       newRecCategoryName: this.state.newRecCategoryName,
       setNewRecCategoryName: (e) => this.setNewRecCategoryName(e),
       addFixedCategory: () => this.addFixedCategory(),
@@ -6675,6 +6973,13 @@ class Component extends DCLogic {
       noIncomeHistoryRows: (ws.incomeHistory || []).length === 0,
       incomeAddType: this.state.incomeAddType,
       setIncomeAddType: (e) => this.setState({ incomeAddType: e.target.value, showIncomeCategoryForm: false }),
+      showIncomeAddPanel: !!this.state.showIncomeAddPanel,
+      openVariableIncomeAdd: () => this.openVariableIncomeAdd(),
+      openRecurringIncomeAdd: () => this.openRecurringIncomeAdd(),
+      openIncomeHistoryAdd: () => this.openIncomeHistoryAdd(),
+      closeIncomeAddPanel: () => this.closeIncomeAddPanel(),
+      incomeHistoryCompactTitle: 'Inkomstenhistorie',
+      incomeHistoryOpenLabel: 'Beheer openen',
       showUnifiedVariableIncome: this.state.incomeAddType === 'variable',
       showUnifiedRecurringIncome: this.state.incomeAddType === 'recurring',
       showUnifiedHistoryIncome: this.state.incomeAddType === 'history',
