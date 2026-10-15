@@ -439,6 +439,25 @@
   }
   .joint-grid.head{padding:0 0 6px;font-size:9px;font-weight:700;color:var(--grip-taupe);text-transform:uppercase;letter-spacing:.05em}
   .joint-grid .col-r{text-align:right;font-variant-numeric:tabular-nums}
+  .grip-calc-grid {
+    display: grid !important;
+    grid-template-columns: minmax(180px, 1fr) 76px repeat(3, minmax(86px, 100px)) 20px;
+    align-items: center;
+    column-gap: 10px !important;
+  }
+  .grip-calc-grid > * { min-width: 0; }
+  .grip-calc-grid > :nth-child(2),
+  .grip-calc-grid > :nth-child(3),
+  .grip-calc-grid > :nth-child(4),
+  .grip-calc-grid > :nth-child(5),
+  .grip-calc-grid > :nth-child(6) { width: auto !important; }
+  .grip-calc-grid > :nth-child(3),
+  .grip-calc-grid > :nth-child(4),
+  .grip-calc-grid > :nth-child(5) {
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </helmet>
@@ -2143,7 +2162,7 @@
             <button onClick="{{ toggleCalcBulkEdit }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;background:transparent;color:#634031">{{ t.calcEditAllLabel }}</button>
           </div>
 
-          <div style="display:flex;align-items:center;gap:8px;padding:0 10px 6px;font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
+          <div class="grip-calc-grid" style="padding:0 10px 6px;font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
             <span style="flex:1">{{ t.colDescription }}</span>
             <span style="width:56px;text-align:center">{{ t.colStatus }}</span>
             <span style="width:60px;text-align:right">{{ t.calcTableTotalCol }}</span>
@@ -2172,7 +2191,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
             <sc-for list="{{ calcTableIncomeRows }}" as="row" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:7px 10px">
+              <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <span style="font-size:12.5px;flex:1">{{ row.name }}</span>
                 <span onClick="{{ row.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row.ownerBg }};color:{{ row.ownerColor }};flex:none;width:56px;text-align:center">{{ row.ownerLabel }}</span>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row.totalStr }}</span>
@@ -2185,7 +2204,7 @@
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcIncomeItemsEmpty }}</div>
             </sc-if>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
+          <div class="grip-calc-grid" style="padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
             <span style="font-size:12px;font-weight:700;flex:1">{{ t.calcIncomeTotalLabel }}</span>
             <span style="width:56px"></span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right">€ {{ calcTableIncomeTotalStr }}</span>
@@ -2221,7 +2240,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
             <sc-for list="{{ calcTableFixedRows }}" as="row2" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:7px 10px">
+              <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <span style="font-size:12.5px;flex:1">{{ row2.name }}</span>
                 <span onClick="{{ row2.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row2.ownerBg }};color:{{ row2.ownerColor }};flex:none;width:56px;text-align:center">{{ row2.ownerLabel }}</span>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row2.totalStr }}</span>
@@ -2234,7 +2253,7 @@
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
             </sc-if>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
+          <div class="grip-calc-grid" style="padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
             <span style="font-size:12px;font-weight:700;flex:1">{{ t.calcFixedTotalLabel }}</span>
             <span style="width:56px"></span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right">€ {{ calcTableFixedTotalStr }}</span>
@@ -2272,7 +2291,7 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
             <sc-for list="{{ calcTableVariableRows }}" as="row3" hint-placeholder-count="2">
-              <div style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:7px 10px">
+              <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <span style="font-size:12.5px;flex:1">{{ row3.name }}</span>
                 <span onClick="{{ row3.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row3.ownerBg }};color:{{ row3.ownerColor }};flex:none;width:56px;text-align:center">{{ row3.ownerLabel }}</span>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row3.totalStr }}</span>
@@ -2285,7 +2304,7 @@
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
             </sc-if>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;padding:4px 10px 4px">
+          <div class="grip-calc-grid" style="padding:4px 10px 4px">
             <span style="font-size:12px;font-weight:700;flex:1">{{ t.calcVariableTotalLabel }}</span>
             <span style="width:56px"></span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right">€ {{ calcTableVariableTotalStr }}</span>
@@ -2344,7 +2363,7 @@
         </sc-if>
 
         <div style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <div class="grip-calc-grid" style="margin-bottom:10px">
             <span style="font-size:12.5px;color:#C7B49A;flex:1">{{ t.calcExpenseTotalLabel }}</span>
             <span style="width:56px"></span>
             <span style="font-size:12.5px;font-weight:700;width:60px;text-align:right">€ {{ calcTableExpenseTotalStr }}</span>
@@ -2352,7 +2371,7 @@
             <span style="font-size:12.5px;font-weight:700;width:60px;text-align:right">€ {{ calcTableExpensePartnerStr }}</span>
             <span style="width:16px"></span>
           </div>
-          <div style="display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid #F6F1E744">
+          <div class="grip-calc-grid" style="padding-top:12px;border-top:1px solid #F6F1E744">
             <span style="font-size:14px;font-weight:700;flex:1">{{ t.totalMonthlyBudgetHeader }}</span>
             <span style="width:56px"></span>
             <span style="font-size:16px;font-weight:700;width:60px;text-align:right">€ {{ calcMonthlyBudgetTotalStr }}</span>
@@ -2851,10 +2870,19 @@ class Component extends DCLogic {
   }
 
   fmt(n) {
-    return (Math.round(n * 100) / 100).toFixed(2);
+    const value = Number(n);
+    if (!Number.isFinite(value)) return this.tf('Not available', 'Niet beschikbaar', 'Nicht verfügbar', 'Non disponible', 'No disponible');
+    return (Math.round(value * 100) / 100).toFixed(2);
+  }
+  safeNumber(value) {
+    if (value === null || value === undefined || value === '') return 0;
+    const number = typeof value === 'string' ? this.parseAmt(value) : Number(value);
+    return Number.isFinite(number) ? number : 0;
   }
   fmtOptionalDecimals(n) {
-    const rounded = Math.round(Number(n || 0) * 100) / 100;
+    const value = Number(n);
+    if (!Number.isFinite(value)) return this.tf('Not available', 'Niet beschikbaar', 'Nicht verfügbar', 'Non disponible', 'No disponible');
+    const rounded = Math.round(value * 100) / 100;
     return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
   }
   parseAmt(v) {
@@ -3142,6 +3170,37 @@ class Component extends DCLogic {
         remove: () => this.removeCalcOtherCategory(e.id, 'shared')
       };
     });
+  }
+  buildCalcMonthlyVariableCategoryRows(personalWs, sharedWs, meLabel, jointLabel, partnerLabel, myUserId, sharedMode, selectedMonth) {
+    const month = selectedMonth || this.state.calcSelectedMonth;
+    const transactions = (sharedMode ? (sharedWs.transactions || []) : (personalWs.transactions || []))
+      .filter(tx => tx && String(tx.date || '').slice(0, 7) === month && tx.source !== 'recurring');
+    const catalog = [...(personalWs.categoryOptions || []), ...(sharedWs.categoryOptions || [])];
+    const labelFor = id => ((catalog.find(category => category.id === id) || {}).label || id || this.tf('Other', 'Overig', 'Sonstiges', 'Autre', 'Otro')).trim();
+    const groups = new Map();
+    transactions.forEach(tx => {
+      const label = labelFor(tx.category);
+      const key = label.toLocaleLowerCase('nl-NL');
+      if (!groups.has(key)) groups.set(key, { id: `monthly-category:${key}`, name: label, total: 0, me: 0, partner: 0 });
+      const group = groups.get(key);
+      const amount = this.safeNumber(tx.amount);
+      group.total += amount;
+      if (!sharedMode) group.me += amount;
+      else if (tx.mirrorOwner) {
+        const mine = tx.mirrorOwner === myUserId || (!myUserId && tx.mirrorOwner === '__local_personal__');
+        if (mine) group.me += amount;
+        else group.partner += amount;
+      } else {
+        group.me += amount / 2;
+        group.partner += amount / 2;
+      }
+    });
+    return [...groups.values()].map(group => ({
+      ...group,
+      totalStr: this.fmt(group.total), meStr: this.fmt(group.me), partnerStr: this.fmt(group.partner),
+      ownerLabel: sharedMode ? jointLabel : meLabel, ownerBg: sharedMode ? '#634031' : '#7C8972', ownerColor: '#F6F1E7',
+      editable: false, notEditable: true, setName: null, setAmount: null, cycleOwner: null, remove: null
+    }));
   }
   unshareCalcItem(kind, sourceId, isAvgMirror, isIncomeMirror, isOneOffIncomeMirror, isRecurringFixedMirror, isFixedHistoryMirror) {
     if (isOneOffIncomeMirror) this.toggleIncomeEntryJoint(sourceId);
@@ -5300,22 +5359,21 @@ class Component extends DCLogic {
       const myUserId = (this.state.session && this.state.householdId) ? this.state.session.user.id : null;
       const incomeRows = this.buildCalcTableRows('income', personalWs, sharedWs, '', '', '', myUserId);
       const fixedRows = this.buildCalcTableRows('fixed', personalWs, sharedWs, '', '', '', myUserId);
-      const variableAutoRows = myUserId ? [] : this.buildCalcVariableAutoRows(personalWs, '', '');
-      const variableSharedAutoRows = this.buildCalcVariableSharedAutoRows(sharedWs, '');
-      const variableManualRows = this.buildCalcTableRows('variable', personalWs, sharedWs, '', '', '', myUserId);
-      const incomeTotal = incomeRows.reduce((s, r) => s + r.total, 0);
-      const fixedTotal = fixedRows.reduce((s, r) => s + r.total, 0);
-      const variableTotal = [...variableAutoRows, ...variableSharedAutoRows, ...variableManualRows].reduce((s, r) => s + r.total, 0);
+      const currentMonth = this.todayStr().slice(0, 7);
+      const variableRows = this.buildCalcMonthlyVariableCategoryRows(personalWs, sharedWs, '', '', '', myUserId, true, currentMonth);
+      const incomeTotal = incomeRows.reduce((s, r) => s + this.safeNumber(r.total), 0);
+      const fixedTotal = fixedRows.reduce((s, r) => s + this.safeNumber(r.total), 0);
+      const variableTotal = variableRows.reduce((s, r) => s + this.safeNumber(r.total), 0);
       return incomeTotal - fixedTotal - variableTotal;
     }
     const ws = this.state.workspaces.personal;
     const incomeAuto = this.monthIncomeAutoTotal(ws);
-    const incomeManual = (ws.calcIncomeItems || []).filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
-    const fixedAuto = this.fixedAutoItems(ws).reduce((s, fi) => s + fi.amount, 0);
-    const fixedManual = (ws.calcFixedItems || []).filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
-    const fixedHistory = (ws.calcFixedHistoryCategories || []).filter(e => !e.joint).reduce((s, e) => s + this.avgSpendFromHistory(ws, e.id, e.monthsCount), 0);
-    const variableTotal = this.getOtherCatEntries(ws).filter(e => !e.joint).reduce((s, e) => s + this.avgSpendLast3Months(ws, e.id), 0);
-    return (incomeAuto + incomeManual) - (fixedAuto + fixedManual + fixedHistory) - variableTotal;
+    const incomeManual = (ws.calcIncomeItems || []).filter(it => !it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
+    const fixedAuto = this.fixedAutoItems(ws).reduce((s, fi) => s + this.safeNumber(fi.amount), 0);
+    const fixedManual = (ws.calcFixedItems || []).filter(it => !it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
+    const fixedHistory = (ws.calcFixedHistoryCategories || []).filter(e => !e.joint).reduce((s, e) => s + this.safeNumber(this.avgSpendFromHistory(ws, e.id, e.monthsCount)), 0);
+    const variableTotal = this.getOtherCatEntries(ws).filter(e => !e.joint).reduce((s, e) => s + this.safeNumber(this.avgSpendLast3Months(ws, e.id)), 0);
+    return (this.safeNumber(incomeAuto) + incomeManual) - (fixedAuto + fixedManual + fixedHistory) - variableTotal;
   }
   getAlerts() {
     const ws = this.ws();
@@ -5324,9 +5382,11 @@ class Component extends DCLogic {
     const daysInMonth = new Date(y, m + 1, 0).getDate();
     const spentMonth = ws.transactions
       .filter(t => { const d = new Date(t.date); return d.getFullYear() === y && d.getMonth() === m; })
-      .reduce((s, t) => s + t.amount, 0);
+      .reduce((s, t) => s + this.safeNumber(t.amount), 0);
     const elapsedFraction = today / daysInMonth;
-    const effectiveBudget = ws.budgetManuallySet ? ws.budgetMonthly : this.computeCurrentBalance();
+    const calculatedBalance = this.computeCurrentBalance();
+    const manualBudget = this.parseAmt(ws.budgetMonthly);
+    const effectiveBudget = ws.budgetManuallySet && Number.isFinite(manualBudget) ? manualBudget : calculatedBalance;
     const expected = effectiveBudget * elapsedFraction;
 
     const list = [];
@@ -5683,12 +5743,14 @@ class Component extends DCLogic {
     const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const daysInMonth = new Date(y, m + 1, 0).getDate();
     const daysLeft = Math.max(1, daysInMonth - today);
-    const effectiveBudget = ws.budgetManuallySet ? ws.budgetMonthly : this.computeCurrentBalance();
+    const calculatedBalance = this.computeCurrentBalance();
+    const manualBudget = this.parseAmt(ws.budgetMonthly);
+    const effectiveBudget = ws.budgetManuallySet && Number.isFinite(manualBudget) ? manualBudget : calculatedBalance;
 
     const monthTx = ws.transactions.filter(t => { const d = new Date(t.date); return d.getFullYear() === y && d.getMonth() === m; });
-    const spentMonth = monthTx.reduce((s, t) => s + t.amount, 0);
+    const spentMonth = monthTx.reduce((s, t) => s + this.safeNumber(t.amount), 0);
     const variableMonthTx = monthTx.filter(t => t.source !== 'recurring');
-    const variableExpensesMonth = variableMonthTx.reduce((s, t) => s + t.amount, 0);
+    const variableExpensesMonth = variableMonthTx.reduce((s, t) => s + this.safeNumber(t.amount), 0);
     const previousMonthDate = new Date(y, m - 1, 1);
     const previousVariableMonthTx = ws.transactions.filter(t => {
       const d = new Date(t.date);
@@ -5696,7 +5758,7 @@ class Component extends DCLogic {
         && d.getMonth() === previousMonthDate.getMonth()
         && t.source !== 'recurring';
     });
-    const previousVariableExpenses = previousVariableMonthTx.reduce((s, t) => s + t.amount, 0);
+    const previousVariableExpenses = previousVariableMonthTx.reduce((s, t) => s + this.safeNumber(t.amount), 0);
     const variableExpensesDifference = variableExpensesMonth - previousVariableExpenses;
     const variableExpensesComparisonText = previousVariableMonthTx.length === 0
       ? this.tf(
@@ -5721,7 +5783,7 @@ class Component extends DCLogic {
           && d.getMonth() === completedMonth.getMonth()
           && t.source !== 'recurring';
       });
-      return transactions.length ? transactions.reduce((s, t) => s + t.amount, 0) : null;
+      return transactions.length ? transactions.reduce((s, t) => s + this.safeNumber(t.amount), 0) : null;
     }).filter(total => total !== null);
     const showVariableExpensesAverageComparison = completedVariableMonthTotals.length >= 2;
     const historicalVariableAverage = showVariableExpensesAverageComparison
@@ -5742,7 +5804,7 @@ class Component extends DCLogic {
     const variableCategoryBudgets = ws.categoryBudgets || {};
     const variableExpenseCategoryTotals = [...new Set(variableMonthTx.map(t => canonicalExpenseCategoryId(t.category)))].map(categoryId => {
       const category = canonicalExpenseCategory(categoryId);
-      const amount = variableMonthTx.filter(t => canonicalExpenseCategoryId(t.category) === categoryId).reduce((s, t) => s + t.amount, 0);
+      const amount = variableMonthTx.filter(t => canonicalExpenseCategoryId(t.category) === categoryId).reduce((s, t) => s + this.safeNumber(t.amount), 0);
       const budget = Math.max(0, ...(expenseCategoryIdsByCanonical[categoryId] || [categoryId]).map(id => variableCategoryBudgets[id] || 0));
       return {
         id: categoryId,
@@ -5794,21 +5856,29 @@ class Component extends DCLogic {
       const key = String(tx.category || 'other').trim().toLocaleLowerCase('nl-NL');
       if (!overviewCategoryMap.has(key)) overviewCategoryMap.set(key, { key, label: tx.category || 'Other', color: '#634031', ids: new Set([tx.category]) });
     });
+    const categoryBudgetFor = (workspace, ids) => Math.max(0, ...[...ids].map(id => this.safeNumber((workspace.categoryBudgets || {})[id])));
     const categories = [...overviewCategoryMap.values()].map(group => {
       const txs = monthTx.filter(t => group.ids.has(t.category));
-      const soloAmount = txs.filter(t => this.state.mode !== 'shared' || !!t.mirrorOwner).reduce((s, t) => s + t.amount, 0);
-      const sharedAmount = txs.filter(t => this.state.mode === 'shared' && !t.mirrorOwner).reduce((s, t) => s + t.amount, 0);
+      const soloAmount = txs.filter(t => this.state.mode !== 'shared' || !!t.mirrorOwner).reduce((s, t) => s + this.safeNumber(t.amount), 0);
+      const sharedAmount = txs.filter(t => this.state.mode === 'shared' && !t.mirrorOwner).reduce((s, t) => s + this.safeNumber(t.amount), 0);
       const amount = soloAmount + sharedAmount;
-      const topTx = txs.reduce((best, t) => (!best || t.amount > best.amount) ? t : best, null);
+      const soloBudget = categoryBudgetFor(this.state.workspaces.personal, group.ids);
+      const sharedBudget = this.state.mode === 'shared' ? categoryBudgetFor(this.state.workspaces.shared, group.ids) : 0;
+      const categoryBudget = this.state.mode === 'shared' ? soloBudget + sharedBudget : soloBudget;
+      const uncappedSoloPct = categoryBudget > 0 ? (soloAmount / categoryBudget) * 100 : 0;
+      const uncappedSharedPct = categoryBudget > 0 ? (sharedAmount / categoryBudget) * 100 : 0;
+      const combinedPct = uncappedSoloPct + uncappedSharedPct;
+      const capScale = combinedPct > 100 ? 100 / combinedPct : 1;
+      const topTx = txs.reduce((best, t) => (!best || this.safeNumber(t.amount) > this.safeNumber(best.amount)) ? t : best, null);
       return {
         id: group.key,
         label: group.label,
         color: group.color,
         amount,
         amountStr: this.fmt(amount),
-        pct: spentMonth > 0 ? Math.round((amount / spentMonth) * 100) : 0,
-        soloPct: spentMonth > 0 ? (soloAmount / spentMonth) * 100 : 0,
-        sharedPct: spentMonth > 0 ? (sharedAmount / spentMonth) * 100 : 0,
+        pct: categoryBudget > 0 ? Math.min(100, Math.round((amount / categoryBudget) * 100)) : 0,
+        soloPct: uncappedSoloPct * capScale,
+        sharedPct: uncappedSharedPct * capScale,
         top: topTx ? `${topTx.note} — € ${this.fmt(topTx.amount)}` : 'No expenses yet',
         expanded: this.state.expanded === group.key,
         toggle: () => this.toggleExpand(group.key)
@@ -6054,7 +6124,7 @@ class Component extends DCLogic {
         stageRemove: () => this.stageSpendingTransactionRemoval(t.id)
       };
     });
-    const spendingTotal = filteredTxRaw.reduce((s, t) => s + t.amount, 0);
+    const spendingTotal = filteredTxRaw.reduce((s, t) => s + this.safeNumber(t.amount), 0);
 
     const myUserIdForIncome = this.state.session ? this.state.session.user.id : null;
     const ownerLabelFor = (mirrorOwner) => mirrorOwner === myUserIdForIncome ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader);
@@ -6092,7 +6162,7 @@ class Component extends DCLogic {
         receiptLabel: this.tf('Received', 'Ontvangen', 'Erhalten', 'Reçu', 'Recibido')
       };
     });
-    const incomeTotal = monthIncomeRaw.reduce((s, inc) => s + inc.amount, 0);
+    const incomeTotal = monthIncomeRaw.reduce((s, inc) => s + this.safeNumber(inc.amount), 0);
 
     const categoryBudgets = ws.categoryBudgets || {};
     const plannerCategories = categories.map(cat => {
@@ -6180,23 +6250,25 @@ class Component extends DCLogic {
       visibleColor: (visible || joint) ? '#F6F1E7' : '#7A5941',
       visibleDisabled: !!joint
     });
-    const calcOtherCategoryRows = this.getOtherCatEntries(ws).filter(e => !e.joint).map(e => {
-      const cat = ws.categoryOptions.find(c => c.id === e.id) || { id: e.id, label: e.id, color: '#634031' };
+    const calcMonthlyVariableRows = this.buildCalcMonthlyVariableCategoryRows(this.state.workspaces.personal, this.state.workspaces.shared, this.state.name || t.calcMeLabel, t.calcJointLabel, this.state.householdPartnerName || t.calcPartnerColumnHeader, this.state.session ? this.state.session.user.id : null, false);
+    const calcOtherCategoryRows = calcMonthlyVariableRows.map(row => {
+      const cat = expenseCategoriesMerged.find(c => normalizeExpenseCategoryName(c.label || c.id) === normalizeExpenseCategoryName(row.name)) || { id: row.id, label: row.name, color: '#634031' };
+      const setting = this.getOtherCatEntries(ws).find(e => e.id === cat.id) || { id: cat.id, joint: false, visible: false };
       return {
-        id: e.id,
+        id: cat.id,
         label: cat.label,
         color: cat.color || '#634031',
-        avgStr: this.fmt(this.avgSpendLast3Months(ws, e.id)),
-        joint: !!e.joint,
-        ...jointPill(!!e.joint),
-        ...visiblePill(!!e.visible, !!e.joint),
-        toggleJoint: () => this.toggleCalcOtherCategoryJoint(e.id),
-        toggleVisible: () => this.toggleCalcOtherCategoryVisible(e.id),
-        remove: () => this.removeCalcOtherCategory(e.id)
+        avgStr: row.totalStr,
+        joint: !!setting.joint,
+        ...jointPill(!!setting.joint),
+        ...visiblePill(!!setting.visible, !!setting.joint),
+        toggleJoint: () => this.toggleCalcOtherCategoryJoint(setting.id),
+        toggleVisible: () => this.toggleCalcOtherCategoryVisible(setting.id),
+        remove: () => this.removeCalcOtherCategory(setting.id)
       };
     });
     const calcOtherCategoryOptions = ws.categoryOptions.filter(c => !this.getOtherCatEntries(ws).some(e => e.id === c.id));
-    const calcVariableAvgTotal = this.getOtherCatEntries(ws).filter(e => !e.joint).reduce((s, e) => s + this.avgSpendLast3Months(ws, e.id), 0);
+    const calcVariableAvgTotal = calcMonthlyVariableRows.reduce((sum, row) => sum + this.safeNumber(row.total), 0);
     const calcVariableAvgTotalStr = this.fmt(calcVariableAvgTotal);
     const calcFixedCategoryChips = (ws.calcFixedCategories || []).map(c => ({
       ...c,
@@ -6300,10 +6372,7 @@ class Component extends DCLogic {
       const myUserId = (this.state.session && this.state.householdId) ? this.state.session.user.id : null;
       calcTableIncomeRows = this.buildCalcTableRows('income', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
       calcTableFixedRows = this.buildCalcTableRows('fixed', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
-      const calcTableVariableManualRows = this.buildCalcTableRows('variable', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
-      const calcTableVariableAutoRows = myUserId ? [] : this.buildCalcVariableAutoRows(personalWsRef, calcTableMeLabel, t.calcJointLabel);
-      const calcTableVariableSharedAutoRows = this.buildCalcVariableSharedAutoRows(ws, t.calcJointLabel);
-      calcTableVariableRows = [...calcTableVariableAutoRows, ...calcTableVariableSharedAutoRows, ...calcTableVariableManualRows];
+      calcTableVariableRows = this.buildCalcMonthlyVariableCategoryRows(personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId, true);
       const sumRows = (rows) => rows.reduce((a, r) => ({ total: a.total + r.total, me: a.me + r.me, partner: a.partner + r.partner }), { total: 0, me: 0, partner: 0 });
       calcTableIncomeSums = sumRows(calcTableIncomeRows);
       calcTableFixedSums = sumRows(calcTableFixedRows);
@@ -6966,7 +7035,7 @@ class Component extends DCLogic {
       spendingNextPage: () => this.setSpendingTransactionsPage(1),
       spendingPageLabel: `${transactionPage + 1} / ${transactionPageCount}`,
       spendingTotalStr: this.fmt(spendingTotal),
-      balance: this.fmt(this.computeCurrentBalance()),
+      balance: this.fmt(calculatedBalance),
       budgetMonthly: this.fmt(effectiveBudget),
       primaryGoal,
       primaryGoalSavedStr: this.fmtOptionalDecimals(primaryGoal.saved),
