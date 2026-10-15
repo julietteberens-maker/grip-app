@@ -3703,7 +3703,7 @@ class Component extends DCLogic {
     if (priorTx.length) {
       const earliest = priorTx.reduce((min, t) => (t.date < min ? t.date : min), priorTx[0].date);
       const spanDays = Math.max(30, Math.round((startDate - new Date(earliest + 'T00:00:00')) / 86400000));
-      const total = priorTx.reduce((s, t) => s + t.amount, 0);
+      const total = priorTx.reduce((s, t) => s + this.safeNumber(t.amount), 0);
       dailyRate = total / spanDays;
     }
 
@@ -4548,10 +4548,10 @@ class Component extends DCLogic {
     const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
     const incomeTotal = this.monthlyIncomeEntries(ws, now)
       .filter(inc => matchJoint(inc.joint))
-      .reduce((s, i) => s + i.amount, 0);
+      .reduce((s, i) => s + this.safeNumber(i.amount), 0);
     const futureRecurringIncomeThisMonth = ws.recurringIncome.filter(ri => matchJoint(ri.joint)).reduce((sum, ri) => {
       const nd = this.nextUnpostedIncomeOccurrence(ri);
-      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + ri.amount : sum;
+      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + this.safeNumber(ri.amount) : sum;
     }, 0);
     return incomeTotal + futureRecurringIncomeThisMonth;
   }
@@ -4575,8 +4575,8 @@ class Component extends DCLogic {
         id: 'autofix_' + r.id, sourceId: r.id, name: r.name,
         // Joint costs are split 50/50 with your partner — only YOUR half should count towards
         // your own Solo total/leftover. fullAmount keeps the original bill amount for reference.
-        amount: r.joint ? r.amount / 2 : r.amount,
-        fullAmount: r.amount,
+        amount: r.joint ? this.safeNumber(r.amount) / 2 : this.safeNumber(r.amount),
+        fullAmount: this.safeNumber(r.amount),
         joint: !!r.joint, visible: !!r.visible
       }));
   }
@@ -4587,11 +4587,11 @@ class Component extends DCLogic {
     const incomeAuto = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, false) : 0;
     const incomeAutoJoint = variableMode === 'avg' ? this.monthIncomeAutoTotal(ws, true) : 0;
     const incomeItems = ws.calcIncomeItems || [];
-    const incomeNonJoint = incomeAuto + incomeItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
-    const incomeJoint = incomeAutoJoint + incomeItems.filter(it => it.joint).reduce((s, it) => s + it.amount, 0);
+    const incomeNonJoint = incomeAuto + incomeItems.filter(it => !it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
+    const incomeJoint = incomeAutoJoint + incomeItems.filter(it => it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
     const fixedItems = ws.calcFixedItems || [];
-    const fixedNonJoint = fixedItems.filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
-    const fixedJoint = fixedItems.filter(it => it.joint).reduce((s, it) => s + it.amount, 0);
+    const fixedNonJoint = fixedItems.filter(it => !it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
+    const fixedJoint = fixedItems.filter(it => it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
     let variableNonJoint = 0, variableJoint = 0;
     if (variableMode === 'avg') {
       this.getOtherCatEntries(ws).forEach(e => {
@@ -4599,7 +4599,7 @@ class Component extends DCLogic {
         if (e.joint) variableJoint += amt; else variableNonJoint += amt;
       });
     } else {
-      (ws.calcVariableItems || []).forEach(it => { if (it.joint) variableJoint += it.amount; else variableNonJoint += it.amount; });
+      (ws.calcVariableItems || []).forEach(it => { if (it.joint) variableJoint += this.safeNumber(it.amount); else variableNonJoint += this.safeNumber(it.amount); });
     }
     return {
       incomeNonJoint, incomeJoint, fixedNonJoint, fixedJoint, variableNonJoint, variableJoint,
@@ -4616,13 +4616,13 @@ class Component extends DCLogic {
       const sum = ws.transactions
         .filter(t => t.category === categoryId)
         .filter(t => { const d = new Date(t.date); return d.getFullYear() === target.getFullYear() && d.getMonth() === target.getMonth(); })
-        .reduce((s, t) => s + t.amount, 0);
+        .reduce((s, t) => s + this.safeNumber(t.amount), 0);
       if (sum > 0) {
         total += sum;
       } else {
         const key = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}`;
         const historyMonth = (ws.spendHistory || []).find(h => h.key === key);
-        const historySum = historyMonth ? (historyMonth.items || []).filter(it => it.category === categoryId).reduce((s, it) => s + it.amount, 0) : 0;
+        const historySum = historyMonth ? (historyMonth.items || []).filter(it => it.category === categoryId).reduce((s, it) => s + this.safeNumber(it.amount), 0) : 0;
         total += historySum;
       }
     }
@@ -4634,7 +4634,7 @@ class Component extends DCLogic {
     const sorted = (ws.spendHistory || []).slice().sort((a, b) => (a.key < b.key ? 1 : -1));
     const monthsToUse = monthsCount === 'all' ? sorted : sorted.slice(0, Math.max(1, monthsCount));
     if (monthsToUse.length === 0) return 0;
-    const total = monthsToUse.reduce((sum, h) => sum + (h.items || []).filter(it => it.category === categoryId).reduce((s, it) => s + it.amount, 0), 0);
+    const total = monthsToUse.reduce((sum, h) => sum + (h.items || []).filter(it => it.category === categoryId).reduce((s, it) => s + this.safeNumber(it.amount), 0), 0);
     return total / monthsToUse.length;
   }
   setNewCalcFixedHistoryCategory(e) { this.setState({ newCalcFixedHistoryCategory: e.target.value }); }
@@ -4756,7 +4756,7 @@ class Component extends DCLogic {
     if (!months.length) return [];
     const categoryIds = [...new Set(months.flatMap(month => month.entries.map(item => item.category)).filter(Boolean))];
     return categoryIds.map(category => {
-      const total = months.reduce((sum, month) => sum + month.entries.filter(item => item.category === category).reduce((value, item) => value + (item.amount || 0), 0), 0);
+      const total = months.reduce((sum, month) => sum + month.entries.filter(item => item.category === category).reduce((value, item) => value + this.safeNumber(item.amount), 0), 0);
       const categoryInfo = (ws.categoryOptions || []).find(item => item.id === category);
       return {
         category,
@@ -4832,8 +4832,8 @@ class Component extends DCLogic {
     });
     // Savings goals never factor into budgetMonthly/"toegewezen" — sparen is fully separate from
     // budgeting. Only category budgets count towards the Planner total here.
-    const otherBudgetsTotal = Object.values(catBudgets).reduce((s, v) => s + (v || 0), 0);
-    const newBudgetMonthly = Math.max(ws.budgetManuallySet ? ws.budgetMonthly : this.computeCurrentBalance(), otherBudgetsTotal);
+    const otherBudgetsTotal = Object.values(catBudgets).reduce((s, v) => s + this.safeNumber(v), 0);
+    const newBudgetMonthly = Math.max(ws.budgetManuallySet ? this.safeNumber(ws.budgetMonthly) : this.computeCurrentBalance(), this.safeNumber(otherBudgetsTotal));
     this.setWs(() => ({ categoryBudgets: catBudgets, savingsGoals, budgetMonthly: newBudgetMonthly, budgetManuallySet: true }), () => this.persist());
     this.setState({ calcAllocations: {} });
   }
@@ -4875,7 +4875,7 @@ class Component extends DCLogic {
     const id = this.primaryGoalId();
     if (!amount || amount <= 0 || !id) return;
     this.setWs(ws => ({
-      savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: g.saved + amount } : g),
+      savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: this.safeNumber(g.saved) + amount } : g),
       savingsAddedThisMonth: ws.savingsAddedThisMonth + amount
     }), () => this.persist());
   }
@@ -4887,7 +4887,7 @@ class Component extends DCLogic {
       const goal = ws.savingsGoals.find(g => g.id === id);
       const amount = Math.min(requested, goal ? goal.saved : 0);
       return {
-        savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: g.saved - amount } : g),
+        savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: this.safeNumber(g.saved) - amount } : g),
         savingsAddedThisMonth: ws.savingsAddedThisMonth - amount
       };
     }, () => this.persist());
@@ -5231,13 +5231,14 @@ class Component extends DCLogic {
 
   normalizeSeries(values) {
     const xs = [10, 103, 197, 290];
-    const min = Math.min(...values), max = Math.max(...values);
+    const safeValues = values.map(value => this.safeNumber(value));
+    const min = Math.min(...safeValues), max = Math.max(...safeValues);
     const span = (max - min) || 1;
-    return values.map((v, i) => ({ x: xs[i], y: +(65 - ((v - min) / span) * 50).toFixed(1) }));
+    return safeValues.map((v, i) => ({ x: xs[i], y: +(65 - ((v - min) / span) * 50).toFixed(1) }));
   }
 
-  totalSaved() { return this.ws().savingsGoals.reduce((s, g) => s + g.saved, 0); }
-  totalTarget() { return this.ws().savingsGoals.reduce((s, g) => s + g.target, 0); }
+  totalSaved() { return this.ws().savingsGoals.reduce((s, g) => s + this.safeNumber(g.saved), 0); }
+  totalTarget() { return this.ws().savingsGoals.reduce((s, g) => s + this.safeNumber(g.target), 0); }
 
   currentDueOccurrence(r) {
     const now = new Date();
@@ -5289,15 +5290,20 @@ class Component extends DCLogic {
         const due = this.currentDueOccurrence(r);
         if (!due) return r;
         const dStr = dateStr(due);
+        const postedId = 'rtx' + r.id + '_' + dStr;
+        const alreadyPosted = (wsData.transactions || []).some(tx => tx.id === postedId || (tx.recurringSourceId === r.id && tx.scheduledDate === dStr));
         if (r.lastPostedDate === dStr) return r;
+        if (alreadyPosted) { changed = true; return { ...r, lastPostedDate: dStr, lastKnownDate: r.frequency === 'flexible' ? dStr : r.lastKnownDate }; }
         const cat = fixedCatMap[r.category] || fixedCatMap.other || { label: 'Other', color: '#634031' };
         newTx.push({
-          id: 'rtx' + r.id + '_' + dStr,
+          id: postedId,
           category: null,
-          amount: r.amount,
+          amount: this.safeNumber(r.amount),
           note: r.name,
           date: dStr,
           source: 'recurring',
+          recurringSourceId: r.id,
+          scheduledDate: dStr,
           recurringCategoryLabel: cat ? cat.label : 'Other',
           recurringCategoryColor: cat ? cat.color : '#634031'
         });
@@ -5318,7 +5324,7 @@ class Component extends DCLogic {
         newIncome.push({
           id: postedId,
           source: ri.name,
-          amount: ri.amount,
+          amount: this.safeNumber(ri.amount),
           date: dStr,
           category: ri.category || '',
           joint: !!ri.joint,
@@ -5444,7 +5450,7 @@ class Component extends DCLogic {
     const amount = this.parseAmt(this.state.goalAmounts[id] ?? '50');
     if (!amount || amount <= 0) return;
     this.setWs(ws => ({
-      savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: g.saved + amount } : g),
+      savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: this.safeNumber(g.saved) + amount } : g),
       savingsAddedThisMonth: ws.savingsAddedThisMonth + amount
     }), () => this.persist());
   }
@@ -5455,7 +5461,7 @@ class Component extends DCLogic {
       const goal = ws.savingsGoals.find(g => g.id === id);
       const amount = Math.min(requested, goal ? goal.saved : 0);
       return {
-        savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: g.saved - amount } : g),
+        savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, saved: this.safeNumber(g.saved) - amount } : g),
         savingsAddedThisMonth: ws.savingsAddedThisMonth - amount
       };
     }, () => this.persist());
@@ -5989,19 +5995,21 @@ class Component extends DCLogic {
     });
 
     const primaryGoal = ws.savingsGoals.find(g => g.favorite) || ws.savingsGoals[0] || { label: '', target: 0, saved: 0 };
-    const primaryGoalPct = primaryGoal.target > 0 ? Math.min(100, Math.round((primaryGoal.saved / primaryGoal.target) * 100)) : 0;
+    const primaryGoalTarget = this.safeNumber(primaryGoal.target);
+    const primaryGoalSaved = this.safeNumber(primaryGoal.saved);
+    const primaryGoalPct = primaryGoalTarget > 0 ? Math.min(100, Math.round((primaryGoalSaved / primaryGoalTarget) * 100)) : 0;
 
     const totalSavedNow = this.totalSaved();
-    const spendValues = [...ws.spendHistory.map(h => (h.items || []).reduce((s, it) => s + it.amount, 0)), spentMonth];
-    const savingsValues = [...ws.savingsHistory.map(h => h.saved), totalSavedNow];
+    const spendValues = [...ws.spendHistory.map(h => (h.items || []).reduce((s, it) => s + this.safeNumber(it.amount), 0)), spentMonth];
+    const savingsValues = [...ws.savingsHistory.map(h => this.safeNumber(h.saved)), totalSavedNow];
     const forecastMonth = `${y}-${String(m + 1).padStart(2, '0')}`;
     const forecastFixedExpenses = (ws.recurring || []).reduce((sum, item) => {
       const occurrences = this.scenarioOccurrencesForMonth(item, forecastMonth).length;
-      return sum + (occurrences * (item.amount || 0));
+      return sum + (occurrences * this.safeNumber(item.amount));
     }, 0);
     const forecastVariableEstimates = this.buildHistoricalVariableEstimates(ws);
     const forecastHasVariableHistory = forecastVariableEstimates.length > 0;
-    const forecastVariableExpenses = forecastVariableEstimates.reduce((sum, item) => sum + item.amount, 0);
+    const forecastVariableExpenses = forecastVariableEstimates.reduce((sum, item) => sum + this.safeNumber(item.amount), 0);
     const forecastAutomaticSavings = (ws.savingsGoals || []).reduce((sum, goal) => {
       if (!(goal.contributionAmount > 0)) return sum;
       const plan = {
@@ -6009,7 +6017,7 @@ class Component extends DCLogic {
         day: goal.contributionDay || 1,
         startDate: goal.contributionNextDate || goal.contributionStartDate || ''
       };
-      return sum + (this.scenarioOccurrencesForMonth(plan, forecastMonth).length * goal.contributionAmount);
+      return sum + (this.scenarioOccurrencesForMonth(plan, forecastMonth).length * this.safeNumber(goal.contributionAmount));
     }, 0);
     const spendForecastValues = [...spendValues.slice(0, -1).map(() => null), forecastFixedExpenses + (forecastHasVariableHistory ? forecastVariableExpenses : 0)];
     const savingsForecastValues = [...savingsValues.slice(0, -1).map(() => null), forecastAutomaticSavings];
@@ -6166,7 +6174,7 @@ class Component extends DCLogic {
 
     const categoryBudgets = ws.categoryBudgets || {};
     const plannerCategories = categories.map(cat => {
-      const budget = categoryBudgets[cat.id] || 0;
+      const budget = this.safeNumber(categoryBudgets[cat.id]);
       const spent = cat.amount;
       const remainingCat = budget - spent;
       const pct = budget > 0 ? Math.min(100, Math.round((spent / budget) * 100)) : 0;
@@ -6192,7 +6200,7 @@ class Component extends DCLogic {
       };
     });
     // Sparen never factors into Planner's totals — savings goals live only in the Sparen tab.
-    const plannerAllocated = Object.values(categoryBudgets).reduce((s, v) => s + (v || 0), 0);
+    const plannerAllocated = Object.values(categoryBudgets).reduce((s, v) => s + this.safeNumber(v), 0);
     const plannerUnallocated = effectiveBudget - plannerAllocated;
     // "Automatisch sparen": purely a planning display — shows what would go to the chosen goal
     // based on this month's leftover. Never written back into any totals or goal.saved automatically.
@@ -6202,20 +6210,20 @@ class Component extends DCLogic {
     const futureRecurringBillsThisMonth = ws.recurring.reduce((sum, r) => {
       if (r.frequency === 'every4weeks' && r.startDate) {
         const nd = this.nextOccurrence(r);
-        return (nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today) ? sum + r.amount : sum;
+        return (nd.getFullYear() === y && nd.getMonth() === m && nd.getDate() > today) ? sum + this.safeNumber(r.amount) : sum;
       }
-      return r.day > today ? sum + r.amount : sum;
+      return r.day > today ? sum + this.safeNumber(r.amount) : sum;
     }, 0);
     const plannerRemaining = categories.reduce((sum, cat) => {
-      const budget = categoryBudgets[cat.id] || 0;
-      const rem = budget - cat.amount;
+      const budget = this.safeNumber(categoryBudgets[cat.id]);
+      const rem = budget - this.safeNumber(cat.amount);
       return sum + (budget > 0 && rem > 0 ? rem : 0);
     }, 0);
     const spendExpectedMore = futureRecurringBillsThisMonth + plannerRemaining;
 
     const futureRecurringIncomeThisMonth = ws.recurringIncome.reduce((sum, ri) => {
       const nd = this.nextUnpostedIncomeOccurrence(ri);
-      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + ri.amount : sum;
+      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + this.safeNumber(ri.amount) : sum;
     }, 0);
 
     const overviewMax = Math.max(incomeTotal + futureRecurringIncomeThisMonth, spentMonth + spendExpectedMore, 1);
@@ -6288,7 +6296,7 @@ class Component extends DCLogic {
       visibleColor: fi.visible ? '#F6F1E7' : '#7A5941',
       toggleVisible: () => this.toggleRecurringVisible(fi.sourceId)
     }));
-    const calcFixedAutoAmount = calcFixedAutoItems.reduce((s, fi) => s + fi.amount, 0);
+    const calcFixedAutoAmount = calcFixedAutoItems.reduce((s, fi) => s + this.safeNumber(fi.amount), 0);
     const calcFixedHistoryRows = (ws.calcFixedHistoryCategories || []).map(e => {
       const cat = ws.categoryOptions.find(c => c.id === e.id) || { id: e.id, label: e.id, color: '#634031' };
       const isAll = e.monthsCount === 'all';
@@ -6309,8 +6317,8 @@ class Component extends DCLogic {
         remove: () => this.removeCalcFixedHistoryCategory(e.id)
       };
     });
-    const calcFixedHistoryTotal = calcFixedHistoryRows.filter(r => !r.joint).reduce((s, r) => s + r.amount, 0);
-    const calcFixedTotal = calcFixedAutoAmount + calcFixedHistoryTotal + (ws.calcFixedItems || []).filter(it => !it.joint).reduce((s, it) => s + it.amount, 0);
+    const calcFixedHistoryTotal = calcFixedHistoryRows.filter(r => !r.joint).reduce((s, r) => s + this.safeNumber(r.amount), 0);
+    const calcFixedTotal = calcFixedAutoAmount + calcFixedHistoryTotal + (ws.calcFixedItems || []).filter(it => !it.joint).reduce((s, it) => s + this.safeNumber(it.amount), 0);
     const calcGeneralItems = (ws.calcFixedItems || []).filter(it => !it.joint).filter(it => !it.categoryId || !(ws.calcFixedCategories || []).some(c => c.id === it.categoryId));
     const calcFixedGroups = [
       {
@@ -6319,7 +6327,7 @@ class Component extends DCLogic {
         color: '#634031',
         items: calcGeneralItems.map(it => ({ ...it, amountStr: this.fmt(it.amount), ...jointPill(!!it.joint), ...visiblePill(!!it.visible, !!it.joint), remove: () => this.removeCalcFixedItem(it.id), toggleJoint: () => this.toggleCalcFixedItemJoint(it.id), toggleVisible: () => this.toggleCalcFixedItemVisible(it.id) })),
         noItems: calcGeneralItems.length === 0,
-        subtotalStr: this.fmt(calcGeneralItems.reduce((s, it) => s + it.amount, 0))
+        subtotalStr: this.fmt(calcGeneralItems.reduce((s, it) => s + this.safeNumber(it.amount), 0))
       },
       ...(ws.calcFixedCategories || []).map(c => {
         const items = (ws.calcFixedItems || []).filter(it => !it.joint).filter(it => it.categoryId === c.id);
@@ -6329,7 +6337,7 @@ class Component extends DCLogic {
           color: c.color,
           items: items.map(it => ({ ...it, amountStr: this.fmt(it.amount), ...jointPill(!!it.joint), ...visiblePill(!!it.visible, !!it.joint), remove: () => this.removeCalcFixedItem(it.id), toggleJoint: () => this.toggleCalcFixedItemJoint(it.id), toggleVisible: () => this.toggleCalcFixedItemVisible(it.id) })),
           noItems: items.length === 0,
-          subtotalStr: this.fmt(items.reduce((s, it) => s + it.amount, 0))
+          subtotalStr: this.fmt(items.reduce((s, it) => s + this.safeNumber(it.amount), 0))
         };
       })
     ];
@@ -6349,7 +6357,7 @@ class Component extends DCLogic {
       remove: () => this.removeCalcIncomeItem(it.id),
       toggleJoint: () => this.toggleCalcIncomeItemJoint(it.id)
     }));
-    const calcIncomeTotalStr = this.fmt(calcIncomeAutoAmount + calcIncomeItemsView.reduce((s, it) => s + it.amount, 0));
+    const calcIncomeTotalStr = this.fmt(calcIncomeAutoAmount + calcIncomeItemsView.reduce((s, it) => s + this.safeNumber(it.amount), 0));
     const calcVariableItemsView = (ws.calcVariableItems || []).filter(it => !it.joint).map(it => ({
       ...it,
       amountStr: this.fmt(it.amount),
@@ -6357,7 +6365,7 @@ class Component extends DCLogic {
       remove: () => this.removeCalcVariableItem(it.id),
       toggleJoint: () => this.toggleCalcVariableItemJoint(it.id)
     }));
-    const calcVariableItemsTotalStr = this.fmt(calcVariableItemsView.reduce((s, it) => s + it.amount, 0));
+    const calcVariableItemsTotalStr = this.fmt(calcVariableItemsView.reduce((s, it) => s + this.safeNumber(it.amount), 0));
 
     const soloCalcSummary = this.calcSummaryFor(this.state.workspaces.personal, 'avg');
     let partnerCalcSummary = null, jointCalcSummary = null;
@@ -6373,7 +6381,7 @@ class Component extends DCLogic {
       calcTableIncomeRows = this.buildCalcTableRows('income', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
       calcTableFixedRows = this.buildCalcTableRows('fixed', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
       calcTableVariableRows = this.buildCalcMonthlyVariableCategoryRows(personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId, true);
-      const sumRows = (rows) => rows.reduce((a, r) => ({ total: a.total + r.total, me: a.me + r.me, partner: a.partner + r.partner }), { total: 0, me: 0, partner: 0 });
+      const sumRows = (rows) => rows.reduce((a, r) => ({ total: a.total + this.safeNumber(r.total), me: a.me + this.safeNumber(r.me), partner: a.partner + this.safeNumber(r.partner) }), { total: 0, me: 0, partner: 0 });
       calcTableIncomeSums = sumRows(calcTableIncomeRows);
       calcTableFixedSums = sumRows(calcTableFixedRows);
       calcTableVariableSums = sumRows(calcTableVariableRows);
@@ -6450,7 +6458,7 @@ class Component extends DCLogic {
     // "Wat je overhoudt" = total income − total expenses, using the exact same totals already
     // shown in the Inkomen/Uitgaven sections. No account balance, no Planner budgets, no historical
     // cumulative figures — one clear source of truth.
-    const calcSoloIncomeTotal = calcIncomeAutoAmount + calcIncomeItemsView.reduce((s, it) => s + it.amount, 0);
+    const calcSoloIncomeTotal = calcIncomeAutoAmount + calcIncomeItemsView.reduce((s, it) => s + this.safeNumber(it.amount), 0);
     const calcSoloSurplus = calcSoloIncomeTotal - calcFixedTotal - calcVariableAvgTotal;
     const calcSurplus = calcIsSharedMode ? calcTableOverSums.total : calcSoloSurplus;
     const calcMonthlyBudget = calcIsSharedMode ? calcMonthlyBudgetSums.total : calcSoloIncomeTotal - calcFixedTotal;
@@ -6471,7 +6479,7 @@ class Component extends DCLogic {
       }))
     ];
     const calcAllocatedTotal = calcAllocationRows.reduce((s, r) => s + (this.parseAmt(r.value) || 0), 0);
-    const automaticSavingsPlannedTotal = automaticSavingsPlans.reduce((sum, plan) => sum + plan.amount, 0);
+    const automaticSavingsPlannedTotal = automaticSavingsPlans.reduce((sum, plan) => sum + this.safeNumber(plan.amount), 0);
     const calcPlannedVariableTotal = calcIsSharedMode ? calcTableVariableSums.total : calcVariableAvgTotal;
     const calcDistributable = calcMonthlyBudget - calcPlannedVariableTotal - automaticSavingsPlannedTotal;
     const calcRemainingAfterAlloc = calcDistributable - calcAllocatedTotal;
@@ -6539,12 +6547,14 @@ class Component extends DCLogic {
     }));
 
     const savingsGoals = ws.savingsGoals.map(g => {
-      const pct = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
+      const targetAmount = this.safeNumber(g.target);
+      const savedAmount = this.safeNumber(g.saved);
+      const pct = targetAmount > 0 ? Math.min(100, Math.round((savedAmount / targetAmount) * 100)) : 0;
       const goalCat = g.category ? savingsCatMap[g.category] : null;
-      const remainingAmt = Math.max(0, g.target - g.saved);
-      const contribAmount = g.contributionAmount || 0;
+      const remainingAmt = Math.max(0, targetAmount - savedAmount);
+      const contribAmount = this.safeNumber(g.contributionAmount);
       let etaText;
-      if (g.saved >= g.target) {
+      if (savedAmount >= targetAmount && targetAmount > 0) {
         etaText = this.tf('Goal reached! 🎉', 'Doel bereikt! 🎉', 'Ziel erreicht! 🎉', 'Objectif atteint ! 🎉', '¡Objetivo alcanzado! 🎉');
       } else if (contribAmount > 0) {
         const periodsNeeded = Math.ceil(remainingAmt / contribAmount);
@@ -6650,7 +6660,7 @@ class Component extends DCLogic {
       };
     });
 
-    const accountsTotal = ws.accounts.reduce((s, a) => s + a.balance, 0);
+    const accountsTotal = ws.accounts.reduce((s, a) => s + this.safeNumber(a.balance), 0);
     const accounts = ws.accounts.map(a => ({
       ...a,
       setName: (e) => this.setAccountName(a.id, e),
@@ -7091,7 +7101,7 @@ class Component extends DCLogic {
       automaticSavingsHeader: this.tf('Automatic saving', 'Automatisch sparen', 'Automatisches Sparen', 'Épargne automatique', 'Ahorro automático'),
       noAutomaticSavingsPlansLabel: this.tf('No automatic savings plan configured.', 'Nog geen automatisch spaarplan ingesteld.', 'Noch kein automatischer Sparplan eingerichtet.', "Aucun plan d'épargne automatique configuré.", 'Aún no hay un plan de ahorro automático configurado.'),
       automaticSavingsGoalColumnLabel: this.tf('Savings goal', 'Spaardoel', 'Sparziel', "Objectif d'épargne", 'Objetivo de ahorro'),
-      totalSavedAllStr: this.fmtOptionalDecimals(ws.savingsGoals.reduce((s, g) => s + g.saved, 0)),
+      totalSavedAllStr: this.fmtOptionalDecimals(ws.savingsGoals.reduce((s, g) => s + this.safeNumber(g.saved), 0)),
       newGoalName: this.state.newGoalName,
       setNewGoalName: (e) => this.setNewGoalName(e),
       newGoalTarget: this.state.newGoalTarget,
@@ -7192,7 +7202,7 @@ class Component extends DCLogic {
       spendHistoryRows: (ws.spendHistory || []).map(h => ({
         label: h.label,
         key: h.key,
-        totalStr: this.fmt((h.items || []).reduce((s, it) => s + it.amount, 0)),
+        totalStr: this.fmt((h.items || []).reduce((s, it) => s + this.safeNumber(it.amount), 0)),
         expanded: this.state.expandedSpendHistoryKey === h.key,
         toggle: () => this.toggleSpendHistoryMonth(h.key),
         remove: (e) => { e.stopPropagation(); this.removeSpendHistoryEntry(h.key); },
@@ -7288,7 +7298,7 @@ class Component extends DCLogic {
       incomeHistoryRows: (ws.incomeHistory || []).map(h => ({
         label: h.label,
         key: h.key,
-        totalStr: this.fmt((h.items || []).reduce((s, it) => s + it.amount, 0)),
+        totalStr: this.fmt((h.items || []).reduce((s, it) => s + this.safeNumber(it.amount), 0)),
         expanded: this.state.expandedIncomeHistoryKey === h.key,
         toggle: () => this.toggleIncomeHistoryMonth(h.key),
         remove: (e) => { e.stopPropagation(); this.removeIncomeHistoryEntry(h.key); },
