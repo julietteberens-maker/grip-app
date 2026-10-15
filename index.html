@@ -595,6 +595,17 @@
           </sc-if>
         </div>
 
+        <div style="border-top:1px solid rgba(99,64,49,.18);margin:18px 0 14px;padding-top:14px">
+          <div style="font-size:12px;font-weight:600;color:#7A5941;margin-bottom:8px">Saldo bijwerken · {{ balanceWorkspaceLabel }}</div>
+          <div style="font-size:11px;line-height:1.4;margin-bottom:10px">Vul je banksaldo aan het einde van deze datum in. Latere transacties worden automatisch verwerkt.</div>
+          <div style="display:flex;gap:6px;margin-bottom:8px">
+            <input aria-label="Werkelijk banksaldo" type="text" inputmode="decimal" placeholder="Banksaldo €" value="{{ balanceAdjustmentInput }}" onChange="{{ setBalanceAdjustmentInput }}" class="grip-control" style="width:110px;min-width:0">
+            <input aria-label="Saldodatum" type="date" value="{{ balanceAdjustmentDateInput }}" onChange="{{ setBalanceAdjustmentDateInput }}" class="grip-control" style="flex:1;min-width:0">
+          </div>
+          <button class="grip-btn grip-btn-secondary" onClick="{{ saveBalanceAdjustment }}">Saldo bijwerken</button>
+          <div style="font-size:11px;line-height:1.4;margin-top:8px">{{ latestBalanceAdjustmentLabel }}</div>
+          <sc-if value="{{ balanceAdjustmentError }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:11px;color:#BC6F52;margin-top:6px">{{ balanceAdjustmentError }}</div></sc-if>
+        </div>
         <sc-if value="{{ hasAnyData }}" hint-placeholder-val="{{ false }}">
           <div style="border-top:1px solid rgba(99,64,49,.18);margin:18px 0 14px;padding-top:14px">
             <button onClick="{{ resetAllData }}" style="width:100%;border:1px solid #BC6F52;border-radius:8px;padding:9px 0;font-size:12.5px;font-weight:600;background:transparent;color:#BC6F52">{{ t.resetDataBtn }}</button>
@@ -971,10 +982,10 @@
           <div style="font-size:13px;font-weight:700;color:#3A261D">{{ incomeNextTitle }}</div>
           <button class="grip-income-edit" onClick="{{ toggleRecurringIncomeManage }}" style="border:1px solid rgba(99,64,49,.25);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:transparent;color:#634031">{{ recurringIncomeManageLabel }}</button>
         </div>
-        <sc-if value="{{ hasNextRecurringIncome }}" hint-placeholder-val="{{ true }}"><div class="grip-income-next-line"><strong>{{ nextRecurringIncome.name }}</strong><span class="grip-income-next-separator">·</span><span>{{ nextRecurringIncome.nextLabel }}</span><span class="grip-income-next-separator">·</span><span class="grip-money">€ {{ nextRecurringIncome.amountStr }}</span></div></sc-if>
-        <sc-if value="{{ noNextRecurringIncome }}" hint-placeholder-val="{{ false }}"><div class="grip-income-next-line" style="color:#8A715D">{{ incomeNextEmpty }}</div></sc-if>
         <sc-if value="{{ showRecurringIncomeManage }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;justify-content:flex-end;gap:8px;margin:12px 0 8px"><button class="grip-btn grip-btn-secondary" onClick="{{ toggleRecurringIncomeEditMode }}">{{ recurringIncomeEditModeLabel }}</button><button class="grip-btn grip-btn-primary" onClick="{{ openRecurringIncomeAdd }}">{{ t.addIncomeSourceBtn }}</button></div>
+        </sc-if>
+        <sc-if value="{{ noNextRecurringIncome }}" hint-placeholder-val="{{ false }}"><div class="grip-income-next-line" style="color:#8A715D">{{ incomeNextEmpty }}</div></sc-if>
         <sc-if value="{{ recurringIncome.length }}" hint-placeholder-val="{{ false }}">
           <div class="income-grid head">
             <span>{{ incomeNextChargeLabel }}</span>
@@ -1049,6 +1060,7 @@
           </div>
         </sc-for>
 
+        <sc-if value="{{ showRecurringIncomeManage }}" hint-placeholder-val="{{ false }}">
         <div class="grip-income-utility grip-income-entry-legacy" style="margin-top:16px;padding-top:16px;border-top:1px dashed rgba(99,64,49,.3)">
           <div style="font-size:11px;font-weight:600;color:#7A5941;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">{{ t.addIncomeSourceBtn }}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -1777,6 +1789,7 @@
               <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:8px;flex-wrap:wrap">
                 <div style="font-size:24px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ g.savedStr }}</div>
                 <div style="font-size:13px;color:#634031">{{ t.ofEuro }} <input type="text" inputmode="decimal" value="{{ g.target }}" onChange="{{ g.setTarget }}" style="width:64px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></div>
+                <label style="font-size:11px;color:#7A5941">Al gespaard bij start € <input aria-label="Al gespaard bij start" type="number" min="0" step="0.01" value="{{ g.openingSavedAmount }}" onChange="{{ g.setOpeningSavedAmount }}" style="width:80px;border:none;border-bottom:1px solid #63403155;background:transparent;outline:none;font:inherit;color:inherit;padding:0"></label>
               </div>
 
               <div style="height:7px;border-radius:4px;background:rgba(99,64,49,.18);overflow:hidden;margin-bottom:14px"><div style="height:100%;background:#66715A;width:{{ g.pct }}%"></div></div>
@@ -1839,6 +1852,7 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <input type="text" placeholder="{{ t.goalNamePlaceholder }}" value="{{ newGoalName }}" onChange="{{ setNewGoalName }}" onKeyDown="{{ onGoalKeyDown }}" style="width:140px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
           <input type="text" inputmode="decimal" placeholder="{{ t.targetEuroPlaceholder }}" value="{{ newGoalTarget }}" onChange="{{ setNewGoalTarget }}" onKeyDown="{{ onGoalKeyDown }}" style="width:90px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
+          <input aria-label="Al gespaard bij start" type="number" min="0" step="0.01" placeholder="Al gespaard €" value="{{ newGoalOpeningSavedAmount }}" onChange="{{ setNewGoalOpeningSavedAmount }}" onKeyDown="{{ onGoalKeyDown }}" style="width:110px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 8px;font-size:12px;background:#D8C7AB;color:#634031">
           <button onClick="{{ addGoal }}" disabled="{{ addGoalDisabled }}" style="border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addGoalBtn }}</button>
           <button onClick="{{ cancelSavingsGoalForm }}" class="grip-btn grip-btn-secondary">Annuleren</button>
         </div>
@@ -3624,7 +3638,41 @@ class Component extends DCLogic {
   }
 
   setView(view) { this.setState({ view, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist()); }
-  toggleSettings() { this.setState(s => ({ showSettings: !s.showSettings })); }
+  toggleSettings() {
+    const latest = (this.ws().balanceAdjustments || []).slice(-1)[0];
+    this.setState(s => ({ showSettings: !s.showSettings, balanceAdjustmentInput: latest ? String(latest.actualBalance) : '', balanceAdjustmentDateInput: latest ? latest.date : this.todayStr(), balanceAdjustmentError: '' }));
+  }
+  balanceLedgerTotal(ws, date) {
+    // Use posted entries only; recurring master records and planning estimates are excluded.
+    const total = entries => {
+      const seen = new Set();
+      return (entries || []).reduce((sum, entry) => {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(entry.date || '') || entry.date > date) return sum;
+        const key = entry.mirrorSourceId || (entry.recurringSourceId ? `${entry.recurringSourceId}:${entry.scheduledDate || entry.date}` : entry.id);
+        if (key && seen.has(key)) return sum;
+        if (key) seen.add(key);
+        return sum + this.safeNumber(entry.amount);
+      }, 0);
+    };
+    return total(ws.incomeEntries) - total(ws.transactions);
+  }
+  saveBalanceAdjustment() {
+    const raw = String(this.state.balanceAdjustmentInput || '').trim();
+    const amount = this.parseAmt(raw);
+    const date = this.state.balanceAdjustmentDateInput;
+    const parsedDate = new Date(`${date}T12:00:00`);
+    const validDate = Number.isFinite(parsedDate.getTime()) && `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}-${String(parsedDate.getDate()).padStart(2, '0')}` === date;
+    if (!/^-?\d+(?:[.,]\d{1,2})?$/.test(raw) || !Number.isFinite(amount) || !/^\d{4}-\d{2}-\d{2}$/.test(date || '') || !validDate || date > this.todayStr()) {
+      this.setState({ balanceAdjustmentError: 'Vul een geldig banksaldo en een datum van vandaag of eerder in.' });
+      return;
+    }
+    const ws = this.ws();
+    const ledgerAtDate = this.balanceLedgerTotal(ws, date);
+    const before = this.computeCurrentBalance() - this.balanceLedgerTotal(ws, this.todayStr()) + ledgerAtDate;
+    const adjustment = { id: 'balance_' + Date.now(), date, actualBalance: amount, difference: Math.round((amount - before) * 100) / 100, ledgerAtDate, createdAt: new Date().toISOString() };
+    this.setWs(current => ({ balanceAdjustments: [...(current.balanceAdjustments || []), adjustment] }), () => this.persist());
+    this.setState({ balanceAdjustmentError: '' });
+  }
   toggleSidebar() { this.setState(s => ({ sidebarOpen: !s.sidebarOpen })); }
   resetAllData() {
     const msg = this.tf('This clears all your data (transactions, goals, income, budgets) for both Solo and Shared. This cannot be undone. Continue?', 'Dit wist al je gegevens (transacties, doelen, inkomen, budgetten) voor zowel Solo als Gedeeld. Dit kan niet ongedaan worden gemaakt. Doorgaan?', 'Dies löscht alle deine Daten (Transaktionen, Ziele, Einkommen, Budgets) für Solo und Gemeinsam. Dies kann nicht rückgängig gemacht werden. Fortfahren?', 'Cela efface toutes vos données (transactions, objectifs, revenus, budgets) pour Solo et Partagé. Cette action est irréversible. Continuer ?', 'Esto borra todos tus datos (transacciones, objetivos, ingresos, presupuestos) para Solo y Compartido. Esta acción no se puede deshacer. ¿Continuar?');
@@ -5359,6 +5407,11 @@ class Component extends DCLogic {
   // amounts, not halved). For Solo it mirrors the Budgetcalculator's own income/fixed/variable
   // totals. This is a pure calculation now — balance is never stored/mutated directly.
   computeCurrentBalance() {
+    const balanceWs = this.ws();
+    const adjustment = (balanceWs.balanceAdjustments || []).slice(-1)[0];
+    if (adjustment) {
+      return this.safeNumber(adjustment.actualBalance) + this.balanceLedgerTotal(balanceWs, this.todayStr()) - this.safeNumber(adjustment.ledgerAtDate);
+    }
     if (this.state.mode === 'shared') {
       const personalWs = this.state.workspaces.personal;
       const sharedWs = this.state.workspaces.shared;
@@ -5473,6 +5526,19 @@ class Component extends DCLogic {
   setGoalTargetFor(id, e) {
     this.setWs(ws => ({ savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, target: this.parseAmt(e.target.value) || 0 } : g) }), () => this.persist());
   }
+  setGoalOpeningSavedAmount(id, e) {
+    const value = e.target.value;
+    const amount = value === '' ? 0 : this.parseAmt(value);
+    if (!Number.isFinite(amount) || amount < 0) return;
+    this.setWs(ws => ({ savingsGoals: ws.savingsGoals.map(goal => {
+      if (goal.id !== id) return goal;
+      // saved remains the total used by existing progress/withdrawal calculations.
+      // Replace only the opening component; contribution history and monthly totals stay intact.
+      const saved = this.safeNumber(goal.saved) - this.safeNumber(goal.openingSavedAmount) + amount;
+      if (saved < 0) return goal;
+      return { ...goal, openingSavedAmount: amount, saved: Math.round(saved * 100) / 100 };
+    }) }), () => this.persist());
+  }
   updateGoal(id, patch) {
     this.setWs(ws => ({ savingsGoals: ws.savingsGoals.map(g => g.id === id ? { ...g, ...patch } : g) }), () => this.persist());
   }
@@ -5497,15 +5563,17 @@ class Component extends DCLogic {
   setNewGoalName(e) { this.setState({ newGoalName: this.cap(e.target.value) }); }
   setNewGoalTarget(e) { this.setState({ newGoalTarget: e.target.value }); }
   toggleSavingsGoalForm() { this.setState(s => ({ showSavingsGoalForm: !s.showSavingsGoalForm })); }
-  cancelSavingsGoalForm() { this.setState({ showSavingsGoalForm: false, newGoalName: '', newGoalTarget: '' }); }
+  cancelSavingsGoalForm() { this.setState({ showSavingsGoalForm: false, newGoalName: '', newGoalTarget: '', newGoalOpeningSavedAmount: '' }); }
 
   addGoal() {
     const label = this.state.newGoalName.trim();
     const target = this.parseAmt(this.state.newGoalTarget);
+    const openingSavedAmount = this.state.newGoalOpeningSavedAmount ? this.parseAmt(this.state.newGoalOpeningSavedAmount) : 0;
+    if (!Number.isFinite(openingSavedAmount) || openingSavedAmount < 0) return;
     if (!label || !target || target <= 0) return;
-    const goal = { id: 'goal' + Date.now(), label, target, saved: 0, savingStartDate: this.todayStr(), targetDate: '', contributionAmount: 0, contributionFrequency: 'monthly', contributionDay: 1, contributionStartDate: '', contributionNextDate: '', contributionOwnership: this.state.mode === 'shared' ? 'shared' : 'personal' };
+    const goal = { id: 'goal' + Date.now(), label, target, saved: openingSavedAmount, openingSavedAmount, savingStartDate: this.todayStr(), targetDate: '', contributionAmount: 0, contributionFrequency: 'monthly', contributionDay: 1, contributionStartDate: '', contributionNextDate: '', contributionOwnership: this.state.mode === 'shared' ? 'shared' : 'personal' };
     this.setWs(ws => ({ savingsGoals: [...ws.savingsGoals, goal] }), () => this.persist());
-    this.setState({ newGoalName: '', newGoalTarget: '', showSavingsGoalForm: false });
+    this.setState({ newGoalName: '', newGoalTarget: '', newGoalOpeningSavedAmount: '', showSavingsGoalForm: false });
   }
 
   onGoalDragStart(id) { this.setState({ draggedGoalId: id }); }
@@ -6624,6 +6692,8 @@ class Component extends DCLogic {
         withdraw: () => this.withdrawFromGoal(g.id),
         setLabel: (e) => this.setGoalLabelFor(g.id, e),
         setTarget: (e) => this.setGoalTargetFor(g.id, e),
+        openingSavedAmount: this.safeNumber(g.openingSavedAmount),
+        setOpeningSavedAmount: (e) => this.setGoalOpeningSavedAmount(g.id, e),
         remove: () => this.removeGoal(g.id),
         removeDisabled: ws.savingsGoals.length <= 1,
         removeOpacity: ws.savingsGoals.length <= 1 ? 0.35 : 1,
@@ -6934,6 +7004,17 @@ class Component extends DCLogic {
       setLanguage: (e) => this.setLanguage(e),
       languageOptions: LANGUAGE_OPTIONS,
       showSettings: this.state.showSettings,
+      balanceWorkspaceLabel: this.state.mode === 'shared' ? t.shared : t.solo,
+      balanceAdjustmentInput: this.state.balanceAdjustmentInput || '',
+      balanceAdjustmentDateInput: this.state.balanceAdjustmentDateInput || this.todayStr(),
+      balanceAdjustmentError: this.state.balanceAdjustmentError || '',
+      setBalanceAdjustmentInput: e => this.setState({ balanceAdjustmentInput: e.target.value }),
+      setBalanceAdjustmentDateInput: e => this.setState({ balanceAdjustmentDateInput: e.target.value }),
+      saveBalanceAdjustment: () => this.saveBalanceAdjustment(),
+      latestBalanceAdjustmentLabel: (() => {
+        const adjustment = (ws.balanceAdjustments || []).slice(-1)[0];
+        return adjustment ? `Laatste saldo: € ${this.fmt(adjustment.actualBalance)} · ${adjustment.date.split('-').reverse().join('-')} · Correctie: € ${this.fmt(adjustment.difference)}` : 'Nog geen saldocorrectie. Stel hier ook je beginsaldo in.';
+      })(),
       toggleSettings: () => this.toggleSettings(),
       sidebarClass: this.state.sidebarOpen ? 'is-open' : 'is-closed',
       mainSidebarClass: this.state.sidebarOpen ? 'sidebar-open' : 'sidebar-closed',
@@ -7105,6 +7186,8 @@ class Component extends DCLogic {
       newGoalName: this.state.newGoalName,
       setNewGoalName: (e) => this.setNewGoalName(e),
       newGoalTarget: this.state.newGoalTarget,
+      newGoalOpeningSavedAmount: this.state.newGoalOpeningSavedAmount || '',
+      setNewGoalOpeningSavedAmount: e => this.setState({ newGoalOpeningSavedAmount: e.target.value }),
       setNewGoalTarget: (e) => this.setNewGoalTarget(e),
       addGoal: () => this.addGoal(),
       addGoalDisabled: !(this.state.newGoalName.trim() && this.parseAmt(this.state.newGoalTarget) > 0),
@@ -7181,7 +7264,7 @@ class Component extends DCLogic {
       nextRecurringIncome: recurringIncome[0] || {},
       hasNextRecurringIncome: recurringIncome.length > 0,
       noNextRecurringIncome: recurringIncome.length === 0,
-      incomeNextTitle: 'Volgend inkomen',
+      incomeNextTitle: t.recurringIncomeHeader,
       incomeNextEmpty: 'Geen volgend vast inkomen gepland.',
       newRecCategoryName: this.state.newRecCategoryName,
       setNewRecCategoryName: (e) => this.setNewRecCategoryName(e),
