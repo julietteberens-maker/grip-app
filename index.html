@@ -3230,33 +3230,39 @@ class Component extends DCLogic {
   buildCalcPlannedCategoryRows(personalWs, sharedWs, meLabel, jointLabel, sharedMode) {
     const ws = sharedMode ? sharedWs : personalWs;
     const budgets = ws.categoryBudgets || {};
-    const catalog = [...(ws.categoryOptions || []), ...(personalWs.categoryOptions || []), ...(sharedWs.categoryOptions || [])];
+    // Planner uses the personal-first merged catalogue as its canonical identity.
+    const catalog = [...(personalWs.categoryOptions || []), ...(sharedWs.categoryOptions || [])];
     const groups = new Map();
-    Object.entries(budgets).forEach(([id, value]) => {
-      if (value === '' || value === null || value === undefined) return;
-      if (typeof value !== 'string' && typeof value !== 'number') return;
-      // Only registered spending categories qualify; saved goal/allocation keys
-      // and obsolete IDs must never turn into expense rows or numeric totals.
-      const category = catalog.find(c => c.id === id && typeof c.label === 'string' && c.label.trim());
-      if (!category) return;
-      const amount = typeof value === 'string' ? this.parseAmt(value) : Number(value);
-      if (!Number.isFinite(amount) || amount < 0) return;
+    catalog.forEach(category => {
+      if (!category || typeof category.label !== 'string' || !category.label.trim()) return;
       const name = category.label.trim();
       const key = name.toLocaleLowerCase('nl-NL');
-      const existing = groups.get(key);
-      // Category aliases refer to one plan; never add the same budget twice.
-      if (!existing || amount > existing.total) groups.set(key, { id, name, total: amount });
+      if (!groups.has(key)) groups.set(key, { id: category.id, name, aliases: [] });
+      const group = groups.get(key);
+      if (!group.aliases.includes(category.id)) group.aliases.push(category.id);
     });
-    return [...groups.values()].map(group => {
+    return [...groups.values()].flatMap(group => {
+      // An explicitly edited canonical budget wins, even when reduced to zero.
+      // Only fall back to a legacy alias when Planner has no canonical value yet.
+      const id = Object.prototype.hasOwnProperty.call(budgets, group.id)
+        ? group.id : group.aliases.find(alias => Object.prototype.hasOwnProperty.call(budgets, alias));
+      if (id === undefined) return [];
+      const value = budgets[id];
+      if (value === '' || value === null || value === undefined) return [];
+      if (typeof value !== 'string' && typeof value !== 'number') return [];
+      // Only registered spending categories qualify; saved goal/allocation keys
+      // and obsolete IDs must never turn into expense rows or numeric totals.
+      const amount = typeof value === 'string' ? this.parseAmt(value) : Number(value);
+      if (!Number.isFinite(amount) || amount < 0) return [];
       // Shared Planner budgets belong to the shared workspace and use its equal allocation.
       // Personal budgets stay in Solo; visible personal transactions are not budget sources.
-      const me = sharedMode ? Math.round(group.total * 100 / 2) / 100 : group.total;
-      const partner = sharedMode ? Math.round((group.total - me) * 100) / 100 : 0;
-      return { ...group, me, partner,
-        totalStr: this.fmt(group.total), meStr: this.fmt(me), partnerStr: this.fmt(partner),
+      const me = sharedMode ? Math.round(amount * 100 / 2) / 100 : amount;
+      const partner = sharedMode ? Math.round((amount - me) * 100) / 100 : 0;
+      return [{ id: group.id, name: group.name, total: amount, me, partner,
+        totalStr: this.fmt(amount), meStr: this.fmt(me), partnerStr: this.fmt(partner),
         ownerLabel: sharedMode ? jointLabel : meLabel, ownerBg: sharedMode ? '#634031' : '#7C8972', ownerColor: '#F6F1E7',
         editable: false, notEditable: true, setName: null, setAmount: null, cycleOwner: null, remove: null
-      };
+      }];
     });
   }
   buildCalcMonthlyVariableCategoryRows(personalWs, sharedWs, meLabel, jointLabel, partnerLabel, myUserId, sharedMode, selectedMonth) {
