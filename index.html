@@ -251,7 +251,7 @@
     .grip-main.sidebar-open{margin-left:0}
   }
   @media (max-height:560px){.grip-sidebar{overflow-y:auto;gap:10px}.grip-sidebar>div:nth-child(3)>div{padding:6px 12px!important}}
-  .dv-card-wrap{width:min(1480px,100%)!important;max-width:100%!important;margin:0 auto;border:1px solid rgba(255,255,255,.12)!important;box-sizing:border-box;background:#F6F1E7!important;box-shadow:0 14px 34px rgba(38,21,15,.18),0 1px 0 rgba(255,255,255,.18) inset!important}
+  .dv-card-wrap{width:min(1480px,100%)!important;max-width:100%!important;min-height:calc(100vh - 32px);min-height:calc(100dvh - 32px);margin:0 auto;border:1px solid rgba(255,255,255,.12)!important;box-sizing:border-box;background:#F6F1E7!important;box-shadow:0 14px 34px rgba(38,21,15,.18),0 1px 0 rgba(255,255,255,.18) inset!important}
   button{cursor:pointer;font-family:inherit}
   input,select{font-family:inherit}
   input[type="text" inputmode="decimal"]::-webkit-outer-spin-button,input[type="text" inputmode="decimal"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
@@ -587,6 +587,9 @@
   </sc-if>
 
   <div class="grip-main {{ mainSidebarClass }} {{ mainViewClass }}">
+    <sc-if value="{{ persistenceError }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="margin:0 0 14px;background:#F3D9C9;border:1px solid #A8714F;color:#7A3A1F;font-size:12.5px;padding:10px 12px;border-radius:10px;line-height:1.45">{{ persistenceError }}</div>
+    </sc-if>
     <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:22px">
       <div style="display:flex;align-items:center;gap:10px">
         <div style="font-size:20px;font-weight:700">{{ pageTitle }}</div>
@@ -787,7 +790,7 @@
     </sc-if>
 
     <sc-if value="{{ isIncome }}" hint-placeholder-val="{{ false }}">
-      <sc-if value="{{ isShared }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <div style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
           <div style="font-size:13px;font-weight:700;margin-bottom:12px">{{ t.calcJointIncomeLabel }}</div>
           <div class="joint-grid head">
@@ -880,18 +883,19 @@
       <div class="grip-surface grip-income-month">
         <div class="grip-income-section-head" style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.incomeThisMonthHeader }}<button class="grip-income-edit" onClick="{{ toggleAllIncomeEntriesEdit }}" style="margin-left:auto;border:1px solid rgba(99,64,49,.25);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#F6F1E7;color:#634031">{{ incomeEntriesEditModeLabel }}</button></div>
         <sc-if value="{{ incomeEntries.length }}" hint-placeholder-val="{{ true }}">
-          <div class="income-current-grid head">
+          <div class="income-current-grid head" style="grid-template-columns:{{ incomeCurrentGridColumns }}">
             <span>{{ t.dateLabel }}</span>
             <span>{{ t.colDescription }}</span>
-            <span>{{ t.colCategory }}</span>
+            <sc-if value="{{ sharedIncomeOpenList }}" hint-placeholder-val="{{ false }}"><span>{{ incomeOwnerColumnLabel }}</span></sc-if>
+            <sc-if value="{{ standardIncomeList }}" hint-placeholder-val="{{ true }}"><span>{{ t.colCategory }}</span></sc-if>
             <span class="col-amt">{{ t.colTotal }}</span>
-            <span class="income-status-head">{{ t.colStatus }}</span>
+            <sc-if value="{{ standardIncomeList }}" hint-placeholder-val="{{ true }}"><span class="income-status-head">{{ t.colStatus }}</span></sc-if>
             <span></span>
           </div>
         </sc-if>
         <sc-if value="{{ incomeEntries.length }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ incomeEntries }}" as="inc" hint-placeholder-count="4">
-            <div class="income-current-grid row">
+            <div class="income-current-grid row" style="grid-template-columns:{{ incomeCurrentGridColumns }}">
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="true">
                 <div style="display:flex;flex-direction:column;gap:2px;color:#634031;font-size:11.5px"><span>{{ inc.dateLabel }}</span><span style="font-size:9.5px;font-weight:600;color:#66715A">{{ inc.receiptLabel }}</span></div>
               </sc-if>
@@ -900,27 +904,28 @@
               </sc-if>
 
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
-                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ inc.source }}</div>
+                <div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px"><sc-if value="{{ inc.isRecurring }}" hint-placeholder-val="{{ false }}"><span title="{{ t.autoAddedTooltip }}" style="flex:none;font-size:11px;color:#8A7358">↻</span></sc-if><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ inc.source }}</span></div>
               </sc-if>
               <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
                 <input type="text" value="{{ inc.source }}" onChange="{{ inc.setEditSource }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;box-sizing:border-box">
               </sc-if>
 
-              <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ standardIncomeList }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
                 <div>
                   <sc-if value="{{ inc.categoryLabel }}" hint-placeholder-val="{{ false }}">
                     <span class="chip" style="color:#F6F1E7;background:{{ inc.categoryColor }};justify-self:stretch;width:100%">{{ inc.categoryLabel }}</span>
                   </sc-if>
                 </div>
-              </sc-if>
-              <sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
+              </sc-if></sc-if>
+              <sc-if value="{{ standardIncomeList }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ inc.isEditing }}" hint-placeholder-val="{{ false }}">
                 <select value="{{ inc.category }}" onChange="{{ inc.setEditCategory }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 5px;font-size:11px;background:#F6F1E7;color:#634031;box-sizing:border-box">
                   <option value="">{{ t.calcGeneralGroup }}</option>
                   <sc-for list="{{ inc.editCategories }}" as="iec" hint-placeholder-count="5">
                     <option value="{{ iec.id }}">{{ iec.label }}</option>
                   </sc-for>
                 </select>
-              </sc-if>
+              </sc-if></sc-if>
+              <sc-if value="{{ sharedIncomeOpenList }}" hint-placeholder-val="{{ false }}"><span class="chip" style="border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};justify-self:stretch;width:100%">{{ inc.ownerLabel }}</span></sc-if>
 
               <sc-if value="{{ inc.notEditing }}" hint-placeholder-val="{{ true }}">
                 <div class="col-amt" style="font-weight:600;color:#66715A">+€ {{ inc.amountStr }}</div>
@@ -929,7 +934,7 @@
                 <input type="text" inputmode="decimal" value="{{ inc.amountStr }}" onChange="{{ inc.setEditAmount }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:4px 7px;font-size:12px;background:#F6F1E7;color:#634031;text-align:right;box-sizing:border-box">
               </sc-if>
 
-              <span onClick="{{ inc.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};justify-self:stretch;width:100%">{{ inc.jointLabel }}</span>
+              <sc-if value="{{ standardIncomeList }}" hint-placeholder-val="{{ true }}"><span onClick="{{ inc.toggleJoint }}" class="chip" style="cursor:pointer;border:1px solid rgba(99,64,49,.18);background:{{ inc.jointBg }};color:{{ inc.jointColor }};justify-self:stretch;width:100%">{{ inc.jointLabel }}</span></sc-if>
 
               <div class="col-actions">
                 <button onClick="{{ inc.remove }}" style="border:none;background:transparent;color:#634031;font-size:12px">✕</button>
@@ -1206,7 +1211,7 @@
           </div>
         </sc-if>
       </div>
-      <sc-if value="{{ isShared }}" hint-placeholder-val="{{ false }}">
+      <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <div class="grip-expense-shared-overview" style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
           <div style="font-size:13px;font-weight:700;margin-bottom:12px">{{ t.calcJointSectionHeader }}</div>
           <div class="joint-grid head" style="grid-template-columns:50px minmax(90px,1.5fr) 74px 66px 66px 72px">
@@ -2294,7 +2299,10 @@
           <div style="background:#F6F1E7;border-radius:16px;padding:18px 20px;margin-bottom:20px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
               <span style="font-size:13px;font-weight:700">{{ t.calcEditAllLabel }}</span>
-              <button onClick="{{ toggleCalcBulkEdit }}" style="border:none;background:transparent;color:#634031;font-size:14px">✕</button>
+              <div style="display:flex;align-items:center;gap:8px">
+                <button onClick="{{ cancelCalcBulkEdit }}" style="border:1px solid rgba(99,64,49,.22);background:transparent;color:#634031;border-radius:8px;padding:6px 10px;font-size:11px;font-weight:600">Annuleren</button>
+                <button onClick="{{ saveCalcBulkEdit }}" style="border:none;background:#634031;color:#F6F1E7;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700">Opslaan</button>
+              </div>
             </div>
 
             <div style="font-size:11px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em;margin-bottom:6px">{{ t.calcIncomeLabel }}</div>
@@ -2325,14 +2333,8 @@
             <div style="display:flex;flex-direction:column;gap:5px">
               <sc-for list="{{ calcTableVariableRows }}" as="brow3" hint-placeholder-count="2">
                 <div style="display:flex;align-items:center;gap:6px;background:#D8C7AB;border-radius:8px;padding:6px 8px">
-                  <sc-if value="{{ brow3.editable }}" hint-placeholder-val="{{ true }}">
-                    <input type="text" value="{{ brow3.name }}" onChange="{{ brow3.setName }}" style="flex:1;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:5px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-                    <input type="text" inputmode="decimal" value="{{ brow3.total }}" onChange="{{ brow3.setAmount }}" style="width:70px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:5px 7px;font-size:12px;background:#F6F1E7;color:#634031">
-                  </sc-if>
-                  <sc-if value="{{ brow3.notEditable }}" hint-placeholder-val="{{ false }}">
-                    <span style="flex:1;font-size:12px;padding:5px 7px">{{ brow3.name }}</span>
-                    <span style="width:70px;font-size:12px;padding:5px 7px;text-align:right;font-variant-numeric:tabular-nums">€ {{ brow3.totalStr }}</span>
-                  </sc-if>
+                  <input type="text" value="{{ brow3.name }}" onChange="{{ brow3.setName }}" style="flex:1;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:5px 7px;font-size:12px;background:#F6F1E7;color:#634031">
+                  <input type="text" inputmode="decimal" value="{{ brow3.total }}" onChange="{{ brow3.setAmount }}" style="width:70px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:5px 7px;font-size:12px;background:#F6F1E7;color:#634031">
                   <span onClick="{{ brow3.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ brow3.ownerBg }};color:{{ brow3.ownerColor }};flex:none;width:56px;text-align:center">{{ brow3.ownerLabel }}</span>
                   <button onClick="{{ brow3.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px;flex:none">✕</button>
                 </div>
@@ -2566,6 +2568,7 @@ const SUPABASE_CONFIGURED = true;
 const PREVIEW_AUTH_BYPASS = ['127.0.0.1', 'localhost'].includes(window.location.hostname)
   && new URLSearchParams(window.location.search).get('previewBypass') === '1';
 const supabaseClient = (SUPABASE_CONFIGURED && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const AUTH_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
 class Component extends DCLogic {
   colorPalette = ['#634031', '#7A5941', '#7C8972', '#66715A', '#C8A66B', '#A8714F', '#BC6F52', '#7A4A44', '#C99A93'];
@@ -2574,6 +2577,13 @@ class Component extends DCLogic {
   // keys from your local copy — everything else comes from the fresh server fetch, so your
   // partner's concurrent changes to OTHER fields are never silently overwritten.
   _sharedDirtyKeys = new Set();
+  _sharedKeyRevisions = {};
+  _localRevision = 0;
+  _persistChain = Promise.resolve();
+  _sharedPersistChain = Promise.resolve();
+  _userDataLoadId = 0;
+  _loadedUserId = null;
+  _freshLoginInProgress = false;
   // The last shared-workspace state we know both this client and the server agreed on. Used as
   // the "base" in a 3-way merge (base/local/remote) so concurrent edits to the SAME field by both
   // partners (e.g. both adding a different Vaste last around the same time) merge item-by-item
@@ -2696,6 +2706,8 @@ class Component extends DCLogic {
     showCalcFixedAdd: false,
     showCalcVariableAdd: false,
     showCalcBulkEdit: false,
+    calcBulkEditDrafts: {},
+    calcBulkEditDeleteKeys: [],
     householdId: null,
     householdInviteCode: '',
     joinCodeInput: '',
@@ -2804,6 +2816,7 @@ class Component extends DCLogic {
     authEmail: '',
     authPassword: '',
     authError: '',
+    persistenceError: '',
     authSubmitting: false,
     authResetSent: false,
     authRecoveryMode: false,
@@ -2811,6 +2824,11 @@ class Component extends DCLogic {
   };
 
   ws() { return this.state.workspaces[this.state.mode]; }
+
+  markSharedDirty(key) {
+    this._sharedDirtyKeys.add(key);
+    this._sharedKeyRevisions[key] = (this._sharedKeyRevisions[key] || 0) + 1;
+  }
 
   setWs(patch, cb) {
     this.setWsKey(this.state.mode, patch, cb);
@@ -2820,7 +2838,9 @@ class Component extends DCLogic {
       const current = s.workspaces[key];
       const next = typeof patch === 'function' ? patch(current) : patch;
       if (key === 'shared') {
-        Object.keys(next).forEach(k => this._sharedDirtyKeys.add(k));
+        Object.keys(next).forEach(k => {
+          this.markSharedDirty(k);
+        });
       }
       return { workspaces: { ...s.workspaces, [key]: { ...current, ...next } } };
     }, cb);
@@ -2846,19 +2866,88 @@ class Component extends DCLogic {
     return v.charAt(0).toUpperCase() + v.slice(1);
   }
 
+  loginTimestampKey(userId) { return `${STORAGE_KEY}_last_login_${userId}`; }
+  recordSuccessfulLogin(session) {
+    if (!session || !session.user) return;
+    localStorage.setItem(this.loginTimestampKey(session.user.id), String(Date.now()));
+  }
+  sessionLoginTimestamp(session) {
+    if (!session || !session.user) return 0;
+    const stored = Number(localStorage.getItem(this.loginTimestampKey(session.user.id)) || 0);
+    const supabaseLogin = Date.parse(session.user.last_sign_in_at || '') || 0;
+    return Math.max(stored, supabaseLogin);
+  }
+  sessionWithinLoginLimit(session) {
+    const loginTime = this.sessionLoginTimestamp(session);
+    return !!loginTime && Date.now() - loginTime < AUTH_MAX_AGE_MS;
+  }
+  expireAuthentication() {
+    clearTimeout(this._persistTimer);
+    if (supabaseClient) supabaseClient.auth.signOut({ scope: 'local' }).catch(() => {});
+    this.setState({
+      session: null,
+      authChecked: true,
+      authMode: 'signin',
+      authError: 'Je sessie is na 24 uur verlopen. Log opnieuw in; lokale wijzigingen zijn veilig bewaard.'
+    });
+  }
+  requireFreshSession(session = this.state.session) {
+    if (PREVIEW_AUTH_BYPASS || !SUPABASE_CONFIGURED) return true;
+    if (session && this.sessionWithinLoginLimit(session)) return true;
+    if (session) this.expireAuthentication();
+    return false;
+  }
+
+  persistedSnapshot(extra = {}) {
+    return { name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios, merchantCategoryRules: this.state.merchantCategoryRules, ...extra };
+  }
+
+  queueDashboardSave(snapshot, revision, userId) {
+    if (!supabaseClient || !userId) return Promise.resolve(false);
+    this._persistChain = this._persistChain.catch(() => {}).then(async () => {
+      if (!this.requireFreshSession()) return false;
+      const { error } = await supabaseClient.from('grip_dashboards').upsert({
+        user_id: userId,
+        data: { ...snapshot, _pendingSave: false },
+        updated_at: snapshot._clientUpdatedAt || new Date().toISOString()
+      });
+      if (error) throw error;
+      const local = this.localPersistedState();
+      if (Number(local._clientRevision || 0) === revision) {
+        local._pendingSave = false;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(local));
+      }
+      if (revision === this._localRevision) this.setState({ persistenceError: '' });
+      return true;
+    }).catch(error => {
+      console.error('Supabase save error', error);
+      this.setState({ persistenceError: 'Opslaan mislukt. Je wijziging staat veilig op dit apparaat en wordt opnieuw opgeslagen zodra de verbinding of sessie hersteld is.' });
+      return false;
+    });
+    return this._persistChain;
+  }
+
+  flushPendingLocal() {
+    const local = this.localPersistedState();
+    const userId = this.state.session && this.state.session.user ? this.state.session.user.id : null;
+    if (!local._pendingSave || !userId) return Promise.resolve(false);
+    const revision = Number(local._clientRevision || 0);
+    this._localRevision = Math.max(this._localRevision, revision);
+    return this.queueDashboardSave(local, revision, userId);
+  }
+
   persist() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios, merchantCategoryRules: this.state.merchantCategoryRules }));
-    if (supabaseClient && this.state.session) {
-      clearTimeout(this._persistTimer);
-      this._persistTimer = setTimeout(() => {
-        supabaseClient.from('grip_dashboards').upsert({
-          user_id: this.state.session.user.id,
-          data: { name: this.state.name, mode: this.state.mode, view: this.state.view, language: this.state.language, workspaces: this.state.workspaces, calcSelectedMonth: this.state.calcSelectedMonth, calcScenarios: this.state.calcScenarios, merchantCategoryRules: this.state.merchantCategoryRules },
-          updated_at: new Date().toISOString()
-        }).then(({ error }) => { if (error) console.error('Supabase save error', error); });
-        if (this.state.householdId) this.syncMyMirrorsToShared();
-      }, 700);
-    }
+    const revision = ++this._localRevision;
+    const snapshot = this.persistedSnapshot({ _clientRevision: revision, _clientUpdatedAt: new Date().toISOString(), _pendingSave: true });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+    if (!this.requireFreshSession()) return;
+    clearTimeout(this._persistTimer);
+    this._persistTimer = setTimeout(() => {
+      const userId = this.state.session && this.state.session.user ? this.state.session.user.id : null;
+      if (userId) this.queueDashboardSave(snapshot, revision, userId);
+      else this.setState({ persistenceError: 'Je wijziging is lokaal bewaard. Log opnieuw in om deze met GRIP te synchroniseren.' });
+      if (this.state.householdId) this.syncMyMirrorsToShared();
+    }, 700);
   }
 
   localPersistedState() {
@@ -2868,6 +2957,7 @@ class Component extends DCLogic {
 
   syncMyMirrorsToShared(cb) {
     if (!supabaseClient || !this.state.session || !this.state.householdId) { if (cb) cb(); return; }
+    if (!this.requireFreshSession()) { if (cb) cb(); return; }
     const myId = this.state.session.user.id;
     const householdId = this.state.householdId;
     const personalWs = this.state.workspaces.personal;
@@ -2876,13 +2966,12 @@ class Component extends DCLogic {
     // local copy below — every other field comes from the fresh server fetch, so a partner's
     // concurrent changes to fields you haven't touched are never silently overwritten.
     const localSharedWs = this.state.workspaces.shared;
-    const dirtyKeysSnapshot = new Set(this._sharedDirtyKeys);
     // Always fetch the LATEST shared data from Supabase before computing/writing mirrors.
     // Using only the locally-cached copy here would risk overwriting the other partner's
     // concurrent changes with a stale local copy (classic last-write-wins bug) for the
     // mirror-derived fields specifically — so we still fetch fresh for those.
     supabaseClient.from('grip_shared_dashboards').select('data').eq('household_id', householdId).maybeSingle().then(({ data, error }) => {
-      if (error) { console.error('Shared fetch error before sync', error); if (cb) cb(); return; }
+      if (error) { console.error('Shared fetch error before sync', error); this.setState({ persistenceError: 'Synchroniseren van Gedeeld is mislukt. Je lokale wijzigingen zijn behouden.' }); if (cb) cb(); return; }
       const sharedWs = { ...this.defaultWorkspace('shared'), ...(data && data.data ? data.data : {}) };
       const patch = {};
       const keepTransactions = (sharedWs.transactions || []).filter(it => it.mirrorOwner !== myId);
@@ -2904,12 +2993,19 @@ class Component extends DCLogic {
         return { id: 'mirror_avgcat_' + e.id, name: cat.label, amount: this.avgSpendLast3Months(personalWs, e.id), mirrorOwner: myId, mirrorSourceId: e.id, isAvgMirror: true };
       });
       patch.calcVariableItems = [...patch.calcVariableItems.filter(it => !it.isAvgMirror || it.mirrorOwner !== myId), ...avgMirrors];
-      const incomeMirrors = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => ({
-        id: 'mirror_ri_' + ri.id, name: ri.name, amount: ri.frequency === 'every4weeks' ? ri.amount * 13 / 12 : ri.amount,
-        mirrorOwner: myId, mirrorSourceId: ri.id, isIncomeMirror: true
-      }));
-      const oneOffIncomeMirrors = (personalWs.incomeEntries || []).filter(ie => ie.joint).map(ie => ({
-        id: 'mirror_inc_' + ie.id, name: ie.source, amount: ie.amount,
+      const incomeMonthNow = new Date();
+      const incomeMonthYear = incomeMonthNow.getFullYear(), incomeMonthIndex = incomeMonthNow.getMonth();
+      const incomeMirrors = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => {
+        const occurrence = this.nextUnpostedIncomeOccurrence(ri);
+        return { ri, occurrence };
+      }).filter(({ occurrence }) => occurrence.getFullYear() === incomeMonthYear && occurrence.getMonth() === incomeMonthIndex)
+        .map(({ ri, occurrence }) => ({
+          id: 'mirror_ri_' + ri.id, name: ri.name, amount: ri.amount,
+          date: `${occurrence.getFullYear()}-${String(occurrence.getMonth() + 1).padStart(2, '0')}-${String(occurrence.getDate()).padStart(2, '0')}`,
+          mirrorOwner: myId, mirrorSourceId: ri.id, isIncomeMirror: true
+        }));
+      const oneOffIncomeMirrors = this.monthlyIncomeEntries(personalWs, incomeMonthNow).filter(ie => ie.joint).map(ie => ({
+        id: 'mirror_inc_' + ie.id, name: ie.source, amount: ie.amount, date: ie.date,
         mirrorOwner: myId, mirrorSourceId: ie.id, isOneOffIncomeMirror: true
       }));
       patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors, ...oneOffIncomeMirrors];
@@ -2970,7 +3066,7 @@ class Component extends DCLogic {
       const mergeCategoryList = (listKey) => {
         const seenLabels = new Set();
         const result = [];
-        [...(sharedWs[listKey] || []), ...(localSharedWs[listKey] || []), ...(personalWs[listKey] || [])].forEach(c => {
+        [...(sharedWs[listKey] || []), ...(this.state.workspaces.shared[listKey] || []), ...(personalWs[listKey] || [])].forEach(c => {
           const key = c.label.toLowerCase();
           if (!seenLabels.has(key)) { seenLabels.add(key); result.push(c); }
         });
@@ -2980,10 +3076,15 @@ class Component extends DCLogic {
       patch.calcFixedCategories = mergeCategoryList('calcFixedCategories');
       patch.incomeCategories = mergeCategoryList('incomeCategories');
 
+      // Re-read local state after the network fetch. A user can edit Gedeeld while this request
+      // is in flight; using the pre-fetch snapshot here would put the older copy back on screen.
+      const currentLocalSharedWs = this.state.workspaces.shared;
+      const dirtyKeysSnapshot = new Set(this._sharedDirtyKeys);
+      const dirtyRevisionsSnapshot = Object.fromEntries([...dirtyKeysSnapshot].map(k => [k, this._sharedKeyRevisions[k] || 0]));
       const dirtyOverlay = {};
       const baseline = this._lastSyncedShared || {};
       dirtyKeysSnapshot.forEach(k => {
-        const localVal = localSharedWs[k];
+        const localVal = currentLocalSharedWs[k];
         const remoteVal = sharedWs[k];
         if (Array.isArray(localVal) && Array.isArray(remoteVal) && localVal.every(x => x && x.id != null)) {
           // 3-way item-level merge: keep partner's items you don't know about, keep your own
@@ -3009,15 +3110,21 @@ class Component extends DCLogic {
           dirtyOverlay[k] = localVal;
         }
       });
-      const merged = { ...sharedWs, ...dirtyOverlay, ...patch };
-      dirtyKeysSnapshot.forEach(k => this._sharedDirtyKeys.delete(k));
-      this._lastSyncedShared = merged;
+      const merged = { ...sharedWs, ...patch, ...dirtyOverlay };
       this.setState(s => ({ workspaces: { ...s.workspaces, shared: merged } }), () => {
-        this.persistShared(merged);
-        if (cb) cb();
+        this.persistShared(merged).then(saved => {
+          if (saved) {
+            dirtyKeysSnapshot.forEach(k => {
+              if ((this._sharedKeyRevisions[k] || 0) === dirtyRevisionsSnapshot[k]) this._sharedDirtyKeys.delete(k);
+            });
+            this._lastSyncedShared = merged;
+          }
+          if (cb) cb();
+        });
       });
     }).catch(err => {
       console.error('sync promise threw', err);
+      this.setState({ persistenceError: 'Synchroniseren van Gedeeld is mislukt. Je lokale wijzigingen zijn behouden.' });
       if (cb) cb();
     });
   }
@@ -3048,13 +3155,26 @@ class Component extends DCLogic {
   }
 
   persistShared(explicitData) {
-    if (!supabaseClient || !this.state.householdId) return;
+    if (!supabaseClient || !this.state.householdId) return Promise.resolve(false);
+    if (!this.requireFreshSession()) return Promise.resolve(false);
     const dataToSave = explicitData || this.state.workspaces.shared;
-    supabaseClient.from('grip_shared_dashboards').upsert({
-      household_id: this.state.householdId,
-      data: dataToSave,
-      updated_at: new Date().toISOString()
-    }).then(({ error }) => { if (error) console.error('Shared save error', error); });
+    const householdId = this.state.householdId;
+    this._sharedPersistChain = this._sharedPersistChain.catch(() => {}).then(async () => {
+      if (!this.requireFreshSession()) return false;
+      const { error } = await supabaseClient.from('grip_shared_dashboards').upsert({
+        household_id: householdId,
+        data: dataToSave,
+        updated_at: new Date().toISOString()
+      });
+      if (error) throw error;
+      this.setState({ persistenceError: '' });
+      return true;
+    }).catch(error => {
+      console.error('Shared save error', error);
+      this.setState({ persistenceError: 'Opslaan in Gedeeld is mislukt. Je wijziging blijft lokaal behouden; probeer opnieuw zodra de verbinding hersteld is.' });
+      return false;
+    });
+    return this._sharedPersistChain;
   }
 
   loadHousehold(userId) {
@@ -3130,16 +3250,33 @@ class Component extends DCLogic {
   }
 
   loadUserData(userId) {
-    supabaseClient.from('grip_dashboards').select('data').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
-      if (error) { console.error('Supabase load error', error); this.loadHousehold(userId); return; }
+    const loadId = ++this._userDataLoadId;
+    const revisionAtStart = this._localRevision;
+    supabaseClient.from('grip_dashboards').select('data, updated_at').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
+      if (loadId !== this._userDataLoadId) return;
+      if (error) {
+        console.error('Supabase load error', error);
+        this.setState({ persistenceError: 'GRIP kon je online gegevens niet laden. Lokale wijzigingen zijn behouden.' });
+        this.loadHousehold(userId);
+        return;
+      }
       if (data && data.data) {
         const saved = data.data;
         const localSaved = this.localPersistedState();
-        this.setState({ name: saved.name || this.state.name, mode: localSaved.mode || saved.mode || 'personal', view: localSaved.view || saved.view || 'overview', language: saved.language || this.state.language, workspaces: saved.workspaces ? this.fillWorkspaceDefaults(saved.workspaces) : this.state.workspaces, calcSelectedMonth: localSaved.calcSelectedMonth || saved.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) } }, () => {
+        const serverTime = Date.parse(data.updated_at || saved._clientUpdatedAt || '') || 0;
+        const localTime = Date.parse(localSaved._clientUpdatedAt || '') || 0;
+        const localChangedDuringLoad = this._localRevision !== revisionAtStart;
+        const keepLocal = !!localSaved.workspaces && (!!localSaved._pendingSave || localChangedDuringLoad || localTime > serverTime);
+        const source = keepLocal ? localSaved : saved;
+        this._localRevision = Math.max(this._localRevision, Number(localSaved._clientRevision || 0), Number(saved._clientRevision || 0));
+        this._loadedUserId = userId;
+        this.setState({ name: source.name || this.state.name, mode: localSaved.mode || source.mode || 'personal', view: localSaved.view || source.view || 'overview', language: source.language || this.state.language, workspaces: source.workspaces ? this.fillWorkspaceDefaults(source.workspaces) : this.state.workspaces, calcSelectedMonth: localSaved.calcSelectedMonth || source.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) }, persistenceError: '' }, () => {
+          if (keepLocal) this.flushPendingLocal();
           this.processDueRecurring(); this.scheduleAlertDismiss();
           this.loadHousehold(userId);
         });
       } else {
+        this._loadedUserId = userId;
         this.persist();
         this.processDueRecurring(); this.scheduleAlertDismiss();
         this.loadHousehold(userId);
@@ -3175,24 +3312,32 @@ class Component extends DCLogic {
     if (!email || !password) { this.setState({ authError: 'Please enter email and password.' }); return; }
     if (this.state.authMode === 'signup' && !name) { this.setState({ authError: 'Please enter your name.' }); return; }
     this.setState({ authSubmitting: true, authError: '' });
+    this._freshLoginInProgress = true;
     const call = this.state.authMode === 'signin'
       ? supabaseClient.auth.signInWithPassword({ email, password })
       : supabaseClient.auth.signUp({ email, password, options: { data: { name } } });
     call.then(({ data, error }) => {
       this.setState({ authSubmitting: false });
-      if (error) { this.setState({ authError: error.message }); return; }
+      if (error) { this._freshLoginInProgress = false; this.setState({ authError: error.message }); return; }
       if (this.state.authMode === 'signup' && data.user && !data.session) {
+        this._freshLoginInProgress = false;
         this.setState({ authError: 'Check your email to confirm your account, then sign in.', authMode: 'signin' });
         return;
       }
       if (data.session) {
+        this.recordSuccessfulLogin(data.session);
+        this._freshLoginInProgress = false;
         this.setState({ session: data.session, authEmail: '', authPassword: '', ...(name ? { name } : {}) });
         this.loadUserData(data.session.user.id);
       }
+    }).catch(() => {
+      this._freshLoginInProgress = false;
+      this.setState({ authSubmitting: false, authError: 'Inloggen mislukt door een verbindingsprobleem. Probeer het opnieuw.' });
     });
   }
 
   signOut() {
+    if (this.state.session && this.state.session.user) localStorage.removeItem(this.loginTimestampKey(this.state.session.user.id));
     if (supabaseClient) supabaseClient.auth.signOut();
     this.setState({ session: null });
   }
@@ -3371,15 +3516,30 @@ class Component extends DCLogic {
       return;
     }
     supabaseClient.auth.getSession().then(({ data }) => {
+      if (data.session && !this.sessionWithinLoginLimit(data.session)) {
+        this.setState({ authChecked: true }, () => this.expireAuthentication());
+        return;
+      }
       this.setState({ session: data.session, authChecked: true }, () => {
         if (data.session) this.loadUserData(data.session.user.id);
       });
     });
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') { this.setState({ session, authRecoveryMode: true }); return; }
-      this.setState({ session });
-      if (session && event === 'SIGNED_IN') this.loadUserData(session.user.id);
+      if (session && event === 'SIGNED_IN' && this._freshLoginInProgress) this.recordSuccessfulLogin(session);
+      if (session && !this.sessionWithinLoginLimit(session)) { this.expireAuthentication(); return; }
+      this.setState({ session }, () => {
+        if (!session) return;
+        if (event === 'TOKEN_REFRESHED') { this.flushPendingLocal(); return; }
+        if (event === 'SIGNED_IN') {
+          if (this._loadedUserId !== session.user.id) this.loadUserData(session.user.id);
+          else this.flushPendingLocal();
+        }
+      });
     });
+    window.addEventListener('online', () => this.flushPendingLocal());
+    window.addEventListener('focus', () => this.requireFreshSession());
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) this.requireFreshSession(); });
   }
   setNewPasswordValue(e) { this.setState({ newPasswordValue: e.target.value, authError: '' }); }
   submitNewPassword() {
@@ -3563,7 +3723,7 @@ class Component extends DCLogic {
     }
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().categoryOptions.length % this.colorPalette.length];
-    this._sharedDirtyKeys.add('categoryOptions');
+    this.markSharedDirty('categoryOptions');
     const category = { id, label, color };
     this.setState(s => ({
       workspaces: {
@@ -3577,11 +3737,11 @@ class Component extends DCLogic {
   removeCategory(id) {
     const inUse = Object.values(this.state.workspaces).some(ws => ws.transactions.some(t => t.category === id));
     if (inUse) return;
-    this._sharedDirtyKeys.add('categoryOptions');
+    this.markSharedDirty('categoryOptions');
     this.setState(s => ({ workspaces: Object.fromEntries(Object.entries(s.workspaces).map(([key, ws]) => [key, { ...ws, categoryOptions: ws.categoryOptions.filter(c => c.id !== id) }])) }), () => this.persist());
   }
   setCategoryColor(id, color) {
-    this._sharedDirtyKeys.add('categoryOptions');
+    this.markSharedDirty('categoryOptions');
     this.setState(s => ({ workspaces: Object.fromEntries(Object.entries(s.workspaces).map(([key, ws]) => [key, { ...ws, categoryOptions: ws.categoryOptions.map(c => c.id === id ? { ...c, color } : c) }])) }), () => this.persist());
   }
   setCategoryColorFromInput(id, e) { this.setCategoryColor(id, e.target.value); }
@@ -3606,7 +3766,7 @@ class Component extends DCLogic {
     const id = 'cfc' + Date.now();
     const color = this.colorPalette[(this.ws().calcFixedCategories || []).length % this.colorPalette.length];
     const mode = this.state.mode;
-    if (mode === 'shared') this._sharedDirtyKeys.add('calcFixedCategories');
+    if (mode === 'shared') this.markSharedDirty('calcFixedCategories');
     this.setState(s => ({
       workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], calcFixedCategories: [...(s.workspaces[mode].calcFixedCategories || []), { id, label, color }] } },
       newCalcFixedCategoryName: ''
@@ -3786,18 +3946,83 @@ class Component extends DCLogic {
     this.setWsKey(sourceKey, ws => ({ [listKey]: (ws[listKey] || []).map(it => it.id === id ? { ...it, [field]: value } : it) }), () => this.persist());
   }
   toggleCalcSectionAdd(section) { this.setState(s => ({ ['showCalc' + section + 'Add']: !s['showCalc' + section + 'Add'] })); }
-  toggleCalcBulkEdit() { this.setState(s => ({ showCalcBulkEdit: !s.showCalcBulkEdit })); }
+  toggleCalcBulkEdit() {
+    if (this.state.showCalcBulkEdit) this.cancelCalcBulkEdit();
+    else this.setState({ showCalcBulkEdit: true, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [] });
+  }
+  updateCalcBulkDraft(rowKey, base, field, e) {
+    const raw = e && e.target ? e.target.value : e;
+    this.setState(s => ({ calcBulkEditDrafts: { ...s.calcBulkEditDrafts, [rowKey]: { ...base, ...(s.calcBulkEditDrafts[rowKey] || {}), [field]: raw } } }));
+  }
+  cycleCalcBulkOwner(rowKey, base) {
+    const current = (this.state.calcBulkEditDrafts[rowKey] || base).owner || 'joint';
+    const next = current === 'joint' ? 'me' : current === 'me' ? 'partner' : 'joint';
+    this.updateCalcBulkDraft(rowKey, base, 'owner', next);
+  }
+  stageCalcBulkDelete(rowKey) {
+    if (!window.confirm(this.tf('Remove this item from this calculation month?', 'Dit item uit deze berekeningsmaand verwijderen?', 'Diesen Eintrag aus diesem Berechnungsmonat entfernen?', 'Supprimer cet élément de ce mois de calcul ?', '¿Eliminar este elemento de este mes de cálculo?'))) return;
+    this.setState(s => ({ calcBulkEditDeleteKeys: [...new Set([...s.calcBulkEditDeleteKeys, rowKey])] }));
+  }
+  cancelCalcBulkEdit() { this.setState({ showCalcBulkEdit: false, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [] }); }
+  saveCalcBulkEdit() {
+    const month = this.state.calcSelectedMonth;
+    const drafts = this.state.calcBulkEditDrafts;
+    const deleted = this.state.calcBulkEditDeleteKeys;
+    this.setWsKey('shared', ws => {
+      const monthOverrides = { ...((ws.calcMonthlyOverrides || {})[month] || {}) };
+      Object.entries(drafts).forEach(([key, value]) => { monthOverrides[key] = { ...(monthOverrides[key] || {}), ...value, deleted: false }; });
+      deleted.forEach(key => { monthOverrides[key] = { ...(monthOverrides[key] || {}), deleted: true }; });
+      return { calcMonthlyOverrides: { ...(ws.calcMonthlyOverrides || {}), [month]: monthOverrides } };
+    }, () => this.persist());
+    this.cancelCalcBulkEdit();
+  }
+  removeCalcMonthRow(rowKey) {
+    if (!window.confirm(this.tf('Remove this item from this calculation month?', 'Dit item uit deze berekeningsmaand verwijderen?', 'Diesen Eintrag aus diesem Berechnungsmonat entfernen?', 'Supprimer cet élément de ce mois de calcul ?', '¿Eliminar este elemento de este mes de cálculo?'))) return;
+    const month = this.state.calcSelectedMonth;
+    this.setWsKey('shared', ws => {
+      const monthOverrides = { ...((ws.calcMonthlyOverrides || {})[month] || {}) };
+      monthOverrides[rowKey] = { ...(monthOverrides[rowKey] || {}), deleted: true };
+      return { calcMonthlyOverrides: { ...(ws.calcMonthlyOverrides || {}), [month]: monthOverrides } };
+    }, () => this.persist());
+  }
   buildCalcTableRows(kind, personalWs, sharedWs, meLabel, jointLabel, partnerLabel, myUserId) {
     const listKey = 'calc' + this.capKind(kind) + 'Items';
     const includeDirectPersonal = !myUserId;
     const personalItems = includeDirectPersonal ? (personalWs[listKey] || []).filter(it => it.joint).map(it => ({ ...it, __direct: true })) : [];
     let sharedItems = (sharedWs[listKey] || []).map(it => ({ ...it }));
+    if (kind === 'income') {
+      const now = new Date(), year = now.getFullYear(), month = now.getMonth();
+      sharedItems = sharedItems.map(it => {
+        if (it.isOneOffIncomeMirror && !it.date) {
+          const source = (sharedWs.incomeEntries || []).find(entry => entry.mirrorSourceId === it.mirrorSourceId || entry.id === it.mirrorSourceId);
+          return source ? { ...it, date: source.date } : it;
+        }
+        if (it.isIncomeMirror && !it.date) {
+          const source = (sharedWs.recurringIncome || []).find(entry => entry.mirrorSourceId === it.mirrorSourceId || entry.id === it.mirrorSourceId);
+          if (!source) return it;
+          const occurrence = this.nextUnpostedIncomeOccurrence(source);
+          return { ...it, date: `${occurrence.getFullYear()}-${String(occurrence.getMonth() + 1).padStart(2, '0')}-${String(occurrence.getDate()).padStart(2, '0')}` };
+        }
+        return it;
+      });
+      const seenIncomeOccurrences = new Set();
+      sharedItems = sharedItems.filter(it => {
+        if (!it.isIncomeMirror && !it.isOneOffIncomeMirror) return true;
+        if (!it.date) return false;
+        const date = new Date(`${it.date}T00:00:00`);
+        if (date.getFullYear() !== year || date.getMonth() !== month) return false;
+        const key = `${it.isIncomeMirror ? 'expected' : 'received'}|${it.mirrorOwner || ''}|${it.mirrorSourceId || it.id}|${it.date}`;
+        if (seenIncomeOccurrences.has(key)) return false;
+        seenIncomeOccurrences.add(key);
+        return true;
+      });
+    }
     if (kind === 'fixed') {
       // Items added via "Vaste last toevoegen" while already in Gedeeld go into sharedWs.recurring,
       // not sharedWs.calcFixedItems — include them here too so Gezamenlijk/Zichtbaar items from that
       // form show up in the joint summary and Budgetcalculator table, not just Solo-mirrored ones.
       const directRecurring = (sharedWs.recurring || []).filter(r => r.joint || r.visible).map(r => ({
-        id: r.id, name: r.name, amount: r.amount, joint: r.joint, addedBy: r.addedBy, isDirectRecurring: true
+        ...r, id: r.id, name: r.name, amount: r.amount, joint: r.joint, addedBy: r.addedBy, isDirectRecurring: true
       }));
       // Same for "Uit gelogde geschiedenis" categories added directly while already in Gedeeld.
       const directFixedHistory = (sharedWs.calcFixedHistoryCategories || []).filter(e => e.joint || e.visible).map(e => ({
@@ -3826,63 +4051,63 @@ class Component extends DCLogic {
       }));
       sharedItems = [...sharedItems, ...visibleTransactions];
     }
+    const monthOverrides = ((sharedWs.calcMonthlyOverrides || {})[this.state.calcSelectedMonth] || {});
+    const pendingDeletes = this.state.showCalcBulkEdit ? (this.state.calcBulkEditDeleteKeys || []) : [];
     return [...personalItems, ...sharedItems].map(it => {
+      const rowKey = `${kind}:${it.id}`;
+      const persistedOverride = monthOverrides[rowKey] || {};
+      if (persistedOverride.deleted || pendingDeletes.includes(rowKey)) return null;
       const isTrueMirror = !!it.mirrorSourceId;
       const isDirectNative = it.isDirectRecurring || it.isDirectFixedHistory;
-      let ownerLabel, ownerBg, meAmt, partnerAmt;
+      let baseOwner;
       if (it.mirrorOwner) {
         const isMine = it.mirrorOwner === myUserId || (!myUserId && it.mirrorOwner === '__local_personal__');
-        ownerLabel = isMine ? meLabel : partnerLabel;
-        ownerBg = isMine ? '#7C8972' : '#7A4A44';
-        meAmt = isMine ? it.amount : 0;
-        partnerAmt = isMine ? 0 : it.amount;
+        baseOwner = isMine ? 'me' : 'partner';
       } else if (it.__direct) {
-        ownerLabel = meLabel; ownerBg = '#7C8972';
-        meAmt = it.amount; partnerAmt = 0;
+        baseOwner = 'me';
       } else if (isDirectNative && !it.joint) {
         // Attribute to whoever actually created it (it.addedBy), not whoever is currently
         // viewing the screen. Older items created before this field existed have no addedBy —
         // fall back to treating them as "mine" from either viewer's perspective (best effort).
         const isMine = it.addedBy ? it.addedBy === myUserId : true;
-        ownerLabel = isMine ? meLabel : partnerLabel;
-        ownerBg = isMine ? '#7C8972' : '#7A4A44';
-        meAmt = isMine ? it.amount : 0;
-        partnerAmt = isMine ? 0 : it.amount;
+        baseOwner = isMine ? 'me' : 'partner';
       } else {
-        ownerLabel = jointLabel; ownerBg = '#634031';
-        meAmt = it.amount / 2; partnerAmt = it.amount / 2;
+        baseOwner = 'joint';
       }
-      const canEdit = !isTrueMirror && !it.__direct && !it.isAvgMirror && !isDirectNative;
-      const removeFn = it.isVisibleTransactionMirror ? null : isTrueMirror
-        ? (it.mirrorOwner === myUserId ? () => this.unshareCalcItem(kind, it.mirrorSourceId, false, it.isIncomeMirror, it.isOneOffIncomeMirror, it.isRecurringFixedMirror, it.isFixedHistoryMirror) : null)
-        : it.__direct ? () => this.unshareCalcItem(kind, it.id, false, false, false)
-        : it.isDirectRecurring ? () => this.removeRecurring(it.id)
-        : it.isDirectFixedHistory ? () => this.removeCalcFixedHistoryCategory(it.id)
-        : () => this.removeCalcTableItem(kind, it.id, 'shared');
-      const cycleOwner = (!isTrueMirror && !it.__direct && !isDirectNative) ? () => this.cycleNativeItemOwner(kind, it.id) : null;
+      const baseDraft = { name: it.name, amount: String(it.amount), owner: baseOwner };
+      const activeDraft = this.state.showCalcBulkEdit ? ((this.state.calcBulkEditDrafts || {})[rowKey] || {}) : {};
+      const effective = { ...baseDraft, ...persistedOverride, ...activeDraft };
+      const amount = this.parseAmt(effective.amount);
+      const effectiveAmount = Number.isFinite(amount) ? amount : 0;
+      const effectiveOwner = effective.owner || baseOwner;
+      const ownerLabel = effectiveOwner === 'me' ? meLabel : effectiveOwner === 'partner' ? partnerLabel : jointLabel;
+      const ownerBg = effectiveOwner === 'me' ? '#7C8972' : effectiveOwner === 'partner' ? '#7A4A44' : '#634031';
+      const meAmt = effectiveOwner === 'me' ? effectiveAmount : effectiveOwner === 'joint' ? effectiveAmount / 2 : 0;
+      const partnerAmt = effectiveOwner === 'partner' ? effectiveAmount : effectiveOwner === 'joint' ? effectiveAmount / 2 : 0;
       // Fixed (recurring) rows often carry their source frequency/day — compute a real date for
       // the monthly expense timeline. Variable/category-average rows have no individual date.
       let dateLabel = '', sortDate = null;
       if (kind === 'fixed' && it.frequency && (it.day || it.startDate || it.lastKnownDate)) {
         const target = this.nextOccurrence(it);
-        dateLabel = `${MONTHS_SHORT[target.getMonth()]} ${target.getDate()}`;
+        const targetDate = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
+        dateLabel = this.formatDateShort(targetDate);
         sortDate = target;
-      } else if (it.isVisibleTransactionMirror && it.date) {
+      } else if (it.date) {
         const target = new Date(it.date + 'T00:00:00');
         dateLabel = this.formatDateShort(it.date);
         sortDate = target;
       }
       return {
-        id: it.id, name: it.name, total: it.amount, me: meAmt, partner: partnerAmt,
-        totalStr: this.fmt(it.amount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
-        ownerLabel, ownerBg, ownerColor: '#F6F1E7', editable: canEdit, notEditable: !canEdit,
-        setName: canEdit ? (e) => this.updateCalcTableItem(kind, it.id, 'shared', 'name', e) : null,
-        setAmount: canEdit ? (e) => this.updateCalcTableItem(kind, it.id, 'shared', 'amount', e) : null,
-        cycleOwner,
+        id: it.id, name: effective.name, total: effective.amount, me: meAmt, partner: partnerAmt,
+        totalStr: this.fmt(effectiveAmount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
+        ownerLabel, ownerBg, ownerColor: '#F6F1E7', editable: true, notEditable: false,
+        setName: (e) => this.updateCalcBulkDraft(rowKey, { ...baseDraft, ...persistedOverride }, 'name', e),
+        setAmount: (e) => this.updateCalcBulkDraft(rowKey, { ...baseDraft, ...persistedOverride }, 'amount', e),
+        cycleOwner: () => this.cycleCalcBulkOwner(rowKey, { ...baseDraft, ...persistedOverride }),
         dateLabel, sortDate,
-        remove: removeFn
+        remove: this.state.showCalcBulkEdit ? () => this.stageCalcBulkDelete(rowKey) : () => this.removeCalcMonthRow(rowKey)
       };
-    });
+    }).filter(Boolean);
   }
   buildCalcVariableAutoRows(personalWs, meLabel, jointLabel) {
     return this.getOtherCatEntries(personalWs).filter(e => e.joint).map(e => {
@@ -4117,7 +4342,7 @@ class Component extends DCLogic {
           shared: { ...s.workspaces.shared, spendHistory: (s.workspaces.shared.spendHistory || []).filter(h => h.key !== key) }
         }
       };
-    }, () => { this._sharedDirtyKeys.add('spendHistory'); this.persist(); });
+    }, () => { this.markSharedDirty('spendHistory'); this.persist(); });
   }
   toggleSpendHistoryMonth(key) {
     this.setState(s => ({ expandedSpendHistoryKey: s.expandedSpendHistoryKey === key ? null : key }));
@@ -4229,11 +4454,40 @@ class Component extends DCLogic {
     this.setWs(ws => ({ calcVariableItems: [...(ws.calcVariableItems || []), item] }), () => this.persist());
     this.setState({ newCalcJointVariableName: '', newCalcJointVariableAmount: '' });
   }
+  incomeOccurrenceKey(entry) {
+    if (!entry) return '';
+    if (entry.recurringSourceId || entry.isRecurring) {
+      const owner = entry.mirrorOwner || entry.addedBy || '';
+      return `recurring|${owner}|${entry.recurringSourceId || entry.id}|${entry.scheduledDate || entry.date || ''}`;
+    }
+    return `entry|${entry.id}`;
+  }
+  monthlyIncomeEntries(ws, monthDate = new Date()) {
+    const year = monthDate.getFullYear(), month = monthDate.getMonth();
+    const seen = new Set();
+    return (ws.incomeEntries || []).filter(entry => {
+      if (!entry.date) return false;
+      const date = new Date(`${entry.date}T00:00:00`);
+      if (date.getFullYear() !== year || date.getMonth() !== month) return false;
+      const key = this.incomeOccurrenceKey(entry);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+  dedupeIncomeEntries(entries) {
+    const seen = new Set();
+    return (entries || []).filter(entry => {
+      const key = this.incomeOccurrenceKey(entry);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
   monthIncomeAutoTotal(ws, jointFilter) {
     const now = new Date(); const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
-    const incomeTotal = ws.incomeEntries
-      .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
+    const incomeTotal = this.monthlyIncomeEntries(ws, now)
       .filter(inc => matchJoint(inc.joint))
       .reduce((s, i) => s + i.amount, 0);
     const futureRecurringIncomeThisMonth = ws.recurringIncome.filter(ri => matchJoint(ri.joint)).reduce((sum, ri) => {
@@ -4245,8 +4499,7 @@ class Component extends DCLogic {
   monthIncomeAutoItems(ws, jointFilter) {
     const now = new Date(); const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
-    const oneOff = ws.incomeEntries
-      .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
+    const oneOff = this.monthlyIncomeEntries(ws, now)
       .filter(inc => matchJoint(inc.joint))
       .map(inc => ({ id: 'auto_' + inc.id, sourceId: inc.id, sourceKind: 'oneoff', name: inc.source, amount: inc.amount, joint: !!inc.joint }));
     const recurring = ws.recurringIncome
@@ -5028,7 +5281,7 @@ class Component extends DCLogic {
               recurring: updatedRecurring,
               recurringIncome: updatedRecurringIncome,
               transactions: [...s.workspaces[mode].transactions, ...newTx],
-              incomeEntries: [...s.workspaces[mode].incomeEntries, ...newIncome]
+              incomeEntries: this.dedupeIncomeEntries([...s.workspaces[mode].incomeEntries, ...newIncome])
             }
           }
         }), () => this.persist());
@@ -5217,7 +5470,7 @@ class Component extends DCLogic {
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().savingsCategories.length % this.colorPalette.length];
     const mode = this.state.mode;
-    if (mode === 'shared') this._sharedDirtyKeys.add('savingsCategories');
+    if (mode === 'shared') this.markSharedDirty('savingsCategories');
     this.setState(s => ({
       workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], savingsCategories: [...s.workspaces[mode].savingsCategories, { id, label, color }] } },
       newSavingsCategoryName: ''
@@ -5247,7 +5500,7 @@ class Component extends DCLogic {
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[this.ws().fixedCostCategories.length % this.colorPalette.length];
     const mode = this.state.mode;
-    if (mode === 'shared') this._sharedDirtyKeys.add('fixedCostCategories');
+    if (mode === 'shared') this.markSharedDirty('fixedCostCategories');
     this.setState(s => ({
       workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], fixedCostCategories: [...s.workspaces[mode].fixedCostCategories, { id, label, color }] } },
       newRecCategoryName: ''
@@ -5271,7 +5524,7 @@ class Component extends DCLogic {
     const id = label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') + '_' + Date.now().toString(36);
     const color = this.colorPalette[(this.ws().incomeCategories || []).length % this.colorPalette.length];
     const mode = this.state.mode;
-    if (mode === 'shared') this._sharedDirtyKeys.add('incomeCategories');
+    if (mode === 'shared') this.markSharedDirty('incomeCategories');
     this.setState(s => ({
       workspaces: { ...s.workspaces, [mode]: { ...s.workspaces[mode], incomeCategories: [...(s.workspaces[mode].incomeCategories || []), { id, label, color }] } },
       newIncomeCategoryName: ''
@@ -5807,8 +6060,7 @@ class Component extends DCLogic {
     const ownerLabelFor = (mirrorOwner) => mirrorOwner === myUserIdForIncome ? (this.state.name || t.calcMeLabel) : (this.state.householdPartnerName || t.calcPartnerColumnHeader);
     const incomeCatMap = Object.fromEntries((ws.incomeCategories || []).map(c => [c.id, c]));
 
-    const monthIncomeRaw = ws.incomeEntries
-      .filter(inc => { const d = new Date(inc.date); return d.getFullYear() === y && d.getMonth() === m; })
+    const monthIncomeRaw = this.monthlyIncomeEntries(ws, now)
       .slice()
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const monthIncome = monthIncomeRaw.map(inc => {
@@ -5822,6 +6074,8 @@ class Component extends DCLogic {
         amountStr: this.fmt(inc.amount),
         categoryLabel: cat ? cat.label : '',
         categoryColor: cat ? cat.color : '#7A5941',
+        isRecurring: !!inc.isRecurring,
+        ownerLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.calcJointLabel : (this.state.name || t.calcMeLabel)),
         jointLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
         jointBg: isMirror ? '#8A674F' : (inc.joint ? '#DCE4D6' : '#E7D3CE'),
         jointColor: isMirror ? '#F6F1E7' : (inc.joint ? '#55634B' : '#794A45'),
@@ -6360,6 +6614,7 @@ class Component extends DCLogic {
       authEmail: this.state.authEmail,
       authPassword: this.state.authPassword,
       authError: this.state.authError,
+      persistenceError: this.state.persistenceError,
       authSubmitting: this.state.authSubmitting,
       authSubmitOpacity: this.state.authSubmitting ? 0.6 : 1,
       authSubmitLabel: this.state.authSubmitting ? 'One moment…' : (this.state.authRecoveryMode ? 'Wachtwoord opslaan' : (isResetMode ? 'Verstuur resetlink' : (isSignIn ? 'Sign in' : 'Create account'))),
@@ -6510,6 +6765,7 @@ class Component extends DCLogic {
       showCalcFixedAdd: this.state.showCalcFixedAdd, toggleCalcFixedAdd: () => this.toggleCalcSectionAdd('Fixed'),
       showCalcVariableAdd: this.state.showCalcVariableAdd, toggleCalcVariableAdd: () => this.toggleCalcSectionAdd('Variable'),
       showCalcBulkEdit: this.state.showCalcBulkEdit, toggleCalcBulkEdit: () => this.toggleCalcBulkEdit(),
+      cancelCalcBulkEdit: () => this.cancelCalcBulkEdit(), saveCalcBulkEdit: () => this.saveCalcBulkEdit(),
       addCalcTableIncomeItem: () => this.addCalcTableItem('income'),
       addCalcTableIncomeItemDisabled: !(this.state.newCalcIncomeName || '').trim() || !this.parseAmt(this.state.newCalcIncomeAmount),
       addCalcTableFixedItem: () => this.addCalcTableItem('fixed'),
@@ -7005,6 +7261,12 @@ class Component extends DCLogic {
       onIncomeHistoryItemKeyDown: (e) => this.onIncomeHistoryItemKeyDown(e),
       addIncomeHistoryItemDisabled: !this.state.newIncomeHistoryItemName.trim() || !this.parseAmt(this.state.newIncomeHistoryItemAmount),
       incomeEntries: monthIncome,
+      incomeOwnerColumnLabel: this.tf('Owner', 'Eigenaar', 'Eigentümer', 'Propriétaire', 'Propietario'),
+      sharedIncomeOpenList: this.state.mode === 'shared' && this.state.editingIncomeEntryId !== '__all__',
+      standardIncomeList: this.state.mode !== 'shared' || this.state.editingIncomeEntryId === '__all__',
+      incomeCurrentGridColumns: this.state.mode === 'shared' && this.state.editingIncomeEntryId !== '__all__'
+        ? '78px minmax(160px,1fr) 130px 110px 34px'
+        : '64px minmax(130px,1.7fr) 96px 92px 112px 78px',
       incomeEntriesEditModeLabel: this.state.editingIncomeEntryId === '__all__' ? t.doneEditBtn : t.editBtn,
       toggleAllIncomeEntriesEdit: () => this.toggleAllIncomeEntriesEdit(),
       noIncomeEntries: monthIncome.length === 0,
