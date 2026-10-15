@@ -3227,6 +3227,34 @@ class Component extends DCLogic {
       };
     });
   }
+  buildCalcPlannedCategoryRows(personalWs, sharedWs, meLabel, jointLabel, sharedMode) {
+    const ws = sharedMode ? sharedWs : personalWs;
+    const budgets = ws.categoryBudgets || {};
+    const catalog = [...(ws.categoryOptions || []), ...(personalWs.categoryOptions || []), ...(sharedWs.categoryOptions || [])];
+    const groups = new Map();
+    Object.entries(budgets).forEach(([id, value]) => {
+      if (value === '' || value === null || value === undefined) return;
+      const amount = typeof value === 'string' ? this.parseAmt(value) : Number(value);
+      if (!Number.isFinite(amount) || amount < 0) return;
+      const category = catalog.find(c => c.id === id);
+      const name = String(category ? category.label : id).trim();
+      const key = name.toLocaleLowerCase('nl-NL');
+      const existing = groups.get(key);
+      // Category aliases refer to one plan; never add the same budget twice.
+      if (!existing || amount > existing.total) groups.set(key, { id, name, total: amount });
+    });
+    return [...groups.values()].map(group => {
+      // Shared Planner budgets belong to the shared workspace and use its equal allocation.
+      // Personal budgets stay in Solo; visible personal transactions are not budget sources.
+      const me = sharedMode ? Math.round(group.total * 100 / 2) / 100 : group.total;
+      const partner = sharedMode ? Math.round((group.total - me) * 100) / 100 : 0;
+      return { ...group, me, partner,
+        totalStr: this.fmt(group.total), meStr: this.fmt(me), partnerStr: this.fmt(partner),
+        ownerLabel: sharedMode ? jointLabel : meLabel, ownerBg: sharedMode ? '#634031' : '#7C8972', ownerColor: '#F6F1E7',
+        editable: false, notEditable: true, setName: null, setAmount: null, cycleOwner: null, remove: null
+      };
+    });
+  }
   buildCalcMonthlyVariableCategoryRows(personalWs, sharedWs, meLabel, jointLabel, partnerLabel, myUserId, sharedMode, selectedMonth) {
     const month = selectedMonth || this.state.calcSelectedMonth;
     const transactions = (sharedMode ? (sharedWs.transactions || []) : (personalWs.transactions || []))
@@ -6368,7 +6396,7 @@ class Component extends DCLogic {
       visibleColor: (visible || joint) ? '#F6F1E7' : '#7A5941',
       visibleDisabled: !!joint
     });
-    const calcMonthlyVariableRows = this.buildCalcMonthlyVariableCategoryRows(this.state.workspaces.personal, this.state.workspaces.shared, this.state.name || t.calcMeLabel, t.calcJointLabel, this.state.householdPartnerName || t.calcPartnerColumnHeader, this.state.session ? this.state.session.user.id : null, false);
+    const calcMonthlyVariableRows = this.buildCalcPlannedCategoryRows(this.state.workspaces.personal, this.state.workspaces.shared, this.state.name || t.calcMeLabel, t.calcJointLabel, false);
     const calcOtherCategoryRows = calcMonthlyVariableRows.map(row => {
       const cat = expenseCategoriesMerged.find(c => normalizeExpenseCategoryName(c.label || c.id) === normalizeExpenseCategoryName(row.name)) || { id: row.id, label: row.name, color: '#634031' };
       const setting = this.getOtherCatEntries(ws).find(e => e.id === cat.id) || { id: cat.id, joint: false, visible: false };
@@ -6490,7 +6518,7 @@ class Component extends DCLogic {
       const myUserId = (this.state.session && this.state.householdId) ? this.state.session.user.id : null;
       calcTableIncomeRows = this.buildCalcTableRows('income', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
       calcTableFixedRows = this.buildCalcTableRows('fixed', personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId);
-      calcTableVariableRows = this.buildCalcMonthlyVariableCategoryRows(personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, calcTablePartnerLabel, myUserId, true);
+      calcTableVariableRows = this.buildCalcPlannedCategoryRows(personalWsRef, ws, calcTableMeLabel, t.calcJointLabel, true);
       const sumRows = (rows) => rows.reduce((a, r) => ({ total: a.total + this.safeNumber(r.total), me: a.me + this.safeNumber(r.me), partner: a.partner + this.safeNumber(r.partner) }), { total: 0, me: 0, partner: 0 });
       calcTableIncomeSums = sumRows(calcTableIncomeRows);
       calcTableFixedSums = sumRows(calcTableFixedRows);
