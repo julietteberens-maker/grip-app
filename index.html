@@ -3234,10 +3234,14 @@ class Component extends DCLogic {
     const groups = new Map();
     Object.entries(budgets).forEach(([id, value]) => {
       if (value === '' || value === null || value === undefined) return;
+      if (typeof value !== 'string' && typeof value !== 'number') return;
+      // Only registered spending categories qualify; saved goal/allocation keys
+      // and obsolete IDs must never turn into expense rows or numeric totals.
+      const category = catalog.find(c => c.id === id && typeof c.label === 'string' && c.label.trim());
+      if (!category) return;
       const amount = typeof value === 'string' ? this.parseAmt(value) : Number(value);
       if (!Number.isFinite(amount) || amount < 0) return;
-      const category = catalog.find(c => c.id === id);
-      const name = String(category ? category.label : id).trim();
+      const name = category.label.trim();
       const key = name.toLocaleLowerCase('nl-NL');
       const existing = groups.get(key);
       // Category aliases refer to one plan; never add the same budget twice.
@@ -5975,8 +5979,8 @@ class Component extends DCLogic {
         return {
           id: g.id,
           label: g.label,
-          amount: g.contributionAmount,
-          amountStr: this.fmt(g.contributionAmount),
+          amount: this.safeNumber(g.contributionAmount),
+          amountStr: this.fmt(this.safeNumber(g.contributionAmount)),
           frequencyLabel: this.frequencyLabel(frequency),
           nextDate,
           nextLabel: `${String(nextDate.getDate()).padStart(2, '0')}-${String(nextDate.getMonth() + 1).padStart(2, '0')}-${nextDate.getFullYear()}`,
