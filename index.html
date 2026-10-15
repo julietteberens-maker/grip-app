@@ -458,6 +458,42 @@
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
+  /* Keep table headers, entries and totals on the same column tracks. */
+  .grip-table-viewport{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+  .grip-table-viewport>*{box-sizing:border-box}
+  .fixed-grid{grid-template-columns:112px minmax(160px,1fr) 126px 112px 116px 144px 30px;min-width:872px}
+  .income-grid{grid-template-columns:112px minmax(160px,1fr) 126px 112px 144px 116px 30px;min-width:872px}
+  .grip-expense-variable-list .income-grid{min-width:620px}
+  .grip-expense-variable-list input[type="date"]{font-variant-numeric:tabular-nums}
+  .income-current-grid{min-width:760px}
+  .fixed-grid>*,.income-grid>*,.income-current-grid>*,.joint-grid>*,.grip-calc-grid>*,.grip-automatic-grid>*{min-width:0;box-sizing:border-box}
+  .fixed-grid.head,.income-grid.head,.income-current-grid.head,.joint-grid.head{align-items:end;line-height:1.45}
+  .fixed-grid.head>*,.income-grid.head>*,.income-current-grid.head>*,.joint-grid.head>*,.grip-calc-grid>span:first-child{white-space:normal;overflow-wrap:anywhere}
+  .fixed-grid .fixed-frequency,.fixed-grid .fixed-status,.income-grid .fixed-frequency{display:block!important}
+  .fixed-grid input,.fixed-grid select,.income-grid input,.income-grid select,.income-current-grid input,.income-current-grid select{min-width:0;max-width:100%;box-sizing:border-box}
+  .fixed-grid .chip,.income-grid .chip,.income-current-grid .chip{white-space:normal;overflow-wrap:anywhere;height:auto}
+  .col-amt,.col-r,.grip-money{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+  .joint-grid{min-width:640px;padding-left:10px!important;padding-right:10px!important;box-sizing:border-box}
+  .grip-calc-grid{grid-template-columns:minmax(160px,1fr) 112px repeat(3,144px) 26px;min-width:800px;box-sizing:border-box;padding-left:10px!important;padding-right:10px!important}
+  .grip-calc-grid>:nth-child(2){box-sizing:border-box;white-space:normal;overflow-wrap:anywhere;text-align:center!important}
+  .grip-calc-grid input[inputmode="decimal"],.grip-calc-grid input[type="number"]{text-align:right;font-variant-numeric:tabular-nums}
+  .grip-automatic-grid{display:grid;grid-template-columns:112px minmax(160px,1fr) 126px 124px 116px;min-width:678px;gap:10px;align-items:center}
+  .grip-automatic-grid>:nth-child(4){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .grip-scenario-row{min-width:700px}
+  .grip-scenario-row>*{min-width:0;box-sizing:border-box}
+  .grip-scenario-row input[type="number"]{text-align:right;font-variant-numeric:tabular-nums}
+  .grip-view-savings input[inputmode="decimal"],.grip-view-planner input[inputmode="decimal"],.grip-view-calculator input[inputmode="decimal"]{text-align:right;font-variant-numeric:tabular-nums;box-sizing:border-box}
+  .grip-main .grip-surface,.grip-main .grip-planner-category{min-width:0}
+  .grip-planner-category>div:first-child>span:nth-child(2){min-width:100px;overflow-wrap:anywhere}
+  .grip-planner-category>div:first-child>div{margin-left:auto;text-align:right;white-space:nowrap}
+  .grip-view-savings .grip-savings-goal-header{flex-wrap:wrap}
+  .grip-main div:has(>.joint-grid){max-width:100%;min-width:0;overflow-x:auto}
+  .grip-view-calculator .grip-surface input{min-width:0;box-sizing:border-box;max-width:100%}
+  .grip-view-savings .grip-savings-goal-header select{max-width:100%;box-sizing:border-box}
+  @media(max-width:620px){
+    .grip-view-savings label,.grip-view-planner label{flex-wrap:wrap;max-width:100%}
+    .grip-view-savings input,.grip-view-savings select,.grip-view-planner input,.grip-view-planner select{max-width:100%;min-width:0;box-sizing:border-box}
+  }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </helmet>
@@ -912,6 +948,7 @@
 
       <div class="grip-surface grip-income-month">
         <div class="grip-income-section-head" style="font-size:13px;font-weight:700;margin-bottom:14px;color:#3A261D">{{ t.incomeThisMonthHeader }}<button class="grip-income-edit" onClick="{{ toggleAllIncomeEntriesEdit }}" style="margin-left:auto;border:1px solid rgba(99,64,49,.25);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;background:#F6F1E7;color:#634031">{{ incomeEntriesEditModeLabel }}</button></div>
+        <div class="grip-table-viewport">
         <sc-if value="{{ incomeEntries.length }}" hint-placeholder-val="{{ true }}">
           <div class="income-current-grid head" style="grid-template-columns:{{ incomeCurrentGridColumns }}">
             <span>{{ t.dateLabel }}</span>
@@ -972,6 +1009,7 @@
             </div>
           </sc-for>
         </sc-if>
+        </div>
         <sc-if value="{{ noIncomeEntries }}" hint-placeholder-val="{{ false }}">
           <div style="font-size:13px;color:#634031;padding:10px 0">{{ t.noIncomeText }}</div>
         </sc-if>
@@ -986,6 +1024,7 @@
         <div style="display:flex;justify-content:flex-end;gap:8px;margin:12px 0 8px"><button class="grip-btn grip-btn-secondary" onClick="{{ toggleRecurringIncomeEditMode }}">{{ recurringIncomeEditModeLabel }}</button><button class="grip-btn grip-btn-primary" onClick="{{ openRecurringIncomeAdd }}">{{ t.addIncomeSourceBtn }}</button></div>
         </sc-if>
         <sc-if value="{{ noNextRecurringIncome }}" hint-placeholder-val="{{ false }}"><div class="grip-income-next-line" style="color:#8A715D">{{ incomeNextEmpty }}</div></sc-if>
+        <div class="grip-table-viewport">
         <sc-if value="{{ recurringIncome.length }}" hint-placeholder-val="{{ false }}">
           <div class="income-grid head">
             <span>{{ incomeNextChargeLabel }}</span>
@@ -1060,6 +1099,7 @@
           </div>
         </sc-for>
 
+        </div>
         <sc-if value="{{ showRecurringIncomeManage }}" hint-placeholder-val="{{ false }}">
         <div class="grip-income-utility grip-income-entry-legacy" style="margin-top:16px;padding-top:16px;border-top:1px dashed rgba(99,64,49,.3)">
           <div style="font-size:11px;font-weight:600;color:#7A5941;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">{{ t.addIncomeSourceBtn }}</div>
@@ -1377,7 +1417,7 @@
       </div>
       </sc-if>
 
-      <div class="grip-surface grip-expense-variable-list">
+      <div class="grip-surface grip-expense-variable-list grip-table-viewport">
         <sc-if value="{{ filteredTx.length }}" hint-placeholder-val="{{ true }}">
           <sc-for list="{{ filteredTx }}" as="tx" hint-placeholder-count="6">
             <div class="income-grid row" style="grid-template-columns:{{ tx.rowGridColumns }}">
@@ -1418,7 +1458,7 @@
       <div class="grip-expense-tools-title">{{ spendingToolsTitle }}</div>
       <details class="grip-expense-tool grip-expense-fixed">
       <summary>{{ fixedManagementTitle }}</summary>
-      <div class="grip-expense-tool-body" style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
+      <div class="grip-expense-tool-body grip-table-viewport" style="background:#EEE6D8;border-radius:16px;padding:20px 22px;margin-bottom:20px;position:relative">
         <div style="font-size:11.5px;color:#7A5941;margin-bottom:14px">{{ fixedManagementDescription }}</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div style="font-size:13px;font-weight:700;color:#3A261D">{{ t.recurringPayments }}</div>
@@ -1774,7 +1814,7 @@
           <div draggable="true" onDragStart="{{ g.onDragStart }}" onDragOver="{{ g.onDragOver }}" onDrop="{{ g.onDrop }}" style="background:{{ g.dragBg }};border-radius:16px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start">
             <div style="cursor:grab;font-size:16px;color:#634031;line-height:1;padding-top:2px;user-select:none">⠿</div>
             <div style="flex:1;min-width:0">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+              <div class="grip-savings-goal-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
                 <input type="text" value="{{ g.label }}" onChange="{{ g.setLabel }}" style="font-size:15px;font-weight:700;border:none;background:transparent;outline:none;color:#634031;flex:1;min-width:0;padding:0">
                 <select value="{{ g.categoryId }}" onChange="{{ g.setCategory }}" style="font-size:11px;border:1px solid {{ g.categoryColor }};color:{{ g.categoryColor }};background:transparent;border-radius:6px;padding:3px 6px;flex:none">
                   <option value="">{{ t.noCategoryOption }}</option>
@@ -1959,13 +1999,13 @@
       </div>
 
       <sc-if value="{{ calcShowScenarioEditor }}" hint-placeholder-val="{{ false }}">
-        <div class="grip-surface grip-calculator-scenario" style="margin-bottom:20px">
+        <div class="grip-surface grip-calculator-scenario grip-table-viewport" style="margin-bottom:20px">
           <sc-for list="{{ calcScenarioGroups }}" as="scenarioGroup" hint-placeholder-count="3">
             <div style="margin-bottom:14px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-size:11px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.04em">{{ scenarioGroup.label }}</div><button onClick="{{ scenarioGroup.add }}" class="grip-btn grip-btn-secondary" style="height:28px;padding:0 10px;font-size:11px">+ Toevoegen</button></div>
               <sc-if value="{{ scenarioGroup.empty }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;color:#7A5941">—</div></sc-if>
               <sc-for list="{{ scenarioGroup.items }}" as="scenarioItem" hint-placeholder-count="2">
-                <div style="display:grid;grid-template-columns:minmax(130px,1.4fr) 92px 112px minmax(118px,1fr) 126px 28px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(99,64,49,.12);font-size:12px">
+                <div class="grip-scenario-row" style="display:grid;grid-template-columns:minmax(130px,1.4fr) 112px 112px minmax(118px,1fr) 140px 28px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(99,64,49,.12);font-size:12px">
                   <input class="grip-control" value="{{ scenarioItem.name }}" onInput="{{ scenarioItem.setName }}" placeholder="Omschrijving" style="width:100%;height:34px">
                   <input class="grip-control" type="number" min="0" step="0.01" value="{{ scenarioItem.amount }}" onChange="{{ scenarioItem.setAmount }}" aria-label="Bedrag" style="width:100%;height:34px">
                   <select class="grip-control" value="{{ scenarioItem.ownerValue }}" onChange="{{ scenarioItem.setOwner }}" aria-label="Eigendom" style="width:100%;height:34px"><option value="personal">Persoonlijk</option><option value="shared">Gezamenlijk</option></select>
@@ -2170,7 +2210,7 @@
       </sc-if>
 
       <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}">
-        <div class="grip-surface">
+        <div class="grip-surface grip-table-viewport">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
             <div style="font-size:14px;font-weight:700;color:#634031">{{ calcTableMeLabel }} &amp; {{ calcTablePartnerLabel }}</div>
             <button onClick="{{ toggleCalcBulkEdit }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:6px 12px;font-size:11.5px;font-weight:600;background:transparent;color:#634031">{{ t.calcEditAllLabel }}</button>
@@ -2376,7 +2416,7 @@
           </div>
         </sc-if>
 
-        <div style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
+        <div class="grip-table-viewport" style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
           <div class="grip-calc-grid" style="margin-bottom:10px">
             <span style="font-size:12.5px;color:#C7B49A;flex:1">{{ t.calcExpenseTotalLabel }}</span>
             <span style="width:56px"></span>
@@ -2403,7 +2443,8 @@
             <div style="font-size:12px;color:#7A5941">{{ noAutomaticSavingsPlansLabel }}</div>
           </sc-if>
           <sc-if value="{{ automaticSavingsPlans.length }}" hint-placeholder-val="{{ 0 }}">
-          <div style="display:grid;grid-template-columns:110px minmax(120px,1.5fr) 120px 90px 110px;align-items:center;gap:10px;padding:0 0 8px;border-bottom:1px solid rgba(99,64,49,.14);font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
+          <div class="grip-table-viewport">
+          <div class="grip-automatic-grid" style="padding:0 0 8px;border-bottom:1px solid rgba(99,64,49,.14);font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
             <span>{{ t.colNextCharge }}</span>
             <span>{{ automaticSavingsGoalColumnLabel }}</span>
             <span>{{ t.colFrequency }}</span>
@@ -2411,7 +2452,7 @@
             <span>{{ t.colStatus }}</span>
           </div>
           <sc-for list="{{ automaticSavingsPlans }}" as="calcAutomaticPlan" hint-placeholder-count="2">
-            <div style="display:grid;grid-template-columns:110px minmax(120px,1.5fr) 120px 90px 110px;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(99,64,49,.14);font-size:12px">
+            <div class="grip-automatic-grid" style="padding:11px 0;border-bottom:1px solid rgba(99,64,49,.14);font-size:12px">
               <span style="font-variant-numeric:tabular-nums;color:#7A5941">{{ calcAutomaticPlan.nextLabel }}</span>
               <span style="font-weight:600">{{ calcAutomaticPlan.label }}</span>
               <span>{{ calcAutomaticPlan.frequencyLabel }}</span>
@@ -2419,6 +2460,7 @@
               <span style="font-size:10px;font-weight:600;padding:4px 8px;border-radius:6px;background:{{ calcAutomaticPlan.ownerBg }};color:{{ calcAutomaticPlan.ownerColor }};text-align:center">{{ calcAutomaticPlan.ownerLabel }}</span>
             </div>
           </sc-for>
+          </div>
           </sc-if>
       </div>
 
@@ -6173,7 +6215,7 @@ class Component extends DCLogic {
         dateLabel: this.formatDateShort(t.date),
         isEditing,
         notEditing: !isEditing,
-        rowGridColumns: isEditing ? '78px minmax(130px,1.8fr) 120px 92px 34px' : '78px minmax(130px,1.8fr) 120px 92px',
+        rowGridColumns: isEditing ? '112px minmax(160px,1.8fr) 120px 144px 34px' : '112px minmax(160px,1.8fr) 120px 144px',
         dateCursor: 'pointer',
         dateEditHint: isRecurring
           ? this.tf('Auto-posted from a recurring payment', 'Automatisch toegevoegd vanuit een vast bedrag', 'Automatisch aus einer wiederkehrenden Zahlung hinzugefügt', "Ajouté automatiquement à partir d'un paiement récurrent", 'Añadido automáticamente desde un pago recurrente')
@@ -7427,8 +7469,8 @@ class Component extends DCLogic {
       sharedIncomeOpenList: this.state.mode === 'shared' && this.state.editingIncomeEntryId !== '__all__',
       standardIncomeList: this.state.mode !== 'shared' || this.state.editingIncomeEntryId === '__all__',
       incomeCurrentGridColumns: this.state.mode === 'shared' && this.state.editingIncomeEntryId !== '__all__'
-        ? '78px minmax(160px,1fr) 130px 110px 34px'
-        : '64px minmax(130px,1.7fr) 96px 92px 112px 78px',
+        ? '112px minmax(160px,1fr) 130px 144px 34px'
+        : '112px minmax(160px,1.7fr) 112px 144px 112px 34px',
       incomeEntriesEditModeLabel: this.state.editingIncomeEntryId === '__all__' ? t.doneEditBtn : t.editBtn,
       toggleAllIncomeEntriesEdit: () => this.toggleAllIncomeEntriesEdit(),
       noIncomeEntries: monthIncome.length === 0,
