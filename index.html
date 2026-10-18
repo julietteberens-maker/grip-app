@@ -561,6 +561,37 @@
   .grip-view-calculator .grip-saving-plan-row{padding:10px 0;gap:12px}
   .grip-view-calculator .grip-calculator-legacy-summary{display:none}
   @media(max-width:520px){.grip-view-calculator .grip-calculator-month input{max-width:100%}.grip-view-calculator .grip-calculator-summary strong{font-size:17px}}
+  .grip-calculator-dashboard-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+  .grip-view-calculator .grip-calculator-summary-metrics>div:last-child strong{font-size:24px}
+  .grip-view-calculator .grip-calculator-summary-metrics>div:last-child{padding-left:14px;border-left:1px solid rgba(99,64,49,.15)}
+  .grip-calculator-editor{min-width:0}
+  @media(max-width:520px){.grip-view-calculator .grip-calculator-summary-metrics>div:last-child{padding-left:0;border-left:0;grid-column:1/-1}}
+  .grip-budget-allocation{margin:0 0 18px;padding:12px 0}
+  .grip-budget-allocation-title{font-size:12px;font-weight:600;color:#634031;margin-bottom:10px}
+  .grip-budget-allocation-track{display:flex;width:100%;height:18px;border-radius:5px;overflow:hidden;background:rgba(99,64,49,.08)}
+  .grip-budget-allocation-track>span{height:100%;min-width:0}
+  .grip-budget-allocation-legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 16px;margin-top:12px}
+  .grip-budget-allocation-key{display:grid;grid-template-columns:7px minmax(0,1fr);gap:4px 7px;align-items:center;min-width:0;font-size:11px;color:#7A5941}
+  .grip-budget-allocation-key strong{grid-column:2;font-size:13px;font-weight:600;color:#3A261D;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .grip-budget-allocation-note{font-size:10.5px;line-height:1.4;color:#7A5941;margin-top:9px}
+  @media(max-width:640px){.grip-budget-allocation-legend{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .grip-view-calculator .grip-calculator-distribution:has(.grip-personal-budget-pair){padding:20px!important;border-top:2px solid #7C8972!important}
+  .grip-personal-budget-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:6px 0 14px;padding:16px 0;border-bottom:1px solid rgba(99,64,49,.14)}
+  .grip-personal-budget-person{min-width:0}
+  .grip-personal-budget-person+.grip-personal-budget-person{border-left:1px solid rgba(99,64,49,.14);padding-left:24px}
+  .grip-personal-budget-name{font-size:13px;font-weight:600;color:#634031;margin-bottom:8px;overflow-wrap:anywhere}
+  .grip-personal-budget-amount{font-size:clamp(22px,3vw,32px);font-weight:700;line-height:1.2;color:#3A261D;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .grip-personal-budget-note{font-size:10.5px;color:#7A5941;line-height:1.4;margin-top:8px}
+  @media(max-width:520px){.grip-personal-budget-pair{gap:12px}.grip-personal-budget-person+.grip-personal-budget-person{padding-left:12px}}
+  .grip-planned-saving-block{padding:14px 0;margin:0 0 16px;border-top:1px solid rgba(99,64,49,.12);border-bottom:1px solid rgba(99,64,49,.12)}
+  .grip-planned-saving-heading,.grip-planned-saving-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+  .grip-planned-saving-heading{font-size:13px;font-weight:600;color:#634031;margin-bottom:6px}
+  .grip-planned-saving-heading strong{font-size:19px;color:#55634B}
+  .grip-planned-saving-row{padding:7px 0;font-size:12px}
+  .grip-planned-saving-row>div{min-width:0;overflow-wrap:anywhere}
+  .grip-planned-saving-name{font-weight:500;color:#3A261D}
+  .grip-planned-saving-block strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .grip-planned-saving-note{font-size:10.5px;color:#7A5941;line-height:1.5;margin-top:2px}
   /* Keep table headers, entries and totals on the same column tracks. */
   .grip-table-viewport{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
   .grip-table-viewport>*{box-sizing:border-box}
@@ -2080,7 +2111,7 @@
     </sc-if>
 
     <sc-if value="{{ isCalculator }}" hint-placeholder-val="{{ false }}">
-      <div class="grip-calculator-intro" style="font-size:13px;color:#7A5941;margin-bottom:18px;max-width:560px;line-height:1.5">{{ t.calcIntro }}</div>
+      <div class="grip-calculator-dashboard-toolbar"><div><div style="font-size:14px;font-weight:600;color:#3A261D">{{ calculatorDashboardTitle }}</div><div style="font-size:11.5px;color:#7A5941;margin-top:4px">{{ calculatorDashboardHint }}</div></div><button class="grip-btn grip-btn-secondary" onClick="{{ toggleCalculatorEditor }}">{{ calculatorEditorButtonLabel }}</button></div>
 
       <div class="grip-surface grip-calculator-month" style="display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px">
         <div><label for="calc-scenario-month" style="font-size:12.5px;font-weight:700;color:#634031">{{ calcSelectedMonthLabel }}</label><div style="font-size:11px;color:#7A5941;margin-top:4px">{{ calcScenarioPrefillSummary }}</div></div>
@@ -2100,18 +2131,46 @@
         </div></sc-if>
       </div>
 
-      <div class="grip-surface grip-calculator-distribution" style="margin:0 0 20px">
+
+
+      <div class="grip-budget-allocation">
+        <div class="grip-budget-allocation-title">Verdeling van je maandbudget</div>
+        <div class="grip-budget-allocation-track" role="img" aria-label="{{ calculatorAllocationAccessibleLabel }}">
+          <sc-for list="{{ calculatorAllocationParts }}" as="budgetPart" hint-placeholder-count="4"><span style="width:{{ budgetPart.pct }}%;background:{{ budgetPart.color }}" title="{{ budgetPart.detail }}"></span></sc-for>
+        </div>
+        <div class="grip-budget-allocation-legend">
+          <sc-for list="{{ calculatorAllocationParts }}" as="budgetPart" hint-placeholder-count="4"><div class="grip-budget-allocation-key"><span style="width:7px;height:7px;border-radius:50%;background:{{ budgetPart.color }}"></span><span>{{ budgetPart.label }}</span><strong>€ {{ budgetPart.amountStr }} · {{ budgetPart.pctLabel }}%</strong></div></sc-for>
+        </div>
+        <sc-if value="{{ calculatorAllocationNote }}" hint-placeholder-val="{{ false }}"><div class="grip-budget-allocation-note">{{ calculatorAllocationNote }}</div></sc-if>
+      </div>
+      <div class="grip-planned-saving-block">
+        <div class="grip-planned-saving-heading"><span>Gepland sparen</span><strong>€ {{ soloCalcSavingsSummary }}</strong></div>
+        <sc-if value="{{ noAutomaticSavingsPlans }}" hint-placeholder-val="{{ true }}"><div class="grip-planned-saving-note">{{ noAutomaticSavingsPlansLabel }}</div></sc-if>
+        <sc-for list="{{ automaticSavingsPlans }}" as="savingPlan" hint-placeholder-count="2">
+          <div class="grip-planned-saving-row"><div><span class="grip-planned-saving-name">{{ savingPlan.label }}</span><div class="grip-planned-saving-note">{{ savingPlan.ownerLabel }}<sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"> · {{ calcTableMeLabel }} € {{ savingPlan.meStr }} · {{ calcTablePartnerLabel }} € {{ savingPlan.partnerStr }}</sc-if></div></div><strong>€ {{ savingPlan.calcAmountStr }}</strong></div>
+        </sc-for>
+        <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-planned-saving-note" style="margin-top:8px">{{ calcSavingsTotalsLabel }}</div></sc-if>
+        <button class="grip-btn grip-btn-secondary" onClick="{{ setViewSavings }}" style="margin-top:10px;font-size:11px">Beheren in Sparen</button>
+      </div>
+
+      <div class="grip-surface grip-calculator-distribution" style="display:{{ calculatorResultsDisplay }};margin:0 0 20px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px">
-          <span style="font-size:13px;font-weight:700;color:#634031">{{ calcDistributableLabel }}</span>
+          <span style="font-size:13px;font-weight:700;color:#634031">{{ calcPersonalDistributableLabel }}</span>
           <sc-if value="{{ calcIsPersonalMode }}" hint-placeholder-val="{{ true }}"><strong style="font-size:22px;color:#3A261D;font-variant-numeric:tabular-nums">€ {{ calcDistributableStr }}</strong></sc-if>
         </div>
         <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}">
-          <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:12px">
-            <div style="min-width:0"><div style="font-size:12px;color:#7A5941;margin-bottom:5px">{{ calcTableMeLabel }}</div><div style="font-size:22px;font-weight:700;color:#3A261D;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ calcDistributableMeDisplay }}</div></div>
-            <div style="min-width:0"><div style="font-size:12px;color:#7A5941;margin-bottom:5px">{{ calcTablePartnerLabel }}</div><div style="font-size:22px;font-weight:700;color:#3A261D;font-variant-numeric:tabular-nums;overflow-wrap:anywhere">{{ calcDistributablePartnerDisplay }}</div></div>
+          <div class="grip-personal-budget-pair">
+            <div class="grip-personal-budget-person"><div class="grip-personal-budget-name">{{ calcTableMeLabel }}</div><div class="grip-personal-budget-amount">{{ calcDistributableMeDisplay }}</div><div class="grip-personal-budget-note">Na jouw uitgaven- en spaaraandeel</div></div>
+            <div class="grip-personal-budget-person"><div class="grip-personal-budget-name">{{ calcTablePartnerLabel }}</div><div class="grip-personal-budget-amount">{{ calcDistributablePartnerDisplay }}</div><div class="grip-personal-budget-note">Na jouw uitgaven- en spaaraandeel</div></div>
           </div>
           <div style="font-size:11.5px;color:#7A5941;font-variant-numeric:tabular-nums;margin-bottom:14px">Totaal € {{ calcDistributableStr }}</div>
         </sc-if>
+        <button class="grip-btn grip-btn-secondary" onClick="{{ toggleCalculatorEditor }}">Budget en spaarverdeling bewerken</button>
+      </div>
+
+      <div class="grip-calculator-editor" style="display:{{ calculatorEditorDisplay }}">
+        <details class="grip-calc-compact-section" open>
+          <summary><div class="grip-calc-section-title"><span>Verdeling over spaardoelen</span><strong>€ {{ calcDistributableStr }}</strong></div></summary>
         <div style="font-size:11.5px;color:#7A5941;margin-bottom:10px">Plan je resterende bedrag voor spaardoelen. Automatisch sparen is al verrekend; deze verdeling wijzigt je gespaarde bedragen niet.</div>
         <sc-if value="{{ noCalcAllocationRows }}" hint-placeholder-val="{{ false }}">
           <div style="font-size:12px;color:#7A5941">{{ calcNoSavingsGoalsLabel }}</div>
@@ -2143,7 +2202,9 @@
           <span>{{ calcRemainingLabel }}</span>
           <strong style="font-variant-numeric:tabular-nums">{{ calcRemainingText }}</strong>
         </div>
-      </div>
+        </details>
+
+
 
       <sc-if value="{{ calcShowScenarioEditor }}" hint-placeholder-val="{{ false }}">
         <div class="grip-surface grip-calculator-scenario grip-table-viewport" style="margin-bottom:20px">
@@ -2542,26 +2603,9 @@
 
       </sc-if>
 
-      <div class="grip-surface grip-calculator-allocation grip-calculator-savings" style="margin-top:20px">
-        <div class="grip-saving-section-heading"><span>{{ automaticSavingsHeader }}</span><strong>€ {{ soloCalcSavingsSummary }}</strong></div>
-        <sc-if value="{{ noAutomaticSavingsPlans }}" hint-placeholder-val="{{ true }}"><div style="font-size:12px;color:#7A5941">{{ noAutomaticSavingsPlansLabel }}</div></sc-if>
-        <sc-for list="{{ automaticSavingsPlans }}" as="calcAutomaticPlan" hint-placeholder-count="2">
-          <details class="grip-saving-plan">
-            <summary class="grip-saving-plan-row">
-              <div class="grip-saving-plan-name">{{ calcAutomaticPlan.label }}</div>
-              <div><span class="grip-saving-field-label">Bijdrage</span><sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-saving-money">€ {{ calcAutomaticPlan.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control" type="number" min="0" step="0.01" aria-label="Spaarbijdrage" value="{{ calcAutomaticPlan.amount }}" onChange="{{ calcAutomaticPlan.editContribution }}" style="width:100%;min-width:0;text-align:right"></sc-if><span class="grip-saving-field-label">{{ calcAutomaticPlan.frequencyLabel }}</span></div>
-              <div><span class="grip-saving-field-label">Eigenaar</span><span class="grip-saving-owner" style="background:{{ calcAutomaticPlan.ownerBg }};color:{{ calcAutomaticPlan.ownerColor }}">{{ calcAutomaticPlan.ownerLabel }}</span></div>
-              <div class="grip-saving-plan-total"><span class="grip-saving-field-label">Totaal deze maand</span><strong class="grip-saving-money">€ {{ calcAutomaticPlan.calcAmountStr }}</strong><span class="grip-saving-field-label">Details ⌄</span></div>
-            </summary>
-            <div class="grip-saving-plan-details">
-              <div><span class="grip-saving-field-label">Volgende bijdrage</span><span>{{ calcAutomaticPlan.nextLabel }}</span></div>
-              <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div><span class="grip-saving-field-label">{{ calcTableMeLabel }}</span><strong class="grip-saving-money">€ {{ calcAutomaticPlan.meStr }}</strong></div><div><span class="grip-saving-field-label">{{ calcTablePartnerLabel }}</span><strong class="grip-saving-money">€ {{ calcAutomaticPlan.partnerStr }}</strong></div></sc-if>
-            </div>
-          </details>
-        </sc-for>
-        <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-saving-section-totals">{{ calcSavingsTotalsLabel }}</div></sc-if>
-      </div>
 
+
+      </div>
     </sc-if>
 
     <sc-if value="{{ isQuit }}" hint-placeholder-val="{{ false }}">
@@ -4255,6 +4299,7 @@ class Component extends DCLogic {
     this.setWsKey(sourceKey, ws => ({ [listKey]: (ws[listKey] || []).map(it => it.id === id ? { ...it, [field]: value } : it) }), () => this.persist());
   }
   toggleCalcSectionAdd(section) { this.setState(s => ({ ['showCalc' + section + 'Add']: !s['showCalc' + section + 'Add'] })); }
+  toggleCalculatorEditor() { this.setState(s => ({ calculatorEditorOpen: !s.calculatorEditorOpen })); }
   toggleCalcBulkEdit() {
     if (this.state.showCalcBulkEdit) this.cancelCalcBulkEdit();
     else this.setState({ showCalcBulkEdit: true, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [] }, () => {
@@ -6855,10 +6900,19 @@ class Component extends DCLogic {
     const automaticSavingsMe = automaticSavingsPlans.reduce((sum, plan) => sum + plan.me, 0);
     const automaticSavingsPartner = automaticSavingsPlans.reduce((sum, plan) => sum + plan.partner, 0);
     const automaticSavingsOwnersKnown = automaticSavingsPlans.every(plan => plan.ownerKnown);
-    const calcDistributableMe = calcMonthlyBudgetSums.me - calcTableVariableSums.me - automaticSavingsMe;
-    const calcDistributablePartner = calcMonthlyBudgetSums.partner - calcTableVariableSums.partner - automaticSavingsPartner;
+    const calcDistributableMe = calcTableIncomeSums.me - calcTableFixedSums.me - calcTableVariableSums.me - automaticSavingsMe;
+    const calcDistributablePartner = calcTableIncomeSums.partner - calcTableFixedSums.partner - calcTableVariableSums.partner - automaticSavingsPartner;
     const calcPlannedVariableTotal = calcIsSharedMode ? calcTableVariableSums.total : calcVariableAvgTotal;
-    const calcDistributable = calcMonthlyBudget - calcPlannedVariableTotal - automaticSavingsPlannedTotal;
+    const calcDistributable = calcIsSharedMode
+      ? calcTableIncomeSums.total - calcTableFixedSums.total - calcPlannedVariableTotal - automaticSavingsPlannedTotal
+      : calcSoloIncomeTotal - calcFixedTotal - calcPlannedVariableTotal - automaticSavingsPlannedTotal;
+    const budgetAllocationValues = [calcIsSharedMode ? calcTableFixedSums.total : calcFixedTotal, calcPlannedVariableTotal, automaticSavingsPlannedTotal, Math.max(0, calcDistributable)].map(value => Math.max(0, this.safeNumber(value)));
+    const budgetAllocationTotal = budgetAllocationValues.reduce((sum, amount) => sum + amount, 0);
+    const calculatorAllocationParts = ['Vaste lasten', 'Variabele budgetten', 'Automatisch sparen', 'Beschikbaar'].map((label, index) => {
+      const amount = budgetAllocationValues[index];
+      const pct = budgetAllocationTotal > 0 ? amount / budgetAllocationTotal * 100 : 0;
+      return { label, amountStr: this.fmt(amount), pct, pctLabel: Math.round(pct), color: ['#634031', '#BC7B62', '#7C8972', '#D8C7AB'][index], detail: `${label}: € ${this.fmt(amount)}` };
+    });
     const calcRemainingAfterAlloc = calcDistributable - calcAllocatedTotal;
     const selectedCalcAllocationRows = calcAllocationRows.filter(row => row.selected);
     const quickDistributeAllocations = () => {
@@ -7112,6 +7166,12 @@ class Component extends DCLogic {
       isIncome: this.state.view === 'income',
       isPlanner: this.state.view === 'planner',
       isCalculator: this.state.view === 'calculator',
+      calculatorEditorDisplay: this.state.calculatorEditorOpen ? 'block' : 'none',
+      calculatorResultsDisplay: this.state.calculatorEditorOpen ? 'none' : 'block',
+      calculatorEditorButtonLabel: this.state.calculatorEditorOpen ? 'Terug naar resultaat' : 'Budget bewerken',
+      calculatorDashboardTitle: this.state.calculatorEditorOpen ? 'Budget bewerken' : 'Jouw financiële maandplan',
+      calculatorDashboardHint: (this.soloCalculatorEditing() || this.state.showCalcBulkEdit) ? 'Conceptwijzigingen — gebruik Opslaan of Annuleren in de bewerkweergave.' : 'Inkomen, geplande uitgaven en sparen bepalen wat je kunt verdelen.',
+      toggleCalculatorEditor: () => this.toggleCalculatorEditor(),
       calculatorNavBg: this.state.view === 'calculator' ? 'rgba(216,199,171,.16)' : 'transparent',
       calculatorNavColor: this.state.view === 'calculator' ? '#F6F1E7' : 'rgba(246,241,231,.55)',
       setViewCalculator: () => this.setView('calculator'),
@@ -7300,6 +7360,7 @@ class Component extends DCLogic {
       quickDistributeLabel: this.tf('Distribute remaining', 'Verdeel resterend bedrag', 'Restbetrag verteilen', 'Répartir le restant', 'Distribuir el restante'),
       quickDistributeConfirmLabel: this.tf('Apply equal distribution', 'Gelijk verdelen', 'Gleichmäßig verteilen', 'Répartir également', 'Distribuir por igual'),
       calcDistributableLabel: this.tf('Available to allocate', 'Vrij te verdelen', 'Frei zu verteilen', 'Disponible à répartir', 'Disponible para distribuir'),
+      calcPersonalDistributableLabel: this.tf('Personally available to allocate', 'Persoonlijk vrij te verdelen', 'Persönlich frei zu verteilen', 'Disponible personnellement à répartir', 'Disponible personal para distribuir'),
       calcDistributableStr: this.fmt(calcDistributable),
       calcFixedSectionPreview: (calcIsSharedMode ? calcTableFixedRows.map(row => ({ name: row.name, amount: this.safeNumber(row.total) })) : [...calcFixedAutoItems.map(row => ({ name: row.name, amount: this.safeNumber(row.amount) })), ...calcFixedGroups.flatMap(group => group.items.map(row => ({ name: row.name, amount: this.safeNumber(row.amount) }))), ...calcFixedHistoryRows.filter(row => !row.joint).map(row => ({ name: row.label, amount: this.safeNumber(row.amount) }))]).sort((a, b) => b.amount - a.amount).slice(0, 3).map(row => ({ ...row, amountStr: this.fmt(row.amount) })),
       calcVariableSectionPreview: (calcIsSharedMode ? calcTableVariableRows : calcMonthlyVariableRows).map(row => ({ name: row.name, amount: this.safeNumber(row.total) })).sort((a, b) => b.amount - a.amount).slice(0, 3).map(row => ({ ...row, amountStr: this.fmt(row.amount) })),
@@ -7315,6 +7376,9 @@ class Component extends DCLogic {
       calculatorSummaryIncome: this.fmt(calcIsSharedMode ? calcTableIncomeSums.total : calcSoloIncomeTotal),
       calculatorSummaryFixed: this.fmt(calcIsSharedMode ? calcTableFixedSums.total : calcFixedTotal),
       calculatorSummaryVariable: this.fmt(calcPlannedVariableTotal),
+      calculatorAllocationParts,
+      calculatorAllocationAccessibleLabel: calculatorAllocationParts.map(part => part.detail).join('; '),
+      calculatorAllocationNote: calcDistributable < 0 ? `Je planning overschrijdt je inkomen met € ${this.fmt(-calcDistributable)}. De balk toont de verhouding tussen de geplande bedragen.` : budgetAllocationTotal === 0 ? 'Nog geen maandbudget om te verdelen.' : '',
       soloCalcExpensesSummary: this.fmt(calcFixedTotal + calcVariableAvgTotal),
       soloCalcSavingsSummary: this.fmt(automaticSavingsPlannedTotal),
       calcDistributableMeDisplay: automaticSavingsOwnersKnown ? `€ ${this.fmt(calcDistributableMe)}` : 'Eigenaar sparen ontbreekt',
