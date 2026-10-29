@@ -857,6 +857,42 @@
   .grip-view-calculator .grip-calculator-distribution .grip-personal-budget-amount{font-size:clamp(20px,2.3vw,27px);line-height:1.2;letter-spacing:-.02em}
   .grip-personal-result-explanation{font-size:10.5px;color:#CFBCA4;line-height:1.5;margin-top:10px}
   @media(max-width:560px){.grip-view-calculator .grip-calculator-distribution .grip-personal-budget-pair{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grip-view-calculator .grip-calculator-distribution .grip-personal-budget-combined{grid-column:1/-1;border-left:0;padding:8px 0 0!important;border-top:1px solid rgba(246,241,231,.16)}}
+  .grip-quit-comparison{display:grid;gap:5px;padding:10px 0;margin:0 0 14px;border-top:1px solid rgba(99,64,49,.12);border-bottom:1px solid rgba(99,64,49,.12);font-size:11px;line-height:1.5;color:#7A5941;font-variant-numeric:tabular-nums}
+  .grip-quit-comparison>strong{font-size:12px;font-weight:600;color:#3A261D}
+  .grip-quit-comparison-past{display:flex;justify-content:space-between;gap:12px;font-size:10.5px;color:#887562}
+  .grip-quit-comparison-past>span:last-child{text-align:right}
+  .grip-expense-average{margin:12px 0 0}
+  .grip-expense-average>summary{cursor:pointer;font-size:12px;font-weight:600;color:#634031}
+  .grip-expense-average-row{display:grid;grid-template-columns:minmax(180px,1.8fr) repeat(3,minmax(100px,1fr)) 85px;gap:12px;min-width:640px;padding:8px 0;border-bottom:1px solid rgba(99,64,49,.1);align-items:center;font-size:11.5px;font-variant-numeric:tabular-nums}
+  .grip-expense-average-row>span:not(:first-child){text-align:right;white-space:nowrap}
+  .grip-expense-average-row small{display:block;font-size:10px;color:#887562;line-height:1.5}
+  .grip-expense-average-head{font-size:10px;color:#7A5941;font-weight:600}
+  /* Compact monthly comparisons: typographic hierarchy, restrained signals. */
+  .grip-view-quit .grip-quit-goals{gap:14px!important;align-items:start}
+  .grip-view-quit .grip-quit-card{padding:18px 20px!important;box-shadow:0 3px 12px rgba(58,38,29,.025)!important}
+  .grip-quit-card .grip-primary-amount{font-size:30px!important;margin-bottom:5px}
+  .grip-quit-card .grip-quit-progress-meta{gap:6px;margin-bottom:9px;line-height:1.5}
+  .grip-challenge-month{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.03em;color:#66715A;margin-bottom:3px;text-transform:capitalize}
+  .grip-challenge-goal{display:block;font-size:13px;font-weight:600;color:#3A261D}
+  .grip-challenge-status{font-size:10.5px;color:#7A6655}
+  .grip-quit-card .grip-quit-progress{height:4px;margin-bottom:12px}
+  .grip-quit-card .grip-quit-comparison{padding:9px 0;gap:5px;margin-bottom:12px;border-bottom:0}
+  .grip-quit-comparison>strong{font-size:10.5px;font-weight:500;color:#887562}
+  .grip-challenge-change{font-size:12px;font-weight:600}
+  .grip-challenge-comparison-note{font-size:10px;color:#887562;line-height:1.5}
+  .grip-quit-comparison-past{padding-top:4px;gap:10px;align-items:baseline}
+  .grip-quit-comparison-past>span:first-child{flex:none;text-transform:capitalize}
+  .grip-quit-card details>summary{font-size:11px;color:#7A6655;line-height:1.5;outline-offset:3px}
+  .grip-quit-card details[open]>summary{margin-bottom:6px;color:#634031}
+  .grip-expense-average{border-top:1px solid rgba(99,64,49,.1);padding-top:10px}
+  .grip-expense-average>summary{font-size:12px;line-height:1.5}
+  .grip-expense-average-row{padding:7px 0;gap:10px}
+  .grip-expense-average-row>span:first-child{min-width:0}
+  .grip-expense-average-row>span:first-child>span{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-weight:500;color:#634031}
+  .grip-expense-average-row small{font-size:9.5px;color:#887562}
+  .grip-expense-average-row[data-difference^="−"]>span:nth-child(n+4){color:#66715A}
+  .grip-expense-average-row[data-difference^="+"]>span:nth-child(n+4){color:#99694F}
+  @media(max-width:540px){.grip-view-quit .grip-quit-card{padding:16px!important}.grip-quit-comparison-past{flex-wrap:wrap;gap:2px 10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </helmet>
@@ -1634,6 +1670,7 @@
           </div>
           </details>
         </sc-if>
+        <details class="grip-expense-average"><summary>Vergeleken met gemiddeld</summary><div style="font-size:10.5px;line-height:1.5;color:#7A5941;margin:8px 0">{{ expenseAveragePeriodLabel }}</div><div class="grip-table-viewport"><div class="grip-expense-average-row grip-expense-average-head"><span>Categorie</span><span>Deze maand</span><span>Gemiddeld</span><span>Verschil €</span><span>Verschil %</span></div><sc-for list="{{ expenseAverageComparisons }}" as="expenseComparison"><div class="grip-expense-average-row" data-difference="{{ expenseComparison.differenceStr }}"><span><span>{{ expenseComparison.label }}</span><small>{{ expenseComparison.historyLabel }}</small></span><span>{{ expenseComparison.currentStr }}</span><span>{{ expenseComparison.averageStr }}</span><span>{{ expenseComparison.differenceStr }}</span><span>{{ expenseComparison.percentageStr }}</span></div></sc-for></div></details>
       </div>
       <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <div class="grip-expense-shared-overview" style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
@@ -2897,12 +2934,13 @@
             <div style="font-size:11.5px;color:#7A5941;margin-bottom:14px">Doel: {{ t.noSpendingIn }} {{ qg.categoryLabel }} · Start {{ qg.startDateLabel }}</div>
 
             <div style="font-size:11.5px;color:#7A5941;margin-bottom:6px">Geschatte vermeden uitgaven</div>
-            <div class="grip-primary-amount" style="font-size:28px;font-weight:700;color:#66715A;line-height:1">€ {{ qg.estimatedAvoidedStr }}</div>
+            <div class="grip-primary-amount" style="font-size:28px;font-weight:700;color:#66715A;line-height:1">{{ qg.estimatedAvoidedDisplay }}</div>
             <div style="font-size:11.5px;color:#7A5941;margin-bottom:14px">€ {{ qg.dailyRateStr }} geschatte uitgaven per dag vermeden</div>
             <div class="grip-quit-result-note">Schatting op basis van eerdere uitgaven · geen geboekt spaarsaldo</div>
             <div class="grip-quit-result-note" style="margin:0 0 12px">Laatste uitgave: {{ qg.lastExpenseLabel }} · Huidige reeks: {{ qg.currentStreak }} dagen · Langste reeks: {{ qg.longestStreak }} dagen</div>
-            <div class="grip-quit-progress-meta"><strong>{{ qg.avoidedDays }} / {{ qg.elapsedDays }} dagen zonder uitgaven</strong><span>{{ qg.durationLabel }}</span></div>
+            <div class="grip-quit-progress-meta"><strong><span class="grip-challenge-month">{{ qg.monthLabel }}</span><span class="grip-challenge-goal">{{ qg.goalLabel }}</span></strong><span>{{ qg.spendingDays }} uitgavendagen · {{ qg.avoidedDays }} dagen zonder uitgaven · € {{ qg.monthSpentStr }} uitgegeven</span><span class="grip-challenge-status">{{ qg.goalStatus }}</span></div>
             <div class="grip-quit-progress"><span style="width:{{ qg.successPct }}%"></span></div>
+            <div class="grip-quit-comparison"><strong>Maandvergelijking</strong><span class="grip-challenge-change" style="color:{{ qg.comparisonColor }}">{{ qg.comparisonIndicator }}</span><span class="grip-challenge-comparison-note">{{ qg.comparisonNote }}</span><sc-for list="{{ qg.comparisonMonths }}" as="pastChallenge"><div class="grip-quit-comparison-past"><span>{{ pastChallenge.monthLabel }}</span><span>{{ pastChallenge.resultLabel }}</span></div></sc-for></div>
 
             <sc-if value="{{ qg.hasNoHistory }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#BC6F52;margin-bottom:10px">{{ t.noPastSpending }}</div>
@@ -2913,6 +2951,12 @@
                 <div title="{{ dy.title }}" style="width:20px;height:20px;border-radius:5px;background:{{ dy.bg }}"></div>
               </sc-for>
             </div>
+            <details style="margin-top:14px;font-size:12px"><summary style="cursor:pointer">Maanddoel instellen</summary><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px">
+              <select class="grip-control" value="{{ qg.monthlyGoalType }}" onChange="{{ qg.setMonthlyGoalType }}"><option value="none">Alleen volgen</option><option value="spendingDays">Maximaal aantal uitgavendagen</option><option value="spendingAmount">Maximaal maandbedrag</option><option value="noSpendDays">Doel: dagen zonder uitgaven</option></select>
+              <input class="grip-control" type="text" inputmode="decimal" style="width:90px" aria-label="Maanddoel" value="{{ qg.monthlyGoalTarget }}" onChange="{{ qg.setMonthlyGoalTarget }}">
+              <span style="font-size:10.5px;color:#7A5941">Geldt vanaf deze maand; eerdere maanddoelen blijven behouden.</span>
+            </div></details>
+            <details style="margin-top:10px;font-size:12px"><summary style="cursor:pointer">Eerdere maanden</summary><sc-for list="{{ qg.monthHistory }}" as="challengeMonth"><div style="padding:9px 0;border-bottom:1px solid rgba(99,64,49,.12)"><strong>{{ challengeMonth.monthLabel }}</strong><div>{{ challengeMonth.goalLabel }} · {{ challengeMonth.goalStatus }}</div><div>{{ challengeMonth.resultLabel }} · {{ challengeMonth.coverageLabel }}</div><div>Geschatte vermeden uitgaven: {{ challengeMonth.estimatedAvoidedDisplay }}</div></div></sc-for><sc-if value="{{ qg.noMonthHistory }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px">Nog geen eerdere challenge-maanden.</div></sc-if></details>
           </div>
         </sc-for>
       </div>
@@ -2928,6 +2972,8 @@
             </sc-for>
           </select>
           <input type="text" placeholder="{{ t.goalNameQuitPlaceholder }}" value="{{ newQuitName }}" onChange="{{ setNewQuitName }}" onKeyDown="{{ onQuitGoalKeyDown }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 8px;font-size:12.5px;background:#D8C7AB;color:#634031">
+          <select class="grip-control" value="{{ newQuitGoalType }}" onChange="{{ setNewQuitGoalType }}"><option value="none">Alleen maandelijks volgen</option><option value="spendingDays">Maximaal aantal uitgavendagen</option><option value="spendingAmount">Maximaal maandbedrag</option><option value="noSpendDays">Doel: dagen zonder uitgaven</option></select>
+          <input class="grip-control" type="text" inputmode="decimal" placeholder="Maanddoel (dagen of €)" value="{{ newQuitGoalTarget }}" onChange="{{ setNewQuitGoalTarget }}">
           <div style="display:flex;gap:8px;align-items:center">
             <span style="font-size:12px">{{ t.startDateColon }}</span>
             <input type="date" value="{{ newQuitStartDate }}" onChange="{{ setNewQuitStartDate }}" onKeyDown="{{ onQuitGoalKeyDown }}" class="grip-control">
@@ -3282,6 +3328,8 @@ class Component extends DCLogic {
     showQuitForm: false,
     newQuitName: '',
     newQuitStartDate: '',
+    newQuitGoalType: 'none',
+    newQuitGoalTarget: '',
     expanded: null,
     session: null,
     authChecked: !SUPABASE_CONFIGURED,
@@ -3700,17 +3748,17 @@ class Component extends DCLogic {
       patch.calcVariableItems = [...patch.calcVariableItems.filter(it => !it.isAvgMirror || it.mirrorOwner !== myId), ...avgMirrors];
       const incomeMonthNow = new Date();
       const incomeMonthYear = incomeMonthNow.getFullYear(), incomeMonthIndex = incomeMonthNow.getMonth();
-      const incomeMirrors = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => {
+      const incomeMirrors = (personalWs.recurringIncome || []).filter(ri => this.incomeIsVisible(ri)).map(ri => {
         const occurrence = this.nextUnpostedIncomeOccurrence(ri);
         return { ri, occurrence };
       }).filter(({ occurrence }) => occurrence.getFullYear() === incomeMonthYear && occurrence.getMonth() === incomeMonthIndex)
         .map(({ ri, occurrence }) => ({
-          id: 'mirror_ri_' + ri.id, name: ri.name, amount: ri.amount,
+          id: 'mirror_ri_' + myId + '_' + ri.id, name: ri.name, amount: ri.amount,
           date: `${occurrence.getFullYear()}-${String(occurrence.getMonth() + 1).padStart(2, '0')}-${String(occurrence.getDate()).padStart(2, '0')}`,
           mirrorOwner: myId, mirrorSourceId: ri.id, isIncomeMirror: true
         }));
-      const oneOffIncomeMirrors = this.monthlyIncomeEntries(personalWs, incomeMonthNow).filter(ie => ie.joint).map(ie => ({
-        id: 'mirror_inc_' + ie.id, name: ie.source, amount: ie.amount, date: ie.date,
+      const oneOffIncomeMirrors = this.monthlyIncomeEntries(personalWs, incomeMonthNow).filter(ie => this.incomeIsVisible(ie)).map(ie => ({
+        id: 'mirror_inc_' + myId + '_' + ie.id, name: ie.source, amount: ie.amount, date: ie.date,
         mirrorOwner: myId, mirrorSourceId: ie.id, isOneOffIncomeMirror: true
       }));
       patch.calcIncomeItems = [...patch.calcIncomeItems, ...incomeMirrors, ...oneOffIncomeMirrors];
@@ -3718,11 +3766,11 @@ class Component extends DCLogic {
       // Also mirror joint income into the plain "Inkomen" tab (incomeEntries / recurringIncome).
       // This is separate from the calcIncomeItems mirrors above, which only feed the Budgetcalculator.
       const keepIncomeEntries = (sharedWs.incomeEntries || []).filter(it => it.mirrorOwner !== myId);
-      const mineIncomeEntries = (personalWs.incomeEntries || []).filter(ie => ie.joint).map(ie => ({ ...ie, id: 'mirror_incentry_' + ie.id, mirrorOwner: myId, mirrorSourceId: ie.id }));
+      const mineIncomeEntries = this.projectVisibleIncomeEntries(personalWs, myId);
       patch.incomeEntries = [...keepIncomeEntries, ...mineIncomeEntries];
 
       const keepRecurringIncome = (sharedWs.recurringIncome || []).filter(it => it.mirrorOwner !== myId);
-      const mineRecurringIncome = (personalWs.recurringIncome || []).filter(ri => ri.joint).map(ri => ({ ...ri, id: 'mirror_recinc_' + ri.id, mirrorOwner: myId, mirrorSourceId: ri.id }));
+      const mineRecurringIncome = (personalWs.recurringIncome || []).filter(ri => this.incomeIsVisible(ri)).map(ri => ({ ...ri, id: 'mirror_recinc_' + myId + '_' + ri.id, mirrorOwner: myId, mirrorSourceId: ri.id }));
       patch.recurringIncome = [...keepRecurringIncome, ...mineRecurringIncome];
 
       // Mirror recurring fixed costs (Vaste lasten, from the Uitgaven tab) into the shared
@@ -3827,6 +3875,10 @@ class Component extends DCLogic {
         }
       });
       const merged = { ...sharedWs, ...patch, ...dirtyOverlay };
+      // Source-owned projections must not be replaced by an older local Shared array.
+      merged.incomeEntries = this.dedupeIncomeEntries([...(merged.incomeEntries || []).filter(entry => entry.mirrorOwner !== myId), ...mineIncomeEntries]);
+      merged.recurringIncome = [...(merged.recurringIncome || []).filter(entry => entry.mirrorOwner !== myId), ...mineRecurringIncome];
+      merged.calcIncomeItems = [...(merged.calcIncomeItems || []).filter(entry => entry.mirrorOwner !== myId || (!entry.isIncomeMirror && !entry.isOneOffIncomeMirror)), ...incomeMirrors, ...oneOffIncomeMirrors];
       // Only categories referenced by mirrored transactions cross the Solo boundary.
       const sharedCategories = [...(merged.categoryOptions || [])];
       const categoryAliases = {};
@@ -4578,15 +4630,18 @@ class Component extends DCLogic {
     const cat = this.ws().categoryOptions.find(c => c.id === category);
     const id = 'qg' + Date.now();
     const startDate = this.state.newQuitStartDate || this.todayStr();
+    const rule = this.validQuitMonthlyRule(this.state.newQuitGoalType, this.state.newQuitGoalTarget);
+    if (!rule) { window.alert('Vul een geldig maanddoel in: 0–31 uitgavendagen, 1–31 dagen zonder uitgaven of een niet-negatief bedrag.'); return; }
     this.setWs(ws => ({
       quitGoals: [...ws.quitGoals, {
         id,
         category,
         name: this.state.newQuitName.trim() || `Quit ${cat ? cat.label.toLowerCase() : 'spending'}`,
-        startDate
+        startDate,
+        monthlyGoalRules: { [startDate.slice(0, 7)]: rule }
       }]
     }), () => this.persist());
-    this.setState({ newQuitCategory: '', newQuitName: '', newQuitStartDate: '', showQuitForm: false });
+    this.setState({ newQuitCategory: '', newQuitName: '', newQuitStartDate: '', newQuitGoalType: 'none', newQuitGoalTarget: '', showQuitForm: false });
   }
 
   removeQuitGoal(id) {
@@ -4635,6 +4690,28 @@ class Component extends DCLogic {
     return matches.length === 1 ? matches[0] : id;
   }
 
+  validQuitMonthlyRule(type, input) {
+    if (type === 'none' || !type) return { type: 'none', target: 0 };
+    const target = this.parseAmt(input);
+    if (!Number.isFinite(target) || target < 0) return null;
+    if (type === 'spendingAmount') return { type, target };
+    if (!['spendingDays', 'noSpendDays'].includes(type) || !Number.isInteger(target) || target > 31 || (type === 'noSpendDays' && target < 1)) return null;
+    return { type, target };
+  }
+
+  quitMonthlyRuleFor(goal, month) {
+    const rules = goal.monthlyGoalRules || {};
+    const key = Object.keys(rules).filter(key => /^\d{4}-\d{2}$/.test(key) && key <= month).sort().pop();
+    return key ? this.validQuitMonthlyRule(rules[key].type, rules[key].target) || { type: 'none', target: 0 } : { type: 'none', target: 0 };
+  }
+
+  setQuitMonthlyGoal(id, type, target) {
+    const rule = this.validQuitMonthlyRule(type, target);
+    if (!rule) { window.alert('Vul een geldig maanddoel in: 0–31 uitgavendagen, 1–31 dagen zonder uitgaven of een niet-negatief bedrag.'); return; }
+    const month = this.todayStr().slice(0, 7);
+    this.setWs(ws => ({ quitGoals: ws.quitGoals.map(goal => goal.id === id ? { ...goal, monthlyGoalRules: { ...(goal.monthlyGoalRules || {}), [goal.startDate?.slice(0, 7) > month ? goal.startDate.slice(0, 7) : month]: rule } } : goal) }), () => this.persist());
+  }
+
   buildQuitGoalCard(ws, goal) {
     const categoryId = this.challengeCategoryId(ws, goal.category);
     const cat = (ws.categoryOptions || []).find(c => c.id === categoryId);
@@ -4668,27 +4745,117 @@ class Component extends DCLogic {
       dailyRate = prior.reduce((sum, entry) => sum + this.safeNumber(entry.amount), 0) / Math.max(30, start - earliest);
     }
     const spendingDays = new Set(entries.map(entry => entry.day));
-    let successfulDays = 0, currentStreak = 0, longestStreak = 0;
-    const days = [];
+    const months = new Map();
     for (let day = start; Number.isFinite(day) && day <= today; day++) {
       const key = new Date(day * 86400000).toISOString().slice(0, 10);
+      const monthKey = key.slice(0, 7);
+      if (!months.has(monthKey)) months.set(monthKey, { key: monthKey, days: [], avoidedDays: 0, spendingDays: 0, currentStreak: 0, longestStreak: 0 });
+      const month = months.get(monthKey);
       const spent = spendingDays.has(key);
-      if (spent) currentStreak = 0;
-      else { successfulDays++; currentStreak++; longestStreak = Math.max(longestStreak, currentStreak); }
-        days.push({ date: key, spent, title: key + ': ' + (spent ? 'uitgegeven aan ' : 'geen uitgaven aan ') + label, bg: spent ? '#BC6F52' : '#7C8972' });
+      if (spent) { month.spendingDays++; month.currentStreak = 0; }
+      else { month.avoidedDays++; month.currentStreak++; month.longestStreak = Math.max(month.longestStreak, month.currentStreak); }
+      month.days.push({ date: key, spent, title: key + ': ' + (spent ? 'uitgegeven aan ' : 'geen uitgaven aan ') + label, bg: spent ? '#BC6F52' : '#7C8972' });
     }
+    const currentMonthKey = todayKey?.slice(0, 7) || '';
+    const recordedDays = new Set([...(ws.transactions || []), ...(ws.spendHistory || []).flatMap(month => month.items || [])].map(entry => dayKey(entry.date)).filter(key => key && key <= todayKey));
+    const summarize = month => {
+      const rule = this.quitMonthlyRuleFor(goal, month.key);
+      const spentAmount = entries.filter(entry => entry.day.slice(0, 7) === month.key && dayNumber(entry.day) >= start).reduce((sum, entry) => sum + this.safeNumber(entry.amount), 0);
+      const actual = rule.type === 'spendingDays' ? month.spendingDays : rule.type === 'spendingAmount' ? spentAmount : month.avoidedDays;
+      const limit = rule.type === 'spendingDays' || rule.type === 'spendingAmount';
+      const met = limit ? actual <= rule.target : actual >= rule.target;
+      const closed = month.key < currentMonthKey;
+      const goalLabel = rule.type === 'spendingDays' ? 'Maximaal ' + rule.target + ' uitgavendagen' : rule.type === 'spendingAmount' ? 'Maximaal € ' + this.fmt(rule.target) + ' per maand' : rule.type === 'noSpendDays' ? rule.target + ' dagen zonder uitgaven' : 'Maandelijks volgen';
+      const goalStatus = rule.type === 'none' ? 'Geen vast maanddoel ingesteld' : closed ? (met ? 'Maanddoel behaald' : 'Maanddoel niet behaald') : limit ? (met ? 'Binnen maandlimiet' : 'Maandlimiet overschreden') : (met ? 'Maanddoel bereikt' : 'Nog ' + Math.max(0, rule.target - actual) + ' dagen zonder uitgaven nodig');
+      const pct = rule.type === 'none' ? (month.days.length ? month.avoidedDays / month.days.length * 100 : 0) : rule.target > 0 ? actual / rule.target * 100 : actual > 0 ? 100 : 0;
+      const hasData = [...recordedDays].some(key => key.slice(0, 7) === month.key && dayNumber(key) >= start);
+      const partial = !!startKey && month.key === startKey.slice(0, 7) && startKey.slice(8) !== '01';
+      const resultLabel = !hasData ? 'Onvoldoende transactiedata' : rule.type === 'spendingAmount' ? '€ ' + this.fmt(spentAmount) + ' uitgegeven' : rule.type === 'noSpendDays' ? month.avoidedDays + ' dagen zonder geregistreerde uitgaven' : month.spendingDays + ' uitgavendagen';
+      return { ...month, rule, hasData, partial, resultLabel, coverageLabel: partial ? 'Deelmaand vanaf ' + startKey.slice(8) + '-' + startKey.slice(5, 7) : 'Op basis van geregistreerde transacties', monthLabel: new Intl.DateTimeFormat('nl-NL', { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(month.key + '-01T00:00:00Z')), goalLabel, goalStatus: !hasData ? 'Onvoldoende gegevens' : closed && partial ? 'Deelmaand · geen volledige doelbeoordeling' : goalStatus, monthSpentStr: this.fmt(spentAmount), estimatedAvoidedStr: this.fmt(month.avoidedDays * dailyRate), estimatedAvoidedDisplay: hasData && prior.length ? '€ ' + this.fmt(month.avoidedDays * dailyRate) : 'Niet beschikbaar', successPct: Math.min(100, Math.max(0, Math.round(pct))) };
+    };
+    const monthlyResults = [...months.values()].map(summarize);
+    const current = monthlyResults.find(month => month.key === currentMonthKey) || summarize({ key: currentMonthKey, days: [], avoidedDays: 0, spendingDays: 0, currentStreak: 0, longestStreak: 0 });
+    const monthHistory = monthlyResults.filter(month => month.key < currentMonthKey).reverse();
+    const previousDate = new Date(currentMonthKey + '-01T00:00:00Z');
+    previousDate.setUTCMonth(previousDate.getUTCMonth() - 1);
+    const previousKey = previousDate.toISOString().slice(0, 7);
+    const previous = monthHistory.find(month => month.key === previousKey);
+    let comparisonIndicator = 'Nog niet vergelijkbaar', comparisonNote = 'Geen volledige eerdere challenge-maand met voldoende transactiedata.', comparisonColor = '#7A5941';
+    if (current.partial) comparisonNote = 'Gestart halverwege de maand; deze deelmaand wordt niet met volledige maanden vergeleken.';
+    else if (current.rule.type === 'none') comparisonNote = 'Stel een maanddoel in om verbetering of achteruitgang te vergelijken.';
+    else if (previous && !previous.partial && current.hasData && previous.hasData && current.rule.type === previous.rule.type && current.rule.target === previous.rule.target) {
+      const cutoff = Math.min(Number(todayKey.slice(8)), new Date(Date.UTC(previousDate.getUTCFullYear(), previousDate.getUTCMonth() + 1, 0)).getUTCDate());
+      const periodHasData = month => [...recordedDays].some(key => key.slice(0, 7) === month && Number(key.slice(8)) <= cutoff);
+      if (periodHasData(currentMonthKey) && periodHasData(previousKey)) {
+        const metric = month => {
+          const period = entries.filter(entry => entry.day.slice(0, 7) === month && Number(entry.day.slice(8)) <= cutoff);
+          const spentDays = new Set(period.map(entry => entry.day)).size;
+          return current.rule.type === 'spendingAmount' ? Math.round(period.reduce((sum, entry) => sum + this.safeNumber(entry.amount), 0) * 100) / 100 : current.rule.type === 'noSpendDays' ? cutoff - spentDays : spentDays;
+        };
+        const delta = metric(currentMonthKey) - metric(previousKey);
+        const improved = current.rule.type === 'noSpendDays' ? delta > 0 : delta < 0;
+        comparisonIndicator = delta === 0 ? '= Gelijk gebleven' : (improved ? '↗ Verbetering' : '↘ Achteruitgang') + ' · ' + (current.rule.type === 'spendingAmount' ? '€ ' + this.fmt(Math.abs(delta)) : Math.abs(delta) + ' dagen');
+        comparisonColor = delta === 0 ? '#7A5941' : improved ? '#66715A' : '#99694F';
+        comparisonNote = 'Vergeleken met ' + previous.monthLabel + ', beide t/m dag ' + cutoff + '; op basis van geregistreerde transacties, geen prognose.';
+      }
+    } else if (previous && (previous.rule.type !== current.rule.type || previous.rule.target !== current.rule.target)) comparisonNote = 'Het maanddoel is gewijzigd; geen directe verbetering of achteruitgang berekend.';
+    const days = current.days, successfulDays = current.avoidedDays, currentStreak = current.currentStreak, longestStreak = current.longestStreak;
     const lastExpense = entries.reduce((last, entry) => !last || entry.day > last ? entry.day : last, '');
     const formatDay = key => key ? key.slice(8, 10) + '-' + key.slice(5, 7) + '-' + key.slice(0, 4) : '—';
     return {
       id: goal.id, name: goal.name, categoryLabel: label, categoryColor: cat?.color || '#634031',
       startDateLabel: formatDay(startKey), lastExpenseLabel: lastExpense ? formatDay(lastExpense) : 'Geen uitgaven gevonden',
       estimatedAvoidedStr: this.fmt(successfulDays * dailyRate), dailyRateStr: this.fmt(dailyRate),
+      estimatedAvoidedDisplay: current.estimatedAvoidedDisplay,
+      comparisonCurrent: current.monthLabel + ' · ' + current.resultLabel,
+      comparisonIndicator, comparisonColor, comparisonNote, comparisonMonths: monthHistory.slice(0, 2),
       elapsedDays: days.length, avoidedDays: successfulDays, currentStreak, longestStreak,
-      successPct: days.length ? Math.round(successfulDays / days.length * 100) : 0,
-      durationLabel: 'Doorlopend · geen einddatum', hasNoHistory: !prior.length,
+      successPct: current.successPct, spendingDays: current.spendingDays, monthSpentStr: current.monthSpentStr,
+      monthLabel: current.monthLabel, goalLabel: current.goalLabel, goalStatus: current.goalStatus, monthHistory, noMonthHistory: !monthHistory.length,
+      monthlyGoalType: current.rule.type, monthlyGoalTarget: current.rule.target,
+      setMonthlyGoalType: e => this.setQuitMonthlyGoal(goal.id, e.target.value, e.target.value === 'noSpendDays' ? Math.max(1, current.rule.target) : current.rule.target),
+      setMonthlyGoalTarget: e => this.setQuitMonthlyGoal(goal.id, current.rule.type, e.target.value),
+      durationLabel: 'Per kalendermaand', hasNoHistory: !prior.length,
       days: days.slice(-56), remove: () => this.removeQuitGoal(goal.id)
     };
   }
+  buildExpenseAverageComparisons(ws, monthKey = this.todayStr().slice(0, 7)) {
+    const today = this.todayStr(), currentKey = today.slice(0, 7);
+    const ongoing = monthKey === currentKey;
+    const [year, month] = monthKey.split('-').map(Number);
+    const cutoff = ongoing ? Number(today.slice(8, 10)) : new Date(Date.UTC(year, month, 0)).getUTCDate();
+    const catalog = ws.categoryOptions || [];
+    const ledger = (ws.transactions || []).flatMap(tx => {
+      const date = String(tx.date || '').match(/^\d{4}-\d{2}-\d{2}(?=$|T)/)?.[0];
+      const parsed = date ? new Date(date + 'T00:00:00Z') : null;
+      const amount = typeof tx.amount === 'number' ? tx.amount : this.parseAmt(tx.amount);
+      if (!date || !parsed || !Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date || date > today || !Number.isFinite(amount)) return [];
+      return [{ date, category: this.expenseCategoryIdentity(tx.category, catalog), amount }];
+    });
+    const earliest = ledger.reduce((first, tx) => !first || tx.date < first ? tx.date : first, '');
+    const latest = ledger.reduce((last, tx) => !last || tx.date > last ? tx.date : last, '');
+    const history = [];
+    for (let offset = 1; offset <= 3; offset++) {
+      const first = new Date(Date.UTC(year, month - 1 - offset, 1));
+      const key = first.toISOString().slice(0, 7);
+      const end = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0)).toISOString().slice(0, 10);
+      // Do not backfill missing/partially observed months as zero-spending history.
+      if (!earliest || earliest > key + '-01' || latest < end || !ledger.some(tx => tx.date.slice(0, 7) === key)) continue;
+      history.push({ key, cutoff: ongoing ? Math.min(cutoff, Number(end.slice(8))) : Number(end.slice(8)) });
+    }
+    const ids = new Set(catalog.map(category => this.expenseCategoryIdentity(category.id, catalog)));
+    ledger.filter(tx => tx.date.slice(0, 7) === monthKey && tx.category).forEach(tx => ids.add(tx.category));
+    const sum = (id, key, day) => ledger.filter(tx => tx.category === id && tx.date.slice(0, 7) === key && Number(tx.date.slice(8)) <= day).reduce((total, tx) => total + tx.amount, 0);
+    return [...ids].map(id => {
+      const amount = sum(id, monthKey, cutoff);
+      const average = history.length ? Math.round(history.reduce((total, period) => total + sum(id, period.key, period.cutoff), 0) / history.length * 100) / 100 : null;
+      const difference = average === null ? null : Math.round((amount - average) * 100) / 100;
+      const sign = difference > 0 ? '+' : difference < 0 ? '−' : '';
+      const pct = average === null ? null : average > 0 ? Math.round(difference / average * 1000) / 10 : amount === 0 ? 0 : null;
+      return { id, label: this.expenseCategoryLabel(id, catalog), currentStr: '€ ' + this.fmt(amount), averageStr: average === null ? '—' : '€ ' + this.fmt(average), differenceStr: difference === null ? '—' : sign + '€ ' + this.fmt(Math.abs(difference)), percentageStr: pct === null ? '—' : (pct > 0 ? '+' : '') + pct + '%', historyLabel: history.length ? history.length + ' volledige historiemaand(en)' + (average === 0 && amount !== 0 ? ' · percentage niet beschikbaar bij gemiddelde €0' : '') : 'Onvoldoende historie' };
+    });
+  }
+
   setSpendingFilter(e) { this.setState({ spendingFilter: e.target.value }); }
   toggleCategoryFilter(id) {
     this.setState(s => ({
@@ -5518,13 +5685,25 @@ class Component extends DCLogic {
     this.setWs(ws => ({ calcVariableItems: [...(ws.calcVariableItems || []), item] }), () => this.persist());
     this.setState({ newCalcJointVariableName: '', newCalcJointVariableAmount: '' });
   }
+  incomeIsVisible(entry) {
+    return typeof entry?.visible === 'boolean' ? entry.visible : !!entry?.joint;
+  }
+
+  projectVisibleIncomeEntries(personalWs, ownerId) {
+    const deleted = new Set((personalWs.incomeEntryDeletions || []).map(item => item.id));
+    return this.dedupeIncomeEntries((personalWs.incomeEntries || []).filter(entry => !entry.mirrorOwner && !deleted.has(entry.id) && this.incomeIsVisible(entry) && (!entry.addedBy || entry.addedBy === ownerId)).map(entry => ({
+      ...entry, id: 'mirror_incentry_' + ownerId + '_' + entry.id,
+      addedBy: entry.addedBy || ownerId, mirrorOwner: ownerId, mirrorSourceId: entry.id
+    })));
+  }
+
   incomeOccurrenceKey(entry) {
     if (!entry) return '';
     if (entry.recurringSourceId || entry.isRecurring) {
       const owner = entry.mirrorOwner || entry.addedBy || '';
       return `recurring|${owner}|${entry.recurringSourceId || entry.id}|${entry.scheduledDate || entry.date || ''}`;
     }
-    return `entry|${entry.id}`;
+    return `entry|${entry.mirrorOwner || entry.addedBy || ''}|${entry.mirrorSourceId || entry.id}`;
   }
   monthlyIncomeEntries(ws, monthDate = new Date()) {
     const year = monthDate.getFullYear(), month = monthDate.getMonth();
@@ -5532,7 +5711,7 @@ class Component extends DCLogic {
     return (ws.incomeEntries || []).filter(entry => {
       if ((ws.incomeEntryDeletions || []).some(item => item.id === entry.id)) return false;
       if (!entry.date) return false;
-      const date = new Date(`${entry.date}T00:00:00`);
+      const date = new Date(`${String(entry.date).slice(0, 10)}T00:00:00`);
       if (date.getFullYear() !== year || date.getMonth() !== month) return false;
       const key = this.incomeOccurrenceKey(entry);
       if (seen.has(key)) return false;
@@ -5549,28 +5728,48 @@ class Component extends DCLogic {
       return true;
     });
   }
+  monthlyIncomeSummary(ws, monthDate = new Date()) {
+    const month = `${monthDate.getFullYear()}-${String(monthDate.getMonth() + 1).padStart(2, '0')}`;
+    const today = this.todayStr();
+    const shared = this.state.mode === 'shared';
+    const owner = entry => entry.mirrorOwner || entry.addedBy || (shared ? '' : this.state.session?.user?.id || '');
+    const visible = entry => !shared || !entry.mirrorOwner || this.incomeIsVisible(entry);
+    const received = this.monthlyIncomeEntries(ws, monthDate).filter(entry => String(entry.date).slice(0, 10) <= today && visible(entry));
+    // Match scheduled occurrences, not names/amounts: an edited payment still settles its original occurrence.
+    const paid = new Set((ws.incomeEntries || []).filter(entry => entry.recurringSourceId).map(entry =>
+      `${owner(entry)}|${entry.recurringSourceId}|${String(entry.scheduledDate || entry.date || '').slice(0, 10)}`));
+    const seen = new Set(), expected = [];
+    (ws.recurringIncome || []).filter(visible).forEach(source => {
+      const sourceId = source.mirrorSourceId || source.id;
+      this.scenarioOccurrencesForMonth(source, month).forEach(date => {
+        if (source.startDate && date < String(source.startDate).slice(0, 10)) return;
+        const key = `${owner(source)}|${sourceId}|${date}`;
+        if (seen.has(key) || paid.has(key) || source.lastPostedDate === date) return;
+        seen.add(key);
+        expected.push({ ...source, scheduledDate: date });
+      });
+    });
+    return {
+      received, expected,
+      receivedTotal: received.reduce((sum, entry) => sum + this.safeNumber(entry.amount), 0),
+      expectedTotal: expected.reduce((sum, entry) => sum + this.safeNumber(entry.amount), 0)
+    };
+  }
   monthIncomeAutoTotal(ws, jointFilter) {
-    const now = new Date(); const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
-    const incomeTotal = this.monthlyIncomeEntries(ws, now)
-      .filter(inc => matchJoint(inc.joint))
-      .reduce((s, i) => s + this.safeNumber(i.amount), 0);
-    const futureRecurringIncomeThisMonth = ws.recurringIncome.filter(ri => matchJoint(ri.joint)).reduce((sum, ri) => {
-      const nd = this.nextUnpostedIncomeOccurrence(ri);
-      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + this.safeNumber(ri.amount) : sum;
-    }, 0);
-    return incomeTotal + futureRecurringIncomeThisMonth;
+    const summary = this.monthlyIncomeSummary(ws);
+    return [...summary.received, ...summary.expected].filter(entry => matchJoint(entry.joint))
+      .reduce((sum, entry) => sum + this.safeNumber(entry.amount), 0);
   }
   monthIncomeAutoItems(ws, jointFilter) {
-    const now = new Date(); const y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
     const matchJoint = (isJoint) => jointFilter === undefined || !!isJoint === jointFilter;
-    const oneOff = this.monthlyIncomeEntries(ws, now)
+    const summary = this.monthlyIncomeSummary(ws);
+    const oneOff = summary.received
       .filter(inc => matchJoint(inc.joint))
       .map(inc => ({ id: 'auto_' + inc.id, sourceId: inc.id, sourceKind: 'oneoff', name: inc.source, amount: inc.amount, joint: !!inc.joint }));
-    const recurring = ws.recurringIncome
+    const recurring = summary.expected
       .filter(ri => matchJoint(ri.joint))
-      .filter(ri => { const nd = this.nextUnpostedIncomeOccurrence(ri); return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today); })
-      .map(ri => ({ id: 'auto_' + ri.id, sourceId: ri.id, sourceKind: 'recurring', name: ri.name, amount: ri.amount, joint: !!ri.joint }));
+      .map(ri => ({ id: 'auto_' + ri.id + '_' + ri.scheduledDate, sourceId: ri.id, sourceKind: 'recurring', name: ri.name, amount: ri.amount, joint: !!ri.joint }));
     return [...oneOff, ...recurring];
   }
   fixedAutoItems(ws, jointFilter) {
@@ -6334,7 +6533,8 @@ class Component extends DCLogic {
           date: dStr,
           category: ri.category || '',
           joint: !!ri.joint,
-          addedBy: ri.addedBy,
+          visible: this.incomeIsVisible(ri),
+          addedBy: ri.addedBy || (mode === 'personal' ? this.state.session?.user?.id : undefined),
           isRecurring: true,
           recurringSourceId: ri.id,
           scheduledDate: dStr
@@ -6731,7 +6931,7 @@ class Component extends DCLogic {
   setNewIncomeAmount(e) { this.setState({ newIncomeAmount: e.target.value }); }
   setNewIncomeJoint(e) { this.setState({ newIncomeJoint: e.target.checked }); }
   toggleIncomeEntryJoint(id) {
-    this.setWs(ws => ({ incomeEntries: ws.incomeEntries.map(i => i.id === id ? { ...i, joint: !i.joint } : i) }), () => this.persist());
+    this.setWs(ws => ({ incomeEntries: ws.incomeEntries.map(i => i.id === id ? { ...i, joint: !this.incomeIsVisible(i), visible: !this.incomeIsVisible(i) } : i) }), () => this.persist());
   }
 
   addIncome() {
@@ -6743,6 +6943,8 @@ class Component extends DCLogic {
       source: this.state.newIncomeSource || 'Income',
       amount,
       joint: this.state.newIncomeJoint,
+      visible: !!this.state.newIncomeJoint,
+      addedBy: this.state.session?.user?.id,
       category: this.state.newIncomeCategory || '',
       date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
     };
@@ -6765,7 +6967,7 @@ class Component extends DCLogic {
   setNewRecIncomeStartDate(e) { this.setState({ newRecIncomeStartDate: e.target.value }); }
   setNewRecIncomeJoint(e) { this.setState({ newRecIncomeJoint: e.target.checked }); }
   toggleRecurringIncomeJoint(id) {
-    this.setWs(ws => ({ recurringIncome: ws.recurringIncome.map(r => r.id === id ? { ...r, joint: !r.joint } : r) }), () => this.persist());
+    this.setWs(ws => ({ recurringIncome: ws.recurringIncome.map(r => r.id === id ? { ...r, joint: !this.incomeIsVisible(r), visible: !this.incomeIsVisible(r) } : r) }), () => this.persist());
   }
 
   addRecurringIncome() {
@@ -7266,11 +7468,13 @@ class Component extends DCLogic {
     const incomeMemberIds = [this.state.session ? this.state.session.user.id : '__local_personal__', this.state.householdPartnerUserId];
     const incomeMemberNames = [this.state.name || t.calcMeLabel, this.state.householdPartnerName || t.calcPartnerColumnHeader];
     const incomeOwnerGroup = entry => {
-      if (!entry.mirrorOwner && entry.joint) return 2;
       const owner = entry.mirrorOwner || entry.addedBy;
-      return owner && owner === incomeMemberIds[1] ? 1 : 0;
+      if (owner === incomeMemberIds[0]) return 0;
+      if (owner && owner === incomeMemberIds[1]) return 1;
+      return !entry.mirrorOwner && entry.joint ? 2 : (this.state.mode === 'personal' ? 0 : -1);
     };
-    const monthIncomeRaw = this.monthlyIncomeEntries(ws, now)
+    const monthlyIncome = this.monthlyIncomeSummary(ws, now);
+    const monthIncomeRaw = monthlyIncome.received
       .slice()
       .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
     const monthIncome = monthIncomeRaw.map(inc => {
@@ -7286,9 +7490,9 @@ class Component extends DCLogic {
         categoryColor: cat ? cat.color : '#7A5941',
         isRecurring: !!inc.isRecurring,
         ownerLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.calcJointLabel : (this.state.name || t.calcMeLabel)),
-        jointLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (inc.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
-        jointBg: isMirror ? '#8A674F' : (inc.joint ? '#DCE4D6' : '#E7D3CE'),
-        jointColor: isMirror ? '#F6F1E7' : (inc.joint ? '#55634B' : '#794A45'),
+        jointLabel: isMirror ? ownerLabelFor(inc.mirrorOwner) : (this.incomeIsVisible(inc) ? t.shareVisibleLabel : t.sharePrivateLabel),
+        jointBg: isMirror ? '#8A674F' : (this.incomeIsVisible(inc) ? '#DCE4D6' : '#E7D3CE'),
+        jointColor: isMirror ? '#F6F1E7' : (this.incomeIsVisible(inc) ? '#55634B' : '#794A45'),
         toggleJoint: isMirror ? () => {} : () => this.toggleIncomeEntryJoint(inc.id),
         deleteEntry: (event) => {
           if (event) { event.preventDefault(); event.stopPropagation(); }
@@ -7313,10 +7517,7 @@ class Component extends DCLogic {
         return group === 2 ? amount / 2 : group === index ? amount : 0;
       };
       const received = monthIncomeRaw.reduce((sum, entry) => sum + share(entry), 0);
-      const expected = (ws.recurringIncome || []).reduce((sum, entry) => {
-        const date = this.nextUnpostedIncomeOccurrence(entry);
-        return date.getFullYear() === y && date.getMonth() === m && date > new Date(y, m, today) ? sum + share(entry) : sum;
-      }, 0);
+      const expected = monthlyIncome.expected.reduce((sum, entry) => sum + share(entry), 0);
       return { name, receivedStr: this.fmt(received), expectedStr: this.fmt(expected) };
     });
     if (this.state.mode === 'shared') {
@@ -7324,7 +7525,7 @@ class Component extends DCLogic {
       monthIncome.forEach((entry, index) => {
         const group = incomeOwnerGroup(entry);
         entry.showOwnerHeading = index === 0 || group !== incomeOwnerGroup(monthIncome[index - 1]);
-        entry.ownerGroupLabel = group === 2 ? t.calcJointLabel : incomeMemberNames[group];
+        entry.ownerGroupLabel = group === 2 ? t.calcJointLabel : incomeMemberNames[group] || t.calcJointLabel;
       });
     }
 
@@ -7382,10 +7583,7 @@ class Component extends DCLogic {
     }, 0);
     const spendExpectedMore = futureRecurringBillsThisMonth + plannerRemaining;
 
-    const futureRecurringIncomeThisMonth = ws.recurringIncome.reduce((sum, ri) => {
-      const nd = this.nextUnpostedIncomeOccurrence(ri);
-      return nd.getFullYear() === y && nd.getMonth() === m && nd > new Date(y, m, today) ? sum + this.safeNumber(ri.amount) : sum;
-    }, 0);
+    const futureRecurringIncomeThisMonth = monthlyIncome.expectedTotal;
 
     const overviewMax = Math.max(incomeTotal + futureRecurringIncomeThisMonth, spentMonth + spendExpectedMore, 1);
     const overviewScale = 100 / overviewMax;
@@ -7718,9 +7916,9 @@ class Component extends DCLogic {
           freqLabel: this.tf(ri.frequency === 'every4weeks' ? 'every 4 weeks' : 'monthly', ri.frequency === 'every4weeks' ? 'elke 4 weken' : 'maandelijks', ri.frequency === 'every4weeks' ? 'alle 4 Wochen' : 'monatlich', ri.frequency === 'every4weeks' ? 'toutes les 4 semaines' : 'mensuel', ri.frequency === 'every4weeks' ? 'cada 4 semanas' : 'mensual'),
           categoryLabel: cat ? cat.label : '',
           categoryColor: cat ? cat.color : '#7A5941',
-          jointLabel: isMirror ? ownerLabelFor(ri.mirrorOwner) : (ri.joint ? t.shareVisibleLabel : t.sharePrivateLabel),
-          jointBg: isMirror ? '#8A674F' : (ri.joint ? '#DCE4D6' : '#E7D3CE'),
-          jointColor: isMirror ? '#F6F1E7' : (ri.joint ? '#55634B' : '#794A45'),
+          jointLabel: isMirror ? ownerLabelFor(ri.mirrorOwner) : (this.incomeIsVisible(ri) ? t.shareVisibleLabel : t.sharePrivateLabel),
+          jointBg: isMirror ? '#8A674F' : (this.incomeIsVisible(ri) ? '#DCE4D6' : '#E7D3CE'),
+          jointColor: isMirror ? '#F6F1E7' : (this.incomeIsVisible(ri) ? '#55634B' : '#794A45'),
           toggleJoint: isMirror ? () => {} : () => this.toggleRecurringIncomeJoint(ri.id),
           remove: isMirror ? () => {} : () => this.removeRecurringIncome(ri.id),
           isEditing, notEditing: !isEditing, isMirror,
@@ -8256,6 +8454,10 @@ class Component extends DCLogic {
       newQuitName: this.state.newQuitName,
       setNewQuitName: (e) => this.setNewQuitName(e),
       newQuitStartDate: this.state.newQuitStartDate,
+      newQuitGoalType: this.state.newQuitGoalType,
+      newQuitGoalTarget: this.state.newQuitGoalTarget,
+      setNewQuitGoalType: e => this.setState({ newQuitGoalType: e.target.value }),
+      setNewQuitGoalTarget: e => this.setState({ newQuitGoalTarget: e.target.value }),
       setNewQuitStartDate: (e) => this.setNewQuitStartDate(e),
       addQuitGoal: () => this.addQuitGoal(),
       addQuitDisabled: !this.state.newQuitCategory,
@@ -8722,6 +8924,8 @@ class Component extends DCLogic {
       showVariableExpensesAverageComparison,
       variableExpensesAverageComparisonText,
       variableExpenseCategoryTotals,
+      expenseAverageComparisons: this.buildExpenseAverageComparisons(ws),
+      expenseAveragePeriodLabel: 'Geregistreerde transacties t/m dag ' + today + ', vergeleken met dezelfde dagen in maximaal drie voorgaande afgeronde maanden. Alleen maanden met aantoonbare ledgerhistorie tellen mee.',
       variableExpensesMonthLabel: this.tf(
         'Variable expenses this month',
         'Variabele uitgaven deze maand',
