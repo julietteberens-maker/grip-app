@@ -569,13 +569,15 @@
   .grip-calculator-editor{min-width:0}
   .grip-budget-edit-layout{display:grid;gap:16px;align-items:start}
   .grip-budget-edit-content{min-width:0}
-  .grip-budget-live-summary{background:#E9DCC8;border:1px solid rgba(99,64,49,.14);border-radius:12px;padding:14px;color:#634031}
-  .grip-budget-live-summary h3{font-size:12px;font-weight:600;margin:0 0 10px}
-  .grip-budget-live-summary dl{margin:0;display:grid;gap:9px;font-size:11.5px}
-  .grip-budget-live-summary dl>div{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .grip-budget-live-summary{background:#E9DCC8;border:1px solid rgba(99,64,49,.14);border-radius:12px;padding:12px 14px;color:#634031}
+  .grip-budget-live-summary h3{font-size:12px;font-weight:600;margin:0 0 9px}
+  .grip-budget-live-summary dl{margin:0;display:grid;gap:7px;font-size:11.5px}
+  .grip-budget-live-summary dl div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:baseline;gap:8px}
   .grip-budget-live-summary dt{min-width:0;overflow-wrap:anywhere}
-  .grip-budget-live-summary dd{margin:0;font-weight:600;font-size:17px;font-variant-numeric:tabular-nums;text-align:right}
-  .grip-budget-live-summary .grip-live-combined{border-top:1px solid rgba(99,64,49,.16);padding-top:9px}
+  .grip-budget-live-summary dd{margin:0;font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;text-align:right;overflow-wrap:anywhere}
+  .grip-budget-live-summary dd[data-balance="positive"]{color:#55634B}
+  .grip-budget-live-summary dd[data-balance="negative"]{color:#925F4D}
+  .grip-budget-live-summary .grip-live-combined{border-top:1px solid rgba(99,64,49,.16);padding-top:8px;margin-top:2px}
   .grip-budget-live-note{font-size:10px;line-height:1.5;color:#7A5941;margin:10px 0 0}
   .grip-budget-field-dirty{background:#F1E9D7!important;border-color:#A38B61!important;box-shadow:inset 3px 0 #A38B61}
   .grip-budget-workflow-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
@@ -590,6 +592,18 @@
   .grip-budget-edit-row>summary>span:first-child{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
   .grip-budget-edit-row>summary strong{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
   .grip-budget-edit-action{font-size:11px;text-align:right;color:#7A5941}
+  .grip-calculator-editor .grip-budget-shared-line{display:grid;grid-template-columns:minmax(100px,1.5fr) repeat(3,minmax(0,1fr)) 60px;gap:8px;align-items:center;padding:8px!important;min-width:0;box-sizing:border-box;font-size:12px}
+  .grip-budget-shared-line>span,.grip-budget-shared-line>strong{width:auto!important;min-width:0;box-sizing:border-box}
+  .grip-budget-shared-line>:not(:first-child){text-align:right!important;font-variant-numeric:tabular-nums;white-space:normal!important;overflow-wrap:anywhere}
+  .grip-budget-shared-line>:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .grip-budget-member-number{color:#7A5941}
+  .grip-budget-table-head{background:rgba(216,199,171,.23);border-radius:7px;font-size:10px!important;color:#7A5941;margin-top:6px;font-weight:500}
+  .grip-budget-table-total{background:rgba(124,137,114,.09);border-top:1px solid rgba(99,64,49,.13);border-radius:0 0 7px 7px;margin-top:4px;font-weight:600}
+  .grip-budget-solo-total{display:grid;grid-template-columns:minmax(0,1fr) max-content 66px;gap:14px;padding:8px 0;font-size:12px;font-weight:600;background:rgba(124,137,114,.09)}
+  .grip-budget-solo-total>strong{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .grip-calculator-editor .grip-table-viewport:has(.grip-budget-shared-line){min-width:0;overflow:visible;background:transparent;box-shadow:none;padding:0}
+  .grip-budget-income-section>div:first-of-type>span{font-size:11px!important}
+  @media(max-width:640px){.grip-calculator-editor .grip-budget-shared-line{grid-template-columns:minmax(68px,1.2fr) repeat(3,minmax(0,1fr)) 46px;gap:5px;font-size:11px;padding:7px 3px!important}.grip-budget-table-head{font-size:9.5px!important}.grip-budget-shared-line .grip-budget-edit-action{font-size:10px}}
   .grip-budget-edit-fields{padding:7px 10px 10px;background:rgba(216,199,171,.2);border-radius:8px;margin-bottom:6px}
   .grip-budget-edit-fields .grip-calc-grid{display:flex!important;flex-wrap:wrap;gap:8px;min-width:0!important}
   .grip-budget-edit-fields .grip-control{max-width:100%;box-sizing:border-box}
@@ -2530,11 +2544,11 @@
         <div class="grip-budget-edit-layout">
           <aside class="grip-budget-live-summary" aria-label="Live resterend budget">
             <h3>Vrij te verdelen · live</h3>
-            <dl><sc-if value="{{ calcIsSharedMode }}"><div><dt>{{ calcTableMeLabel }}</dt><dd>{{ calcDistributableMeDisplay }}</dd></div><div><dt>{{ calcTablePartnerLabel }}</dt><dd>{{ calcDistributablePartnerDisplay }}</dd></div><div class="grip-live-combined"><dt>Totaal samen</dt><dd>€ {{ calcDistributableStr }}</dd></div></sc-if><sc-if value="{{ calcIsPersonalMode }}"><div><dt>{{ calcTableMeLabel }}</dt><dd>€ {{ calcDistributableStr }}</dd></div></sc-if></dl>
+            <dl><sc-if value="{{ calcIsSharedMode }}"><div><dt>{{ calcTableMeLabel }}</dt><dd data-balance="{{ liveBudgetMeTone }}">{{ calcDistributableMeDisplay }}</dd></div><div><dt>{{ calcTablePartnerLabel }}</dt><dd data-balance="{{ liveBudgetPartnerTone }}">{{ calcDistributablePartnerDisplay }}</dd></div><div class="grip-live-combined"><dt>Totaal samen</dt><dd data-balance="{{ liveBudgetTotalTone }}">€ {{ calcDistributableStr }}</dd></div></sc-if><sc-if value="{{ calcIsPersonalMode }}"><div><dt>{{ calcTableMeLabel }}</dt><dd data-balance="{{ liveBudgetTotalTone }}">€ {{ calcDistributableStr }}</dd></div></sc-if></dl>
             <p class="grip-budget-live-note">Na vaste lasten, variabele budgetten en gepland sparen. Een minbedrag betekent een tekort.</p>
-            <p class="grip-budget-live-note">{{ calculatorLiveEditStatus }}</p>
-            <div class="grip-budget-workflow-actions"><button class="grip-btn grip-btn-primary" onClick="{{ saveBudgetEditor }}">Wijzigingen opslaan</button><button class="grip-btn grip-btn-secondary" onClick="{{ cancelBudgetEditor }}">Annuleren</button></div>
+            <sc-if value="{{ budgetHasUnsavedChanges }}"><p class="grip-budget-live-note">Niet-opgeslagen wijzigingen</p></sc-if>
             <div role="status" class="grip-budget-live-note">{{ budgetEditorMessage }}</div>
+            <div class="grip-budget-workflow-actions"><button class="grip-btn grip-btn-primary" onClick="{{ saveBudgetEditor }}">Wijzigingen opslaan</button><button class="grip-btn grip-btn-secondary" onClick="{{ cancelBudgetEditor }}">Annuleren</button></div>
           </aside>
           <div class="grip-budget-edit-content" onInput="{{ markBudgetEditorInput }}">
             <sc-if value="{{ budgetLeaveWarning }}"><div class="grip-budget-leave-warning" role="alert">Je hebt niet-opgeslagen wijzigingen. Wil je deze verwerpen?<div class="grip-budget-workflow-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ keepBudgetEditing }}">Verder bewerken</button><button class="grip-btn grip-btn-secondary" onClick="{{ discardBudgetAndLeave }}">Wijzigingen verwerpen</button></div></div></sc-if>
@@ -2569,8 +2583,7 @@
         <div class="grip-solo-calculator {{ soloCalcEditClass }}">
         <div class="grip-solo-edit-toolbar"><sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><button class="grip-btn grip-btn-secondary" onClick="{{ startSoloCalculatorEdit }}">Bewerken</button></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></sc-if></div>
         <sc-if value="{{ soloCalcEditError }}" hint-placeholder-val="{{ false }}"><div role="alert" style="font-size:12px;color:#BC6F52">{{ soloCalcEditError }}</div></sc-if>
-        <div class="grip-surface">
-          <div style="font-size:14px;font-weight:700;margin-bottom:10px">{{ t.calcIncomeLabel }}</div>
+        <details class="grip-surface grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>{{ t.calcIncomeLabel }}</span><strong>€ {{ calcIncomeTotalStr }}</strong></div></summary>
           <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
             <sc-if value="{{ calcShowIncomeAutoRow }}" hint-placeholder-val="{{ true }}">
             <sc-for list="{{ calcIncomeAutoItems }}" as="ai" hint-placeholder-count="2">
@@ -2603,8 +2616,8 @@
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#634031;cursor:pointer"><input type="checkbox" checked="{{ newCalcIncomeJoint }}" onChange="{{ setNewCalcIncomeJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
             <button onClick="{{ addCalcIncomeItem }}" disabled="{{ addCalcIncomeItemDisabled }}" style="border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addShort }}</button>
           </div>
-          <div style="font-size:12.5px;font-weight:700;margin-top:12px;text-align:right">{{ t.calcIncomeTotalLabel }} € {{ calcIncomeTotalStr }}</div>
-        </div>
+          <div class="grip-budget-solo-total"><span>{{ t.calcIncomeTotalLabel }}</span><strong>€ {{ calcIncomeTotalStr }}</strong><span></span></div>
+        </details>
 
         <details class="grip-surface grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
@@ -2728,7 +2741,7 @@
             </div>
           </details>
 
-          <div style="font-size:12.5px;font-weight:700;margin-top:12px;text-align:right">{{ t.calcFixedTotalLabel }} € {{ calcFixedTotalStr }}</div>
+          <div class="grip-budget-solo-total"><span>{{ t.calcFixedTotalLabel }}</span><strong>€ {{ calcFixedTotalStr }}</strong><span></span></div>
         </details>
 
         <details class="grip-surface grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>Geplande variabele uitgaven</span><strong>€ {{ calcVariableAvgTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcVariableSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary>
@@ -2766,7 +2779,7 @@
             <button onClick="{{ addCalcOtherCategory }}" disabled="{{ addCalcOtherCategoryDisabled }}" style="border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addShort }}</button>
           </div>
 
-          <div style="font-size:12.5px;font-weight:700;margin-top:14px;text-align:right">{{ t.calcVariableTotalLabel }} € {{ calcVariableAvgTotalStr }}</div>
+          <div class="grip-budget-solo-total"><span>{{ t.calcVariableTotalLabel }}</span><strong>€ {{ calcVariableAvgTotalStr }}</strong><span></span></div>
         </details>
         </div>
       </sc-if>
@@ -2775,7 +2788,7 @@
         <div class="grip-surface grip-table-viewport">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
             <div style="font-size:14px;font-weight:700;color:#634031">{{ calcTableMeLabel }} &amp; {{ calcTablePartnerLabel }}</div>
-            <div style="display:flex;gap:8px"><sc-if value="{{ calcInlineViewing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleCalcBulkEdit }}" class="grip-btn grip-btn-secondary">{{ t.calcEditAllLabel }}</button></sc-if><sc-if value="{{ showCalcBulkEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cancelCalcBulkEdit }}" class="grip-btn grip-btn-secondary">Annuleren</button><button onClick="{{ saveCalcBulkEdit }}" class="grip-btn grip-btn-primary">Opslaan</button></sc-if></div>
+            <div style="display:flex;gap:8px"><sc-if value="{{ showCalcBulkEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cancelCalcBulkEdit }}" class="grip-btn grip-btn-secondary">Annuleren</button><button onClick="{{ saveCalcBulkEdit }}" class="grip-btn grip-btn-primary">Opslaan</button></sc-if></div>
           </div>
 
           <div class="grip-calc-grid grip-budget-editor-columns" style="padding:0 10px 6px;font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
@@ -2787,7 +2800,7 @@
             <span style="width:16px"></span>
           </div>
 
-          <div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
+          <details class="grip-calc-compact-section grip-budget-income-section" open><summary><div class="grip-calc-section-title"><span>Inkomen</span><strong>€ {{ calcTableIncomeTotalStr }}</strong></div></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
             <span style="font-size:12.5px;font-weight:700">{{ t.calcIncomeLabel }}</span>
             <button onClick="{{ toggleCalcIncomeAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#5A3B2D;color:#F6F1E7;line-height:1">+</button>
             <sc-if value="{{ showCalcIncomeAdd }}" hint-placeholder-val="{{ false }}">
@@ -2806,8 +2819,9 @@
             </sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
-            <sc-for list="{{ calcTableIncomeRows }}" as="row" hint-placeholder-count="2">
-<details class="grip-budget-edit-row"><summary onClick="{{ startCalcRowEditing }}"><span>{{ row.name }}</span><strong>€ {{ row.totalStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
+            <div class="grip-budget-shared-line grip-budget-table-head"><span>Omschrijving</span><span>Totaal</span><span data-member-id="{{ budgetEditorMeId }}">{{ calcTableMeLabel }}</span><span data-member-id="{{ budgetEditorPartnerId }}">{{ calcTablePartnerLabel }}</span><span>Bewerken</span></div>
+<sc-for list="{{ calcTableIncomeRows }}" as="row" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary class="grip-budget-shared-line" onClick="{{ startCalcRowEditing }}"><span>{{ row.name }}</span><strong>€ {{ row.totalStr }}</strong><span class="grip-budget-member-number" data-member-id="{{ budgetEditorMeId }}">€ {{ row.meStr }}</span><span class="grip-budget-member-number" data-member-id="{{ budgetEditorPartnerId }}">€ {{ row.partnerStr }}</span><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <sc-if value="{{ row.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12.5px;flex:1">{{ row.name }}</span></sc-if><sc-if value="{{ row.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ row.name }}" onChange="{{ row.setName }}" class="grip-control" aria-label="Omschrijving" style="width:100%;min-width:0"></sc-if>
                 <span onClick="{{ row.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row.ownerBg }};color:{{ row.ownerColor }};flex:none;width:56px;text-align:center">{{ row.ownerLabel }}</span>
@@ -2822,16 +2836,17 @@
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcIncomeItemsEmpty }}</div>
             </sc-if>
           </div>
-          <div class="grip-calc-grid" style="padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
+          <div class="grip-budget-shared-line grip-budget-table-total" style="padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
             <span style="font-size:12px;font-weight:700;flex:1">{{ t.calcIncomeTotalLabel }}</span>
-            <span style="width:56px"></span>
+            
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right">€ {{ calcTableIncomeTotalStr }}</span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right;color:#66715A">€ {{ calcTableIncomeMeStr }}</span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right;color:#7A4A44">€ {{ calcTableIncomePartnerStr }}</span>
             <span style="width:16px"></span>
           </div>
 
-          <details class="grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcTableFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
+          </details>
+<details class="grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcTableFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
             <span style="font-size:12.5px;font-weight:700">{{ t.calcFixedHeader }}</span>
             <button onClick="{{ toggleCalcFixedAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#5A3B2D;color:#F6F1E7;line-height:1">+</button>
             <sc-if value="{{ showCalcFixedAdd }}" hint-placeholder-val="{{ false }}">
@@ -2857,8 +2872,9 @@
             </sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
-            <sc-for list="{{ calcTableFixedRows }}" as="row2" hint-placeholder-count="2">
-<details class="grip-budget-edit-row"><summary onClick="{{ startCalcRowEditing }}"><span>{{ row2.name }}</span><strong>€ {{ row2.totalStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
+            <div class="grip-budget-shared-line grip-budget-table-head"><span>Omschrijving</span><span>Totaal</span><span data-member-id="{{ budgetEditorMeId }}">{{ calcTableMeLabel }}</span><span data-member-id="{{ budgetEditorPartnerId }}">{{ calcTablePartnerLabel }}</span><span>Bewerken</span></div>
+<sc-for list="{{ calcTableFixedRows }}" as="row2" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary class="grip-budget-shared-line" onClick="{{ startCalcRowEditing }}"><span>{{ row2.name }}</span><strong>€ {{ row2.totalStr }}</strong><span class="grip-budget-member-number" data-member-id="{{ budgetEditorMeId }}">€ {{ row2.meStr }}</span><span class="grip-budget-member-number" data-member-id="{{ budgetEditorPartnerId }}">€ {{ row2.partnerStr }}</span><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <sc-if value="{{ row2.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12.5px;flex:1">{{ row2.name }}</span></sc-if><sc-if value="{{ row2.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ row2.name }}" onChange="{{ row2.setName }}" class="grip-control" aria-label="Omschrijving" style="width:100%;min-width:0"></sc-if>
                 <span onClick="{{ row2.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row2.ownerBg }};color:{{ row2.ownerColor }};flex:none;width:56px;text-align:center">{{ row2.ownerLabel }}</span>
@@ -2873,9 +2889,9 @@
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
             </sc-if>
           </div>
-          <div class="grip-calc-grid" style="padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
+          <div class="grip-budget-shared-line grip-budget-table-total" style="padding:4px 10px 16px;border-bottom:1px solid rgba(99,64,49,.18);margin-bottom:14px">
             <span style="font-size:12px;font-weight:700;flex:1">{{ t.calcFixedTotalLabel }}</span>
-            <span style="width:56px"></span>
+            
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right">€ {{ calcTableFixedTotalStr }}</span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right;color:#66715A">€ {{ calcTableFixedMeStr }}</span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right;color:#7A4A44">€ {{ calcTableFixedPartnerStr }}</span>
@@ -2911,8 +2927,9 @@
             </sc-if>
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
-            <sc-for list="{{ calcTableVariableRows }}" as="row3" hint-placeholder-count="2">
-<details class="grip-budget-edit-row"><summary onClick="{{ startCalcRowEditing }}"><span>{{ row3.name }}</span><strong>€ {{ row3.totalStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
+            <div class="grip-budget-shared-line grip-budget-table-head"><span>Omschrijving</span><span>Totaal</span><span data-member-id="{{ budgetEditorMeId }}">{{ calcTableMeLabel }}</span><span data-member-id="{{ budgetEditorPartnerId }}">{{ calcTablePartnerLabel }}</span><span>Bewerken</span></div>
+<sc-for list="{{ calcTableVariableRows }}" as="row3" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary class="grip-budget-shared-line" onClick="{{ startCalcRowEditing }}"><span>{{ row3.name }}</span><strong>€ {{ row3.totalStr }}</strong><span class="grip-budget-member-number" data-member-id="{{ budgetEditorMeId }}">€ {{ row3.meStr }}</span><span class="grip-budget-member-number" data-member-id="{{ budgetEditorPartnerId }}">€ {{ row3.partnerStr }}</span><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <sc-if value="{{ row3.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12.5px;flex:1">{{ row3.name }}</span></sc-if><sc-if value="{{ row3.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ row3.name }}" onChange="{{ row3.setName }}" class="grip-control" aria-label="Omschrijving" style="width:100%;min-width:0"></sc-if>
                 <span onClick="{{ row3.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row3.ownerBg }};color:{{ row3.ownerColor }};flex:none;width:56px;text-align:center">{{ row3.ownerLabel }}</span>
@@ -2927,9 +2944,9 @@
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
             </sc-if>
           </div>
-          <div class="grip-calc-grid" style="padding:4px 10px 4px">
+          <div class="grip-budget-shared-line grip-budget-table-total" style="padding:4px 10px 4px">
             <span style="font-size:12px;font-weight:700;flex:1">{{ t.calcVariableTotalLabel }}</span>
-            <span style="width:56px"></span>
+            
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right">€ {{ calcTableVariableTotalStr }}</span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right;color:#66715A">€ {{ calcTableVariableMeStr }}</span>
             <span style="font-size:12px;font-weight:700;width:60px;text-align:right;color:#7A4A44">€ {{ calcTableVariablePartnerStr }}</span>
@@ -4053,8 +4070,8 @@ class Component extends DCLogic {
       const me = shares.me, partner = shares.partner;
       return [{ id: group.id, name: group.name, total: amount, me, partner,
         totalStr: this.fmt(amount), meStr: this.fmt(me), partnerStr: this.fmt(partner),
-        setMeContribution: e => this.setCalcMemberContribution(rowKey, amount, this.state.session?.user?.id, e),
-        setPartnerContribution: e => this.setCalcMemberContribution(rowKey, amount, this.state.householdPartnerUserId, e),
+        setMeContribution: e => this.setCalcMemberContribution(rowKey, amount, this.state.session?.user?.id, e, { me, partner }),
+        setPartnerContribution: e => this.setCalcMemberContribution(rowKey, amount, this.state.householdPartnerUserId, e, { me, partner }),
         ownerLabel: sharedMode ? jointLabel : meLabel, ownerBg: sharedMode ? '#634031' : '#7C8972', ownerColor: '#F6F1E7',
         editable: false, notEditable: true, setName: null, setAmount: null, cycleOwner: null, remove: null
       }];
@@ -5328,12 +5345,13 @@ class Component extends DCLogic {
     const own = Math.round(amount * a / (a + b) * 100) / 100;
     return { me: own, partner: Math.round((amount - own) * 100) / 100 };
   }
-  setCalcMemberContribution(rowKey, total, memberId, e) {
+  setCalcMemberContribution(rowKey, total, memberId, e, originalShares) {
     const mine = this.state.session?.user?.id, theirs = this.state.householdPartnerUserId;
     const amount = this.parseAmt(e.target.value), sum = this.safeNumber(total);
     if (!mine || !theirs || ![mine, theirs].includes(memberId) || !Number.isFinite(amount) || amount < 0 || amount > sum) { this.setState({ calcRowEditError: 'Vul een bijdrage tussen € 0 en het maandtotaal in. Beide leden moeten geladen zijn.' }); return; }
     if (!this.state.showCalcBulkEdit) this.setState({ showCalcBulkEdit: true });
-    this.updateCalcBulkDraft(rowKey, {}, 'memberAllocation', { [memberId]: amount, [memberId === mine ? theirs : mine]: Math.round((sum - amount) * 100) / 100 });
+    const baseline = originalShares ? { memberAllocation: { [mine]: originalShares.me, [theirs]: originalShares.partner } } : {};
+    this.updateCalcBulkDraft(rowKey, baseline, 'memberAllocation', { [memberId]: amount, [memberId === mine ? theirs : mine]: Math.round((sum - amount) * 100) / 100 });
     this.setState({ calcRowEditError: '' });
   }
   startCalcRowEditing() { if (!this.state.showCalcBulkEdit) this.setState({ showCalcBulkEdit: true, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [] }); }
@@ -5342,7 +5360,12 @@ class Component extends DCLogic {
     if (!this.state.calculatorEditorOpen) return false;
     const base = this.state.mode === 'shared' ? this.state.sharedCalcBase : this.state.soloCalcBase;
     const draft = this.state.mode === 'shared' ? this.state.sharedCalcDraft : this.state.soloCalcDraft;
-    return !!base && (JSON.stringify(base) !== JSON.stringify(draft) || Object.keys(this.state.calcBulkEditDrafts || {}).length > 0 || (this.state.calcBulkEditDeleteKeys || []).length > 0 || JSON.stringify(this.state.budgetScenarioBase) !== JSON.stringify(this.state.calcScenarios));
+    const stable = value => JSON.stringify(value && typeof value === 'object' && !Array.isArray(value) ? Object.fromEntries(Object.keys(value).sort().map(key => [key, value[key]])) : value);
+    const rowsChanged = Object.entries(this.state.calcBulkEditDrafts || {}).some(([key, fields]) => Object.entries(fields).some(([field, value]) => {
+      const original = this._budgetRowBaselines?.[key]?.[field];
+      return field === 'amount' ? this.parseAmt(value) !== this.parseAmt(original) : stable(value) !== stable(original);
+    }));
+    return !!base && (JSON.stringify(base) !== JSON.stringify(draft) || rowsChanged || (this.state.calcBulkEditDeleteKeys || []).length > 0 || JSON.stringify(this.state.budgetScenarioBase) !== JSON.stringify(this.state.calcScenarios));
   }
   mergeBudgetEditorChanges(base, draft, current) {
     if (JSON.stringify(base) === JSON.stringify(draft)) return current;
@@ -5380,6 +5403,7 @@ class Component extends DCLogic {
     }
     const clone = value => JSON.parse(JSON.stringify(value));
     const base = clone(this.state.workspaces[this.state.mode]);
+    this._budgetRowBaselines = {};
     document.querySelectorAll('.grip-budget-field-dirty').forEach(input => input.classList.remove('grip-budget-field-dirty'));
     if (!this._budgetBeforeUnload) { this._budgetBeforeUnload = event => { if (this.budgetEditorDirty()) { event.preventDefault(); event.returnValue = ''; } }; window.addEventListener('beforeunload', this._budgetBeforeUnload); }
     this.setState({ calculatorEditorOpen: true, budgetEditorMessage: '', budgetScenarioBase: clone(this.state.calcScenarios), ...(this.state.mode === 'shared' ? { sharedCalcBase: base, sharedCalcDraft: clone(base) } : { soloCalcBase: base, soloCalcDraft: clone(base) }) });
@@ -5433,6 +5457,9 @@ class Component extends DCLogic {
     });
   }
   updateCalcBulkDraft(rowKey, base, field, e) {
+    this._budgetRowBaselines ||= {};
+    const original = this._budgetRowBaselines[rowKey] ||= {};
+    Object.entries(base).forEach(([key, value]) => { if (!Object.prototype.hasOwnProperty.call(original, key)) original[key] = value; });
     const raw = e && e.target ? e.target.value : e;
     this.setState(s => ({ calcBulkEditDrafts: { ...s.calcBulkEditDrafts, [rowKey]: { ...base, ...(s.calcBulkEditDrafts[rowKey] || {}), [field]: raw } } }));
   }
@@ -5585,8 +5612,8 @@ class Component extends DCLogic {
       return {
         id: it.id, name: effective.name, total: effective.amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(effectiveAmount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
-        setMeContribution: e => this.setCalcMemberContribution(rowKey, effectiveAmount, this.state.session?.user?.id, e),
-        setPartnerContribution: e => this.setCalcMemberContribution(rowKey, effectiveAmount, this.state.householdPartnerUserId, e),
+        setMeContribution: e => this.setCalcMemberContribution(rowKey, effectiveAmount, this.state.session?.user?.id, e, { me: meAmt, partner: partnerAmt }),
+        setPartnerContribution: e => this.setCalcMemberContribution(rowKey, effectiveAmount, this.state.householdPartnerUserId, e, { me: meAmt, partner: partnerAmt }),
         ownerLabel, ownerBg, ownerColor: '#F6F1E7', editable: true, notEditable: false,
         setName: (e) => this.updateCalcBulkDraft(rowKey, { ...baseDraft, ...persistedOverride }, 'name', e),
         setAmount: (e) => this.updateCalcBulkDraft(rowKey, { ...baseDraft, ...persistedOverride }, 'amount', e),
@@ -8400,6 +8427,10 @@ class Component extends DCLogic {
       isCalculator: this.state.view === 'calculator',
       calculatorEditorDisplay: this.state.calculatorEditorOpen ? 'block' : 'none',
       calculatorLiveEditStatus: this.budgetEditorDirty() ? 'Concept · gemarkeerde velden zijn nog niet opgeslagen' : 'Gelijk aan je opgeslagen maandplan',
+      budgetHasUnsavedChanges: this.budgetEditorDirty(),
+      liveBudgetMeTone: automaticSavingsOwnersKnown ? (calcDistributableMe < 0 ? 'negative' : calcDistributableMe > 0 ? 'positive' : 'neutral') : 'neutral',
+      liveBudgetPartnerTone: automaticSavingsOwnersKnown ? (calcDistributablePartner < 0 ? 'negative' : calcDistributablePartner > 0 ? 'positive' : 'neutral') : 'neutral',
+      liveBudgetTotalTone: calcDistributable < 0 ? 'negative' : calcDistributable > 0 ? 'positive' : 'neutral',
       budgetEditorMessage: this.state.budgetEditorMessage || '',
       budgetLeaveWarning: !!this.state.budgetLeaveWarning,
       saveBudgetEditor: () => this.saveBudgetEditor(),
@@ -8414,6 +8445,8 @@ class Component extends DCLogic {
       toggleCalculatorEditor: () => this.toggleCalculatorEditor(),
       startCalcRowEditing: () => this.startCalcRowEditing(),
       calcRowEditError: this.state.calcRowEditError || '',
+      budgetEditorMeId: this.state.session?.user?.id || '',
+      budgetEditorPartnerId: this.state.householdPartnerUserId || '',
       calculatorNavBg: this.state.view === 'calculator' ? 'rgba(216,199,171,.16)' : 'transparent',
       calculatorNavColor: this.state.view === 'calculator' ? '#F6F1E7' : 'rgba(246,241,231,.55)',
       setViewCalculator: () => this.setView('calculator'),
