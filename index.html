@@ -633,7 +633,7 @@
   .grip-saving-members-head,.grip-saving-member-row{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:16px;align-items:center}
   .grip-saving-members-head{font-size:10.5px;color:#65705D;padding:5px 0 8px;border-bottom:1px solid rgba(102,113,90,.16)}
   .grip-saving-members-head>span:not(:first-child),.grip-saving-member-value{text-align:right}
-  .grip-saving-member-row{padding:11px 0;border-bottom:1px solid rgba(102,113,90,.12);font-size:12px}
+  .grip-saving-member-row{padding:7px 0;border-bottom:1px solid rgba(102,113,90,.12);font-size:12px}
   .grip-saving-member-row>div{min-width:0;overflow-wrap:anywhere}
   .grip-saving-member-value{font-variant-numeric:tabular-nums;white-space:nowrap;color:#3A261D}
   .grip-saving-member-total{grid-column:4;font-weight:600}
@@ -843,7 +843,7 @@
   .grip-fixed-card-details[open] .grip-fixed-show-all{display:none}
   .grip-fixed-card-details[open] .grip-fixed-show-less{display:inline}
   .grip-fixed-card-expandable:has(.grip-fixed-card-details[open])>.grip-fixed-card-top-three{display:none}
-  .grip-view-calculator .grip-result-income>.grip-person-split-labels{display:flex;justify-content:flex-start;flex-wrap:wrap;gap:6px 10px;margin-top:10px}
+  .grip-view-calculator .grip-result-income>.grip-person-split-labels{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:6px 8px;margin-top:5px}
   .grip-view-calculator .grip-result-income>.grip-person-split-labels>span{flex:0 1 auto;text-align:left;padding:5px 9px;border-radius:7px;background:rgba(99,64,49,.055);color:#7A5941;font-size:11.5px;line-height:1.4;font-variant-numeric:tabular-nums;overflow-wrap:normal}
   .grip-view-calculator .grip-result-income>.grip-calculator-result-heading>strong{margin-left:auto;text-align:right}
   .grip-planned-saving-block .grip-saving-member-value,.grip-planned-saving-block .grip-saving-members-head>span:not(:first-child){text-align:right}
@@ -861,9 +861,20 @@
   .grip-quit-comparison>strong{font-size:12px;font-weight:600;color:#3A261D}
   .grip-quit-comparison-past{display:flex;justify-content:space-between;gap:12px;font-size:10.5px;color:#887562}
   .grip-quit-comparison-past>span:last-child{text-align:right}
+  .grip-savings-card-more>summary{cursor:pointer;font-size:11px;color:#55634B;padding:7px 0}
+  .grip-view-calculator .grip-planned-saving-block{padding-top:14px;padding-bottom:14px}
+  .grip-planned-saving-block .grip-saving-totals-row{padding-top:8px}
+  .grip-quit-compact-meta,.grip-quit-compact-days{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:#7A5941;margin:7px 0 12px}
+  .grip-quit-compact-meta>span:last-child{color:#66715A}
+  .grip-quit-compact-actual{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .grip-quit-compact-actual>strong{font-size:24px;font-weight:600;color:#634031;font-variant-numeric:tabular-nums}
+  .grip-quit-compact-actual>span{font-size:11px;color:#7A5941}
+  .grip-quit-expand{border-top:1px solid rgba(99,64,49,.12);margin-top:12px;padding-top:9px}
+  .grip-quit-expand>summary{cursor:pointer}
+  .grip-quit-expand[open]>summary{margin-bottom:12px!important}
   .grip-expense-average{margin:12px 0 0}
   .grip-expense-average>summary{cursor:pointer;font-size:12px;font-weight:600;color:#634031}
-  .grip-expense-average-row{display:grid;grid-template-columns:minmax(180px,1.8fr) repeat(3,minmax(100px,1fr)) 85px;gap:12px;min-width:640px;padding:8px 0;border-bottom:1px solid rgba(99,64,49,.1);align-items:center;font-size:11.5px;font-variant-numeric:tabular-nums}
+  .grip-expense-average-row{display:grid;grid-template-columns:minmax(130px,1.5fr) repeat(3,minmax(90px,1fr));gap:12px;min-width:450px;padding:8px 0;border-bottom:1px solid rgba(99,64,49,.1);align-items:center;font-size:11.5px;font-variant-numeric:tabular-nums}
   .grip-expense-average-row>span:not(:first-child){text-align:right;white-space:nowrap}
   .grip-expense-average-row small{display:block;font-size:10px;color:#887562;line-height:1.5}
   .grip-expense-average-head{font-size:10px;color:#7A5941;font-weight:600}
@@ -892,6 +903,18 @@
   .grip-expense-average-row small{font-size:9.5px;color:#887562}
   .grip-expense-average-row[data-difference^="−"]>span:nth-child(n+4){color:#66715A}
   .grip-expense-average-row[data-difference^="+"]>span:nth-child(n+4){color:#99694F}
+  .grip-expense-average>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;list-style:none;padding:2px 0}
+  .grip-expense-average>summary::after{content:'+';font-size:17px;font-weight:400;flex:none}
+  .grip-expense-average[open]>summary::after{content:'−'}
+  .grip-expense-average>summary small{display:block;font-size:10px;font-weight:400;color:#887562;margin-top:2px}
+  .grip-expense-average-summary{margin-left:auto;font-size:10.5px;font-weight:400;color:#7A5941;text-align:right}
+  .grip-expense-average-row>span:last-child{font-weight:500}
+  .grip-expense-average-row>span:last-child small{color:inherit;font-weight:400}
+  .grip-expense-average .grip-table-viewport{margin-top:10px}
+  .grip-expense-average-missing{margin-top:12px;font-size:11px;color:#887562}
+  .grip-expense-average-missing>div:first-child{font-weight:600;margin-bottom:4px}
+  .grip-expense-average-missing>div:not(:first-child){display:flex;justify-content:space-between;gap:16px;padding:5px 0;font-variant-numeric:tabular-nums}
+  @media(max-width:600px){.grip-expense-average-summary{display:none}}
   @media(max-width:540px){.grip-view-quit .grip-quit-card{padding:16px!important}.grip-quit-comparison-past{flex-wrap:wrap;gap:2px 10px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -1670,7 +1693,11 @@
           </div>
           </details>
         </sc-if>
-        <details class="grip-expense-average"><summary>Vergeleken met gemiddeld</summary><div style="font-size:10.5px;line-height:1.5;color:#7A5941;margin:8px 0">{{ expenseAveragePeriodLabel }}</div><div class="grip-table-viewport"><div class="grip-expense-average-row grip-expense-average-head"><span>Categorie</span><span>Deze maand</span><span>Gemiddeld</span><span>Verschil €</span><span>Verschil %</span></div><sc-for list="{{ expenseAverageComparisons }}" as="expenseComparison"><div class="grip-expense-average-row" data-difference="{{ expenseComparison.differenceStr }}"><span><span>{{ expenseComparison.label }}</span><small>{{ expenseComparison.historyLabel }}</small></span><span>{{ expenseComparison.currentStr }}</span><span>{{ expenseComparison.averageStr }}</span><span>{{ expenseComparison.differenceStr }}</span><span>{{ expenseComparison.percentageStr }}</span></div></sc-for></div></details>
+        <details class="grip-expense-average">
+          <summary><span>Vergeleken met gemiddeld<small>{{ expenseAveragePeriodLabel }}</small></span><span class="grip-expense-average-summary">{{ expenseAverageSummaryLabel }}</span></summary>
+          <sc-if value="{{ hasExpenseAverageComparisons }}"><div class="grip-table-viewport"><div class="grip-expense-average-row grip-expense-average-head"><span>Categorie</span><span>Deze maand</span><span>Gemiddeld</span><span>Verschil</span></div><sc-for list="{{ expenseAverageComparisons }}" as="expenseComparison"><div class="grip-expense-average-row" data-difference="{{ expenseComparison.differenceStr }}"><span><span>{{ expenseComparison.label }}</span></span><span>{{ expenseComparison.currentStr }}</span><span>{{ expenseComparison.averageStr }}</span><span>{{ expenseComparison.differenceStr }}<small>{{ expenseComparison.percentageStr }}</small></span></div></sc-for></div></sc-if>
+          <sc-if value="{{ hasExpenseAverageWithoutHistory }}"><div class="grip-expense-average-missing"><div>Nog onvoldoende historie</div><sc-for list="{{ expenseAverageWithoutHistory }}" as="expenseComparison"><div><span>{{ expenseComparison.label }}</span><span>{{ expenseComparison.currentStr }}</span></div></sc-for></div></sc-if>
+        </details>
       </div>
       <sc-if value="{{ false }}" hint-placeholder-val="{{ false }}">
         <div class="grip-expense-shared-overview" style="background:#5A3B2D;border-radius:16px;padding:18px 20px;margin-bottom:20px;color:#F6F1E7">
@@ -2445,13 +2472,22 @@
         <div class="grip-planned-saving-heading"><span class="grip-calc-icon-heading"><span class="grip-calc-icon grip-calc-icon-savings" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/></svg></span><span>Gepland sparen</span></span></div>
         <sc-if value="{{ noAutomaticSavingsPlans }}" hint-placeholder-val="{{ true }}"><div class="grip-planned-saving-note">{{ noAutomaticSavingsPlansLabel }}</div></sc-if>
         <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-saving-members-head"><span>Spaardoel</span><span>{{ calcTableMeLabel }}</span><span>{{ calcTablePartnerLabel }}</span><span>Maandtotaal</span></div></sc-if>
-        <sc-for list="{{ automaticSavingsPlans }}" as="savingPlan" hint-placeholder-count="2">
+        <sc-for list="{{ savingsCardTopPlans }}" as="savingPlan" hint-placeholder-count="2">
           <div class="grip-saving-member-row">
             <div><span class="grip-planned-saving-name">{{ savingPlan.label }}</span><div class="grip-planned-saving-note">{{ savingPlan.ownerLabel }}</div></div>
             <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-saving-member-value"><span class="grip-saving-member-caption">{{ calcTableMeLabel }}</span>€ {{ savingPlan.meStr }}</div><div class="grip-saving-member-value"><span class="grip-saving-member-caption">{{ calcTablePartnerLabel }}</span>€ {{ savingPlan.partnerStr }}</div></sc-if>
             <div class="grip-saving-member-value grip-saving-member-total"><span class="grip-saving-member-caption">Maandtotaal</span>€ {{ savingPlan.calcAmountStr }}</div>
           </div>
         </sc-for>
+        <sc-if value="{{ savingsCardHasMore }}"><details class="grip-savings-card-more"><summary>Alle spaardoelen bekijken</summary>
+        <sc-for list="{{ savingsCardOtherPlans }}" as="savingPlan" hint-placeholder-count="2">
+          <div class="grip-saving-member-row">
+            <div><span class="grip-planned-saving-name">{{ savingPlan.label }}</span><div class="grip-planned-saving-note">{{ savingPlan.ownerLabel }}</div></div>
+            <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-saving-member-value"><span class="grip-saving-member-caption">{{ calcTableMeLabel }}</span>€ {{ savingPlan.meStr }}</div><div class="grip-saving-member-value"><span class="grip-saving-member-caption">{{ calcTablePartnerLabel }}</span>€ {{ savingPlan.partnerStr }}</div></sc-if>
+            <div class="grip-saving-member-value grip-saving-member-total"><span class="grip-saving-member-caption">Maandtotaal</span>€ {{ savingPlan.calcAmountStr }}</div>
+          </div>
+        </sc-for>
+        </details></sc-if>
         <div class="grip-saving-member-row grip-saving-totals-row">
           <div>Totaal per maand</div>
           <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-saving-member-value"><span class="grip-saving-member-caption">{{ calcTableMeLabel }}</span>{{ calcSavingsMeTotalDisplay }}</div><div class="grip-saving-member-value"><span class="grip-saving-member-caption">{{ calcTablePartnerLabel }}</span>{{ calcSavingsPartnerTotalDisplay }}</div></sc-if>
@@ -2931,15 +2967,13 @@
               </div>
               <button onClick="{{ qg.remove }}" style="border:none;background:transparent;color:#634031;font-size:13px;opacity:.6;flex:none">✕</button>
             </div>
-            <div style="font-size:11.5px;color:#7A5941;margin-bottom:14px">Doel: {{ t.noSpendingIn }} {{ qg.categoryLabel }} · Start {{ qg.startDateLabel }}</div>
-
-            <div style="font-size:11.5px;color:#7A5941;margin-bottom:6px">Geschatte vermeden uitgaven</div>
-            <div class="grip-primary-amount" style="font-size:28px;font-weight:700;color:#66715A;line-height:1">{{ qg.estimatedAvoidedDisplay }}</div>
-            <div style="font-size:11.5px;color:#7A5941;margin-bottom:14px">€ {{ qg.dailyRateStr }} geschatte uitgaven per dag vermeden</div>
-            <div class="grip-quit-result-note">Schatting op basis van eerdere uitgaven · geen geboekt spaarsaldo</div>
-            <div class="grip-quit-result-note" style="margin:0 0 12px">Laatste uitgave: {{ qg.lastExpenseLabel }} · Huidige reeks: {{ qg.currentStreak }} dagen · Langste reeks: {{ qg.longestStreak }} dagen</div>
-            <div class="grip-quit-progress-meta"><strong><span class="grip-challenge-month">{{ qg.monthLabel }}</span><span class="grip-challenge-goal">{{ qg.goalLabel }}</span></strong><span>{{ qg.spendingDays }} uitgavendagen · {{ qg.avoidedDays }} dagen zonder uitgaven · € {{ qg.monthSpentStr }} uitgegeven</span><span class="grip-challenge-status">{{ qg.goalStatus }}</span></div>
+            <div class="grip-quit-compact-meta"><span>{{ qg.monthLabel }}</span><span>{{ qg.goalStatus }}</span></div>
+            <div class="grip-quit-compact-actual"><strong>€ {{ qg.monthSpentStr }}</strong><span>uitgegeven · {{ qg.goalLabel }}</span></div>
+            <div class="grip-quit-compact-days"><span><strong>{{ qg.avoidedDays }}</strong> dagen zonder uitgaven</span><span><strong>{{ qg.spendingDays }}</strong> uitgavendagen</span></div>
             <div class="grip-quit-progress"><span style="width:{{ qg.successPct }}%"></span></div>
+            <div class="grip-quit-result-note">Geschatte vermeden uitgaven: <strong>{{ qg.estimatedAvoidedDisplay }}</strong> · geen geboekt spaarsaldo</div>
+            <details class="grip-quit-expand"><summary>Details bekijken</summary>
+            <div class="grip-quit-result-note">Laatste uitgave: {{ qg.lastExpenseLabel }} · Huidige reeks: {{ qg.currentStreak }} dagen · Langste reeks: {{ qg.longestStreak }} dagen</div>
             <div class="grip-quit-comparison"><strong>Maandvergelijking</strong><span class="grip-challenge-change" style="color:{{ qg.comparisonColor }}">{{ qg.comparisonIndicator }}</span><span class="grip-challenge-comparison-note">{{ qg.comparisonNote }}</span><sc-for list="{{ qg.comparisonMonths }}" as="pastChallenge"><div class="grip-quit-comparison-past"><span>{{ pastChallenge.monthLabel }}</span><span>{{ pastChallenge.resultLabel }}</span></div></sc-for></div>
 
             <sc-if value="{{ qg.hasNoHistory }}" hint-placeholder-val="{{ false }}">
@@ -2957,6 +2991,7 @@
               <span style="font-size:10.5px;color:#7A5941">Geldt vanaf deze maand; eerdere maanddoelen blijven behouden.</span>
             </div></details>
             <details style="margin-top:10px;font-size:12px"><summary style="cursor:pointer">Eerdere maanden</summary><sc-for list="{{ qg.monthHistory }}" as="challengeMonth"><div style="padding:9px 0;border-bottom:1px solid rgba(99,64,49,.12)"><strong>{{ challengeMonth.monthLabel }}</strong><div>{{ challengeMonth.goalLabel }} · {{ challengeMonth.goalStatus }}</div><div>{{ challengeMonth.resultLabel }} · {{ challengeMonth.coverageLabel }}</div><div>Geschatte vermeden uitgaven: {{ challengeMonth.estimatedAvoidedDisplay }}</div></div></sc-for><sc-if value="{{ qg.noMonthHistory }}" hint-placeholder-val="{{ false }}"><div style="margin-top:8px">Nog geen eerdere challenge-maanden.</div></sc-if></details>
+            </details>
           </div>
         </sc-for>
       </div>
@@ -4852,7 +4887,7 @@ class Component extends DCLogic {
       const difference = average === null ? null : Math.round((amount - average) * 100) / 100;
       const sign = difference > 0 ? '+' : difference < 0 ? '−' : '';
       const pct = average === null ? null : average > 0 ? Math.round(difference / average * 1000) / 10 : amount === 0 ? 0 : null;
-      return { id, label: this.expenseCategoryLabel(id, catalog), currentStr: '€ ' + this.fmt(amount), averageStr: average === null ? '—' : '€ ' + this.fmt(average), differenceStr: difference === null ? '—' : sign + '€ ' + this.fmt(Math.abs(difference)), percentageStr: pct === null ? '—' : (pct > 0 ? '+' : '') + pct + '%', historyLabel: history.length ? history.length + ' volledige historiemaand(en)' + (average === 0 && amount !== 0 ? ' · percentage niet beschikbaar bij gemiddelde €0' : '') : 'Onvoldoende historie' };
+      return { historyCount: history.length, id, label: this.expenseCategoryLabel(id, catalog), currentStr: '€ ' + this.fmt(amount), averageStr: average === null ? '—' : '€ ' + this.fmt(average), differenceStr: difference === null ? '—' : sign + '€ ' + this.fmt(Math.abs(difference)), percentageStr: pct === null ? '—' : (pct > 0 ? '+' : '') + pct + '%', historyLabel: history.length ? history.length + ' volledige historiemaand(en)' + (average === 0 && amount !== 0 ? ' · percentage niet beschikbaar bij gemiddelde €0' : '') : 'Onvoldoende historie' };
     });
   }
 
@@ -4935,18 +4970,25 @@ class Component extends DCLogic {
     removals.forEach(item => (item.budgetKeys || [item.id]).forEach(key => { delete ws.categoryBudgets[key]; }));
   }
 
-  confirmPlannerCategoryRemoval() {
+  async confirmPlannerCategoryRemoval() {
     const id = this.state.plannerCategoryRemovalId, replacementId = this.state.plannerCategoryReplacement;
-    if (!id || this.state.mode !== this.state.plannerCategoryRemovalMode) return;
+    if (this._plannerCategoryRemovalBusy) return;
+    if (!id || this.state.mode !== this.state.plannerCategoryRemovalMode) { this.setState({ plannerCategoryRemovalError: 'De werkruimte is gewijzigd. Open de verwijderactie opnieuw.' }); return; }
+    const mode = this.state.mode, userId = this.state.session?.user?.id, epoch = this._accountEpoch;
+    const stillCurrent = () => this.state.mode === mode && this.state.session?.user?.id === userId && this._accountEpoch === epoch;
     const ws = this.ws(), catalog = ws.categoryOptions || [];
     const source = catalog.find(c => c.id === id);
-    const ids = new Set([id, ...(source?.aliases || [])]);
+    const canonicalId = this.expenseCategoryIdentity(id, catalog);
+    const ids = new Set([id, ...catalog.filter(c => this.expenseCategoryIdentity(c.id, catalog) === canonicalId).map(c => c.id), ...(source?.aliases || []).filter(alias => this.expenseCategoryIdentity(alias, catalog) === canonicalId)]);
     const linked = (ws.transactions || []).some(tx => ids.has(tx.category)) || (ws.spendHistory || []).some(month => (month.items || []).some(item => ids.has(item.category)));
     const budget = this.resolvePlannerCategoryBudget(ws, source || { id }, catalog);
-    const target = catalog.find(c => c.id === replacementId && !ids.has(c.id) && !c.canonicalId);
+    const target = catalog.find(c => c.id === replacementId && !ids.has(c.id) && !c.canonicalId && !(ws.expenseCategoryRemovals || []).some(item => item.id === c.id));
     if ((linked || budget.amount > 0 || replacementId) && !target) { this.setState({ plannerCategoryRemovalError: 'Kies eerst een bestaande vervangende categorie. Maak zo nodig een categorie aan.' }); return; }
-    if (!window.confirm('Deze categorie verwijderen? Transacties blijven behouden; gekoppelde bedragen worden niet verwijderd.')) return;
-    this.setWs(current => {
+    this._plannerCategoryRemovalBusy = true;
+    this.setState({ plannerCategoryRemovalError: 'Verwijderen en opslaan…' });
+    try {
+    await new Promise(resolve => this.setWs(current => {
+      if ((current.expenseCategoryRemovals || []).some(item => item.id === id)) return {};
       const next = { ...current, categoryBudgets: { ...(current.categoryBudgets || {}) } };
       const keys = [...ids];
       const name = String(source?.label || '').trim().toLocaleLowerCase('nl-NL');
@@ -4961,8 +5003,25 @@ class Component extends DCLogic {
       next.expenseCategoryRemovals = [...(current.expenseCategoryRemovals || []).filter(item => !ids.has(item.id)), ...[...ids].map(oldId => ({ id: oldId, replacementId: target?.id || null, budgetKeys: oldId === id ? keys : [oldId] }))];
       this.applyExpenseCategoryRemovals(next);
       return next;
-    }, () => this.persist());
-    this.setState({ plannerCategoryRemovalId: null, plannerCategoryReplacement: '', plannerCategoryRemovalError: '' });
+    }, resolve));
+    if (!stillCurrent()) throw new Error('De sessie of werkruimte is gewijzigd. Controleer de categorie opnieuw.');
+    const updated = this.ws();
+    if ((updated.categoryOptions || []).some(c => ids.has(c.id)) || (updated.transactions || []).some(tx => ids.has(tx.category)) || (updated.spendHistory || []).some(month => (month.items || []).some(item => ids.has(item.category)))) throw new Error('De categorie kon niet volledig worden vervangen. Het formulier blijft open.');
+    this.persist();
+    if (supabaseClient) {
+      if (!this.requireFreshSession()) throw new Error('Log opnieuw in om de verwijdering op te slaan. De lokale wijziging blijft bewaard.');
+      clearTimeout(this._persistTimer);
+      if (mode === 'shared') {
+        if (!this.state.householdId) throw new Error('Geen gedeelde werkruimte beschikbaar; verwijdering is nog niet gesynchroniseerd.');
+        await new Promise(resolve => this.syncMyMirrorsToShared(resolve));
+        if (this._sharedDirtyKeys.has('expenseCategoryRemovals') || !(this.state.workspaces.shared.expenseCategoryRemovals || []).some(item => item.id === id)) throw new Error('Synchroniseren is niet gelukt. De lokale wijziging is behouden. Probeer opnieuw.');
+      }
+      if (!await this.flushPendingLocal()) throw new Error('Opslaan is niet gelukt. De lokale wijziging is behouden. Probeer opnieuw.');
+    }
+    if (stillCurrent() && this.state.plannerCategoryRemovalId === id) this.setState({ plannerCategoryRemovalId: null, plannerCategoryReplacement: '', plannerCategoryRemovalError: '' });
+    } catch (error) {
+      if (stillCurrent()) this.setState({ plannerCategoryRemovalError: error.message || 'Verwijderen is mislukt. Probeer opnieuw.' });
+    } finally { this._plannerCategoryRemovalBusy = false; }
   }
   renameExpenseCategory(id, e) {
     const label = String(e.target.value || '').trim();
@@ -7182,7 +7241,7 @@ class Component extends DCLogic {
     });
     monthTx.forEach(tx => {
       if ([...overviewCategoryMap.values()].some(group => group.ids.has(tx.category))) return;
-      const key = String(tx.category || 'other').trim().toLocaleLowerCase('nl-NL');
+      const key = tx.category || 'other';
       if (!overviewCategoryMap.has(key)) overviewCategoryMap.set(key, { key, label: this.expenseCategoryLabel(tx.category, ws.categoryOptions), color: '#634031', ids: new Set([tx.category]) });
     });
     const categoryBudgetFor = (workspace, ids) => Math.max(0, ...[...ids].map(id => this.safeNumber((workspace.categoryBudgets || {})[id])));
@@ -8081,6 +8140,12 @@ class Component extends DCLogic {
     const isSignIn = this.state.authMode === 'signin';
     const isResetMode = this.state.authMode === 'reset';
     const bankImportAnalysis = this.analyzeBankImportRows();
+    const expenseAverageRows = this.buildExpenseAverageComparisons(ws);
+    const expenseAverageComparisons = expenseAverageRows.filter(row => row.averageStr !== '—');
+    const expenseAverageWithoutHistory = expenseAverageRows.filter(row => row.averageStr === '—');
+    const expenseAverageHistoryCount = expenseAverageRows[0]?.historyCount || 0;
+    const expenseAverageLower = expenseAverageComparisons.filter(row => row.differenceStr.startsWith('−')).length;
+    const expenseAverageHigher = expenseAverageComparisons.filter(row => row.differenceStr.startsWith('+')).length;
 
     return {
       showAuthScreen: !PREVIEW_AUTH_BYPASS && SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
@@ -8585,6 +8650,9 @@ class Component extends DCLogic {
       savingsStartDateLabel: this.tf('Start date', 'Startdatum', 'Startdatum', 'Date de début', 'Fecha de inicio'),
       savingsTargetDateLabel: this.tf('Target date', 'Doeldatum', 'Zieldatum', 'Date cible', 'Fecha objetivo'),
       automaticSavingsPlans,
+      savingsCardTopPlans: automaticSavingsPlans.slice().sort((a, b) => b.calcAmount - a.calcAmount || String(a.id).localeCompare(String(b.id))).slice(0, 3),
+      savingsCardOtherPlans: automaticSavingsPlans.slice().sort((a, b) => b.calcAmount - a.calcAmount || String(a.id).localeCompare(String(b.id))).slice(3),
+      savingsCardHasMore: automaticSavingsPlans.length > 3,
       noAutomaticSavingsPlans: automaticSavingsPlans.length === 0,
       automaticSavingsHeader: this.tf('Automatic saving', 'Automatisch sparen', 'Automatisches Sparen', 'Épargne automatique', 'Ahorro automático'),
       noAutomaticSavingsPlansLabel: this.tf('No automatic savings plan configured.', 'Nog geen automatisch spaarplan ingesteld.', 'Noch kein automatischer Sparplan eingerichtet.', "Aucun plan d'épargne automatique configuré.", 'Aún no hay un plan de ahorro automático configurado.'),
@@ -8924,8 +8992,12 @@ class Component extends DCLogic {
       showVariableExpensesAverageComparison,
       variableExpensesAverageComparisonText,
       variableExpenseCategoryTotals,
-      expenseAverageComparisons: this.buildExpenseAverageComparisons(ws),
-      expenseAveragePeriodLabel: 'Geregistreerde transacties t/m dag ' + today + ', vergeleken met dezelfde dagen in maximaal drie voorgaande afgeronde maanden. Alleen maanden met aantoonbare ledgerhistorie tellen mee.',
+      expenseAverageComparisons,
+      expenseAverageWithoutHistory,
+      hasExpenseAverageComparisons: expenseAverageComparisons.length > 0,
+      hasExpenseAverageWithoutHistory: expenseAverageWithoutHistory.length > 0,
+      expenseAverageSummaryLabel: expenseAverageComparisons.length ? expenseAverageLower + ' lager · ' + expenseAverageHigher + ' hoger dan gemiddeld' : 'Nog onvoldoende historie',
+      expenseAveragePeriodLabel: 'T/m dag ' + today + ' · dezelfde periode in ' + expenseAverageHistoryCount + ' eerdere ' + (expenseAverageHistoryCount === 1 ? 'maand' : 'maanden'),
       variableExpensesMonthLabel: this.tf(
         'Variable expenses this month',
         'Variabele uitgaven deze maand',
