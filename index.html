@@ -567,6 +567,37 @@
   .grip-view-calculator .grip-calculator-summary-metrics>div:last-child strong{font-size:24px}
   .grip-view-calculator .grip-calculator-summary-metrics>div:last-child{padding-left:14px;border-left:1px solid rgba(99,64,49,.15)}
   .grip-calculator-editor{min-width:0}
+  .grip-budget-edit-layout{display:grid;gap:16px;align-items:start}
+  .grip-budget-edit-content{min-width:0}
+  .grip-budget-live-summary{background:#E9DCC8;border:1px solid rgba(99,64,49,.14);border-radius:12px;padding:14px;color:#634031}
+  .grip-budget-live-summary h3{font-size:12px;font-weight:600;margin:0 0 10px}
+  .grip-budget-live-summary dl{margin:0;display:grid;gap:9px;font-size:11.5px}
+  .grip-budget-live-summary dl>div{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .grip-budget-live-summary dt{min-width:0;overflow-wrap:anywhere}
+  .grip-budget-live-summary dd{margin:0;font-weight:600;font-size:17px;font-variant-numeric:tabular-nums;text-align:right}
+  .grip-budget-live-summary .grip-live-combined{border-top:1px solid rgba(99,64,49,.16);padding-top:9px}
+  .grip-budget-live-note{font-size:10px;line-height:1.5;color:#7A5941;margin:10px 0 0}
+  .grip-budget-field-dirty{background:#F1E9D7!important;border-color:#A38B61!important;box-shadow:inset 3px 0 #A38B61}
+  .grip-budget-workflow-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .grip-budget-workflow-actions button{font-size:11px;padding:6px 9px}
+  .grip-budget-leave-warning{padding:10px 12px;margin-bottom:12px;background:#F1E9D7;border:1px solid rgba(99,64,49,.18);border-radius:9px;font-size:12px}
+  @media(min-width:1200px){.grip-main.grip-view-calculator{overflow-x:clip;overflow-y:visible}.grip-budget-edit-layout{grid-template-columns:minmax(0,1fr) 240px;gap:20px}.grip-budget-live-summary{grid-column:2;grid-row:1;position:sticky;top:16px}.grip-budget-edit-content{grid-column:1;grid-row:1}}
+  .grip-calculator-editor .grip-calc-section-preview,.grip-calculator-editor .grip-calc-section-hint{display:none!important}
+  .grip-calculator-editor .grip-calc-compact-section{padding:12px 0;margin-bottom:12px;background:transparent;box-shadow:none}
+  .grip-budget-edit-row{border-bottom:1px solid rgba(99,64,49,.12);font-size:12px}
+  .grip-calculator-editor .grip-budget-editor-columns{display:none!important}
+  .grip-budget-edit-row>summary{display:grid;grid-template-columns:minmax(0,1fr) max-content 66px;align-items:center;gap:14px;padding:9px 0;cursor:pointer;list-style:none}
+  .grip-budget-edit-row>summary>span:first-child{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .grip-budget-edit-row>summary strong{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+  .grip-budget-edit-action{font-size:11px;text-align:right;color:#7A5941}
+  .grip-budget-edit-fields{padding:7px 10px 10px;background:rgba(216,199,171,.2);border-radius:8px;margin-bottom:6px}
+  .grip-budget-edit-fields .grip-calc-grid{display:flex!important;flex-wrap:wrap;gap:8px;min-width:0!important}
+  .grip-budget-edit-fields .grip-control{max-width:100%;box-sizing:border-box}
+  .grip-edit-member-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:9px}
+  .grip-edit-member-inputs label{font-size:11px;color:#7A5941;display:grid;gap:4px;min-width:0}
+  .grip-edit-member-inputs input{width:100%;text-align:right;font-variant-numeric:tabular-nums}
+  .grip-edit-row-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+  .grip-edit-row-actions button{padding:5px 10px;font-size:11px}
   @media(max-width:520px){.grip-view-calculator .grip-calculator-summary-metrics>div:last-child{padding-left:0;border-left:0;grid-column:1/-1}}
   .grip-budget-allocation{margin:0 0 18px;padding:12px 0}
   .grip-budget-allocation-title{font-size:12px;font-weight:600;color:#634031;margin-bottom:10px}
@@ -1002,8 +1033,8 @@
       <div onClick="{{ setViewOverview }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ overviewNavBg }};font-size:13.5px;font-weight:600;color:{{ overviewNavColor }}">{{ t.navOverview }}</div>
       <div onClick="{{ setViewIncome }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ incomeNavBg }};font-size:13.5px;font-weight:600;color:{{ incomeNavColor }}">{{ t.navIncome }}</div>
       <div onClick="{{ setViewSpending }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ spendingNavBg }};font-size:13.5px;font-weight:600;color:{{ spendingNavColor }}">{{ t.navSpending }}</div>
-      <div onClick="{{ setViewSavings }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ savingsNavBg }};font-size:13.5px;font-weight:600;color:{{ savingsNavColor }}">{{ t.navSavings }}</div>
       <div onClick="{{ setViewPlanner }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ plannerNavBg }};font-size:13.5px;font-weight:600;color:{{ plannerNavColor }}">{{ t.navPlanner }}</div>
+      <div onClick="{{ setViewSavings }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ savingsNavBg }};font-size:13.5px;font-weight:600;color:{{ savingsNavColor }}">{{ t.navSavings }}</div>
       <div onClick="{{ setViewCalculator }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ calculatorNavBg }};font-size:13.5px;font-weight:600;color:{{ calculatorNavColor }}">{{ t.navCalculator }}</div>
       <div onClick="{{ setViewQuit }}" style="cursor:pointer;padding:10px 12px;border-radius:10px;background:{{ quitNavBg }};font-size:13.5px;font-weight:600;color:{{ quitNavColor }}">{{ t.navQuit }}</div>
     </div>
@@ -1208,14 +1239,13 @@
           </div>
         </sc-if>
         <sc-for list="{{ overviewVisibleCategories }}" as="cat" hint-placeholder-count="3">
-          <div style="margin-bottom:12px;cursor:pointer" onClick="{{ cat.toggle }}">
-            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px">
-              <span style="display:flex;align-items:center;gap:7px"><span style="width:7px;height:7px;border-radius:50%;background:{{ cat.color }};display:inline-block;flex:none"></span>{{ cat.label }}</span>
-              <span style="font-variant-numeric:tabular-nums;font-weight:600;color:#BC6F52">-€ {{ cat.amountStr }}</span>
+          <div style="margin-bottom:9px;cursor:pointer" onClick="{{ cat.toggle }}">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;margin-bottom:5px">
+              <span style="display:flex;align-items:center;gap:7px;min-width:0"><span style="width:7px;height:7px;border-radius:50%;background:{{ cat.color }};display:inline-block;flex:none"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ cat.label }}</span></span>
+              <span style="font-variant-numeric:tabular-nums;font-weight:600;color:#BC6F52;white-space:nowrap;flex:none">-€ {{ cat.amountStr }}</span>
             </div>
             <div class="grip-category-split-bar" style="--category-color:{{ cat.color }}">
-              <div class="grip-category-segment grip-category-segment-solo" style="width:{{ cat.soloPct }}%"></div>
-              <div class="grip-category-segment grip-category-segment-shared" style="width:{{ cat.sharedPct }}%"></div>
+              <div class="grip-category-segment" style="width:{{ cat.spendingPct }}%;background:{{ cat.color }}"></div>
             </div>
             <sc-if value="{{ cat.expanded }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#634031;margin-top:5px">{{ t.biggestExpense }} {{ cat.top }}</div>
@@ -1682,11 +1712,14 @@
                 <div>
                   <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
                     <span>{{ categoryTotal.label }}</span>
-                    <span style="font-weight:600;font-variant-numeric:tabular-nums">€ {{ categoryTotal.amountStr }}</span>
+                    <span style="font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap">€ {{ categoryTotal.amountStr }}</span>
                   </div>
+                  <sc-if value="{{ categoryTotal.hasBudget }}"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px 12px;margin-top:3px;font-size:10.5px;color:#7A5941;font-variant-numeric:tabular-nums"><span>Gepland € {{ categoryTotal.budgetStr }}</span><span>Resterend € {{ categoryTotal.remainingStr }}</span></div></sc-if>
+                  <sc-if value="{{ categoryTotal.showProgress }}">
                   <div style="height:5px;border-radius:3px;background:rgba(99,64,49,.14);margin-top:5px;overflow:hidden">
-                    <div style="height:100%;border-radius:3px;background:{{ categoryTotal.color }};width:{{ categoryTotal.pct }}%;opacity:{{ categoryTotal.barOpacity }}"></div>
+                    <div style="height:100%;border-radius:3px;background:{{ categoryTotal.color }};width:{{ categoryTotal.pct }}%"></div>
                   </div>
+                  </sc-if>
                 </div>
               </div>
             </sc-for>
@@ -1795,6 +1828,7 @@
                 </div>
               </sc-for>
             </div>
+            <sc-for list="{{ unresolvedExpenseCategories }}" as="unresolvedCategory"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;font-size:12px"><span>{{ unresolvedCategory.label }}</span><button class="grip-btn grip-btn-secondary" style="font-size:11px;padding:4px 8px" onClick="{{ unresolvedCategory.repair }}">Categorie herstellen</button></div></sc-for>
             <sc-if value="{{ categorySuggestions.length }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11px;color:#7A5941;margin-bottom:6px">{{ t.suggestionsLabel }}</div>
               <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
@@ -2400,15 +2434,7 @@
         </sc-if>
       </div>
 
-      <sc-if value="{{ plannerCategoryRemovalOpen }}" hint-placeholder-val="{{ false }}">
-        <div class="grip-surface" style="padding:14px 16px;margin-bottom:14px;border:1px solid rgba(99,64,49,.18)">
-          <div style="font-size:13px;font-weight:600;margin-bottom:8px">Categorie verwijderen</div>
-          <div style="font-size:12px;margin-bottom:10px">Gekoppelde transacties blijven behouden. Kies een vervangende categorie; een ingesteld budget wordt daarheen overgezet.</div>
-          <select class="grip-control" value="{{ plannerCategoryReplacement }}" onChange="{{ setPlannerCategoryReplacement }}"><option value="">Kies een vervangende categorie</option><sc-for list="{{ plannerCategoryReplacementOptions }}" as="replacement"><option value="{{ replacement.id }}">{{ replacement.label }}</option></sc-for></select>
-          <div style="display:flex;gap:8px;margin-top:10px"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelPlannerCategoryRemoval }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ confirmPlannerCategoryRemoval }}">Verwijderen</button></div>
-          <div style="font-size:12px;margin-top:8px">{{ plannerCategoryRemovalError }}</div>
-        </div>
-      </sc-if>
+      <sc-if value="{{ categoryDeletionNotice }}"><div role="status" aria-live="polite" style="font-size:12px;line-height:1.5;color:#634031;padding:8px 0;margin-bottom:8px">{{ categoryDeletionNotice }}</div></sc-if>
       <div class="grip-planner-categories" style="display:flex;flex-direction:column;gap:14px">
         <sc-for list="{{ plannerCategories }}" as="pc" hint-placeholder-count="5">
           <div class="grip-planner-category" style="background:#EEE6D8;border-radius:16px;padding:18px 20px">
@@ -2438,6 +2464,7 @@
         <div><label for="calc-scenario-month" style="font-size:12.5px;font-weight:700;color:#634031">{{ calcSelectedMonthLabel }}</label><div style="font-size:11px;color:#7A5941;margin-top:4px">{{ calcScenarioPrefillSummary }}</div></div>
         <input id="calc-scenario-month" type="month" value="{{ calcSelectedMonth }}" onInput="{{ setCalcSelectedMonth }}" class="grip-control" style="width:160px">
       </div>
+      <div class="grip-calculator-overview" style="display:{{ calculatorResultsDisplay }}">
       <div class="grip-calculator-results-breakdown">
         <section class="grip-calculator-result-section grip-result-income">
           <div class="grip-calculator-result-heading"><h3 class="grip-calc-icon-heading"><span class="grip-calc-icon grip-calc-icon-income" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5"/><path d="m16 19 3 3 3-3"/><path d="M18 12h.01"/><path d="M19 16v6"/><path d="M6 12h.01"/><circle cx="12" cy="12" r="2"/></svg></span><span>Gepland maandinkomen</span></h3><strong>€ {{ calculatorSummaryIncome }}</strong></div>
@@ -2498,41 +2525,22 @@
 
 
 
+      </div>
       <div class="grip-calculator-editor" style="display:{{ calculatorEditorDisplay }}">
-        <details class="grip-calc-compact-section" open>
-          <summary><div class="grip-calc-section-title"><span>Verdeling over spaardoelen</span></div></summary>
-        <div style="font-size:11.5px;color:#7A5941;margin-bottom:10px">Plan je resterende bedrag voor spaardoelen. Automatisch sparen is al verrekend; deze verdeling wijzigt je gespaarde bedragen niet.</div>
-        <sc-if value="{{ noCalcAllocationRows }}" hint-placeholder-val="{{ false }}">
-          <div style="font-size:12px;color:#7A5941">{{ calcNoSavingsGoalsLabel }}</div>
-        </sc-if>
-        <sc-for list="{{ calcAllocationRows }}" as="allocation" hint-placeholder-count="2">
-          <div style="display:grid;grid-template-columns:22px minmax(120px,1fr) 110px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(99,64,49,.14)">
-            <select value="{{ allocation.selectedValue }}" onChange="{{ allocation.setSelected }}" aria-label="{{ allocation.label }}" style="width:22px;height:24px;border:1px solid rgba(99,64,49,.35);border-radius:5px;background:{{ allocation.selectBg }};color:{{ allocation.selectColor }};font-size:0;padding:0;appearance:none;text-align:center">
-              <option value="0">○</option>
-              <option value="1">✓</option>
-            </select>
-            <span style="font-size:12.5px;font-weight:600">{{ allocation.label }}</span>
-            <div style="display:flex;align-items:center;gap:5px;border:1px solid rgba(99,64,49,.22);border-radius:8px;padding:0 9px;height:34px;box-sizing:border-box;background:#F6F1E7">
-              <span style="font-size:12px;color:#7A5941">€</span>
-              <input type="text" inputmode="decimal" value="{{ allocation.value }}" onChange="{{ allocation.setValue }}" style="width:100%;border:none;background:transparent;outline:none;color:#634031;font-size:12.5px;font-variant-numeric:tabular-nums">
-            </div>
-          </div>
-        </sc-for>
-        <sc-if value="{{ hasCalcAllocationRows }}" hint-placeholder-val="{{ true }}">
-          <select value="" onChange="{{ quickDistributeAllocations }}" disabled="{{ quickDistributeDisabled }}" class="grip-btn grip-btn-secondary" aria-label="{{ quickDistributeLabel }}" style="margin-top:12px;opacity:{{ quickDistributeOpacity }}">
-            <option value="">{{ quickDistributeLabel }}</option>
-            <option value="go">{{ quickDistributeConfirmLabel }}</option>
-          </select>
-        </sc-if>
-        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:13px;font-size:12px;color:#7A5941">
-          <span>{{ calcAllocatedLabel }}</span>
-          <strong style="color:#634031;font-variant-numeric:tabular-nums">€ {{ calcAllocatedTotalStr }}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:6px;font-size:12px;color:{{ calcRemainingColor }}">
-          <span>{{ calcRemainingLabel }}</span>
-          <strong style="font-variant-numeric:tabular-nums">{{ calcRemainingText }}</strong>
-        </div>
-        </details>
+        <div class="grip-budget-edit-layout">
+          <aside class="grip-budget-live-summary" aria-label="Live resterend budget">
+            <h3>Vrij te verdelen · live</h3>
+            <dl><sc-if value="{{ calcIsSharedMode }}"><div><dt>{{ calcTableMeLabel }}</dt><dd>{{ calcDistributableMeDisplay }}</dd></div><div><dt>{{ calcTablePartnerLabel }}</dt><dd>{{ calcDistributablePartnerDisplay }}</dd></div><div class="grip-live-combined"><dt>Totaal samen</dt><dd>€ {{ calcDistributableStr }}</dd></div></sc-if><sc-if value="{{ calcIsPersonalMode }}"><div><dt>{{ calcTableMeLabel }}</dt><dd>€ {{ calcDistributableStr }}</dd></div></sc-if></dl>
+            <p class="grip-budget-live-note">Na vaste lasten, variabele budgetten en gepland sparen. Een minbedrag betekent een tekort.</p>
+            <p class="grip-budget-live-note">{{ calculatorLiveEditStatus }}</p>
+            <div class="grip-budget-workflow-actions"><button class="grip-btn grip-btn-primary" onClick="{{ saveBudgetEditor }}">Wijzigingen opslaan</button><button class="grip-btn grip-btn-secondary" onClick="{{ cancelBudgetEditor }}">Annuleren</button></div>
+            <div role="status" class="grip-budget-live-note">{{ budgetEditorMessage }}</div>
+          </aside>
+          <div class="grip-budget-edit-content" onInput="{{ markBudgetEditorInput }}">
+            <sc-if value="{{ budgetLeaveWarning }}"><div class="grip-budget-leave-warning" role="alert">Je hebt niet-opgeslagen wijzigingen. Wil je deze verwerpen?<div class="grip-budget-workflow-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ keepBudgetEditing }}">Verder bewerken</button><button class="grip-btn grip-btn-secondary" onClick="{{ discardBudgetAndLeave }}">Wijzigingen verwerpen</button></div></div></sc-if>
+        <sc-if value="{{ calcRowEditError }}"><div role="alert" style="font-size:12px;color:#99694F;margin-bottom:10px">{{ calcRowEditError }}</div></sc-if>
+        <div style="font-size:11px;color:#7A5941;margin-bottom:12px">Spaarbijdragen blijven in de berekening opgenomen. Beheer ze op <button class="grip-btn grip-btn-secondary" onClick="{{ setViewSavings }}" style="font-size:11px;padding:4px 8px">Sparen</button>.</div>
+
 
 
 
@@ -2542,16 +2550,16 @@
             <div style="margin-bottom:14px">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px"><div style="font-size:11px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.04em">{{ scenarioGroup.label }}</div><button onClick="{{ scenarioGroup.add }}" class="grip-btn grip-btn-secondary" style="height:28px;padding:0 10px;font-size:11px">+ Toevoegen</button></div>
               <sc-if value="{{ scenarioGroup.empty }}" hint-placeholder-val="{{ false }}"><div style="font-size:11.5px;color:#7A5941">—</div></sc-if>
-              <sc-for list="{{ scenarioGroup.items }}" as="scenarioItem" hint-placeholder-count="2">
+              <sc-for list="{{ scenarioGroup.items }}" as="scenarioItem" hint-placeholder-count="2"><details class="grip-budget-edit-row"><summary><span>{{ scenarioItem.name }}</span><strong>€ {{ scenarioItem.amount }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
                 <div class="grip-scenario-row" style="display:grid;grid-template-columns:minmax(130px,1.4fr) 112px 112px minmax(118px,1fr) 140px 28px;gap:8px;align-items:center;padding:7px 0;border-bottom:1px solid rgba(99,64,49,.12);font-size:12px">
                   <input class="grip-control" value="{{ scenarioItem.name }}" onInput="{{ scenarioItem.setName }}" placeholder="Omschrijving" style="width:100%;height:34px">
-                  <input class="grip-control" type="number" min="0" step="0.01" value="{{ scenarioItem.amount }}" onChange="{{ scenarioItem.setAmount }}" aria-label="Bedrag" style="width:100%;height:34px">
+                  <input class="grip-control" type="number" min="0" step="0.01" value="{{ scenarioItem.amount }}" onInput="{{ scenarioItem.setAmount }}" aria-label="Bedrag" style="width:100%;height:34px">
                   <select class="grip-control" value="{{ scenarioItem.ownerValue }}" onChange="{{ scenarioItem.setOwner }}" aria-label="Eigendom" style="width:100%;height:34px"><option value="personal">Persoonlijk</option><option value="shared">Gezamenlijk</option></select>
                   <sc-if value="{{ scenarioItem.recurring }}" hint-placeholder-val="{{ true }}"><select class="grip-control" value="{{ scenarioItem.frequency }}" onChange="{{ scenarioItem.setFrequency }}" aria-label="Frequentie" style="width:100%;height:34px"><option value="monthly">Maandelijks</option><option value="every4weeks">Elke 4 weken</option><option value="every3months">Elke 3 maanden</option><option value="every6months">Elke 6 maanden</option><option value="yearly">Jaarlijks</option></select></sc-if>
                   <sc-if value="{{ scenarioItem.recurring }}" hint-placeholder-val="{{ true }}"><input class="grip-control" type="date" value="{{ scenarioItem.date }}" onChange="{{ scenarioItem.setDate }}" aria-label="Datum" style="width:100%;height:34px"></sc-if>
                   <button onClick="{{ scenarioItem.remove }}" aria-label="Verwijderen" style="border:none;background:transparent;color:#7A5941;font-size:18px;padding:0">×</button>
                 </div>
-              </sc-for>
+              </div></details></sc-for>
             </div>
           </sc-for>
         </div>
@@ -2566,35 +2574,39 @@
           <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
             <sc-if value="{{ calcShowIncomeAutoRow }}" hint-placeholder-val="{{ true }}">
             <sc-for list="{{ calcIncomeAutoItems }}" as="ai" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startSoloCalculatorEdit }}"><span>{{ ai.name }}</span><strong>€ {{ ai.amountStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-solo-table-row" style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:8px 10px">
                 <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-name" style="font-size:12.5px;font-weight:600;flex:1">{{ ai.name }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-name" type="text" aria-label="Omschrijving" value="{{ ai.name }}" onChange="{{ ai.editName }}" style="width:100%;min-width:0"></sc-if>
                 <span class="grip-solo-edit-control" onClick="{{ ai.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ ai.jointBg }};color:{{ ai.jointColor }};flex:none">{{ ai.jointLabel }}</span>
-                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ ai.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ ai.amountStr }}" onChange="{{ ai.editAmount }}" style="width:100%;min-width:0"></sc-if>
+                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ ai.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ ai.amountStr }}" onInput="{{ ai.editAmount }}" style="width:100%;min-width:0"></sc-if>
               </div>
-            </sc-for>
+            <div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></div></div></details>
+</sc-for>
             </sc-if>
             <sc-for list="{{ calcIncomeItemsView }}" as="ii" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startSoloCalculatorEdit }}"><span>{{ ii.name }}</span><strong>€ {{ ii.amountStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-solo-table-row" style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:8px 10px">
                 <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-name" style="font-size:12.5px;font-weight:600;flex:1">{{ ii.name }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-name" type="text" aria-label="Omschrijving" value="{{ ii.name }}" onChange="{{ ii.editName }}" style="width:100%;min-width:0"></sc-if>
-                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ ii.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ ii.amountStr }}" onChange="{{ ii.editAmount }}" style="width:100%;min-width:0"></sc-if>
+                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ ii.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ ii.amountStr }}" onInput="{{ ii.editAmount }}" style="width:100%;min-width:0"></sc-if>
                 <span class="grip-solo-edit-control" onClick="{{ ii.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ ii.jointBg }};color:{{ ii.jointColor }}">{{ ii.jointLabel }}</span>
                 <button class="grip-solo-edit-control" onClick="{{ ii.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px">✕</button>
               </div>
-            </sc-for>
+            <div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></div></div></details>
+</sc-for>
             <sc-if value="{{ noCalcIncomeItemsView }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcIncomeItemsEmpty }}</div>
             </sc-if>
           </div>
           <div class="grip-solo-manage" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newCalcIncomeName }}" onChange="{{ setNewCalcIncomeName }}" onKeyDown="{{ onCalcIncomeKeyDown }}" style="flex:1;min-width:110px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
-            <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onChange="{{ setNewCalcIncomeAmount }}" onKeyDown="{{ onCalcIncomeKeyDown }}" style="width:100px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
+            <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onInput="{{ setNewCalcIncomeAmount }}" onKeyDown="{{ onCalcIncomeKeyDown }}" style="width:100px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
             <label style="display:flex;align-items:center;gap:4px;font-size:11px;color:#634031;cursor:pointer"><input type="checkbox" checked="{{ newCalcIncomeJoint }}" onChange="{{ setNewCalcIncomeJoint }}" style="width:13px;height:13px">{{ t.calcJointLabel }}</label>
             <button onClick="{{ addCalcIncomeItem }}" disabled="{{ addCalcIncomeItemDisabled }}" style="border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addShort }}</button>
           </div>
           <div style="font-size:12.5px;font-weight:700;margin-top:12px;text-align:right">{{ t.calcIncomeTotalLabel }} € {{ calcIncomeTotalStr }}</div>
         </div>
 
-        <details class="grip-surface grip-calc-compact-section"><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary>
+        <details class="grip-surface grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
             <span style="font-size:14px;font-weight:700">{{ t.calcFixedHeader }}</span>
             <button onClick="{{ toggleCalcAddCategory }}" class="grip-solo-edit-control grip-btn grip-btn-primary">{{ t.addCategory }}</button>
@@ -2604,6 +2616,7 @@
           <sc-if value="{{ calcShowFixedAutoRow }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
             <sc-for list="{{ calcFixedAutoItems }}" as="afi" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startSoloCalculatorEdit }}"><span>{{ afi.name }}</span><strong>€ {{ afi.amountStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-solo-table-row" style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:8px 10px">
                 <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-name" style="font-size:12.5px;font-weight:600;flex:1">{{ afi.name }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-name" type="text" aria-label="Omschrijving" value="{{ afi.name }}" onChange="{{ afi.editName }}" style="width:100%;min-width:0"></sc-if>
                 <span class="grip-solo-edit-control" onClick="{{ afi.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ afi.jointBg }};color:{{ afi.jointColor }};flex:none">{{ afi.jointLabel }}</span>
@@ -2613,9 +2626,10 @@
                 <sc-if value="{{ afi.joint }}" hint-placeholder-val="{{ false }}">
                   <span style="font-size:10px;color:#7A5941;flex:none">{{ afi.halfNote }}</span>
                 </sc-if>
-                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ afi.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ afi.amountStr }}" onChange="{{ afi.editAmount }}" style="width:100%;min-width:0"></sc-if>
+                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;flex:none">€ {{ afi.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ afi.amountStr }}" onInput="{{ afi.editAmount }}" style="width:100%;min-width:0"></sc-if>
               </div>
-            </sc-for>
+            <div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></div></div></details>
+</sc-for>
           </div>
           </sc-if>
 
@@ -2647,14 +2661,16 @@
                 </div>
                 <div style="display:flex;flex-direction:column;gap:6px">
                   <sc-for list="{{ fg.items }}" as="it" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startSoloCalculatorEdit }}"><span>{{ it.name }}</span><strong>€ {{ it.amountStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
                     <div class="grip-solo-table-row" style="display:flex;align-items:center;gap:8px;background:#F6F1E7;border-radius:8px;padding:6px 10px">
                       <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-name" style="font-size:12px;flex:1">{{ it.name }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-name" type="text" aria-label="Omschrijving" value="{{ it.name }}" onChange="{{ it.editName }}" style="width:100%;min-width:0"></sc-if>
-                      <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12px;font-variant-numeric:tabular-nums">€ {{ it.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ it.amountStr }}" onChange="{{ it.editAmount }}" style="width:100%;min-width:0"></sc-if>
+                      <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12px;font-variant-numeric:tabular-nums">€ {{ it.amountStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ it.amountStr }}" onInput="{{ it.editAmount }}" style="width:100%;min-width:0"></sc-if>
                       <span class="grip-solo-edit-control" onClick="{{ it.toggleVisible }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:5px;border:1px solid rgba(99,64,49,.18);background:{{ it.visibleBg }};color:{{ it.visibleColor }};opacity:{{ it.visibleDisabled }}">{{ it.visibleLabel }}</span>
                       <span class="grip-solo-edit-control" onClick="{{ it.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:5px;border:1px solid rgba(99,64,49,.18);background:{{ it.jointBg }};color:{{ it.jointColor }}">{{ it.jointLabel }}</span>
                       <button class="grip-solo-edit-control" onClick="{{ it.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px">✕</button>
                     </div>
-                  </sc-for>
+                  <div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></div></div></details>
+</sc-for>
                   <sc-if value="{{ fg.noItems }}" hint-placeholder-val="{{ false }}">
                     <div style="font-size:11px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
                   </sc-if>
@@ -2665,7 +2681,7 @@
 
           <div class="grip-solo-manage" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid rgba(99,64,49,.18)">
             <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newCalcFixedName }}" onChange="{{ setNewCalcFixedName }}" onKeyDown="{{ onCalcFixedKeyDown }}" style="flex:1;min-width:120px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
-            <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onChange="{{ setNewCalcFixedAmount }}" onKeyDown="{{ onCalcFixedKeyDown }}" style="width:100px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
+            <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onInput="{{ setNewCalcFixedAmount }}" onKeyDown="{{ onCalcFixedKeyDown }}" style="width:100px;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
             <select value="{{ newCalcFixedCategory }}" onChange="{{ setNewCalcFixedCategory }}" style="border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:7px 9px;font-size:12.5px;background:#D8C7AB;color:#634031">
               <option value="">{{ t.calcGeneralGroup }}</option>
               <sc-for list="{{ calcFixedCategoryOptions }}" as="fco" hint-placeholder-count="3">
@@ -2682,10 +2698,11 @@
             <div style="font-size:12px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em;margin-bottom:8px">{{ t.calcFixedFromHistoryHeader }}</div>
             <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
               <sc-for list="{{ calcFixedHistoryRows }}" as="fh" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startSoloCalculatorEdit }}"><span>{{ fh.label }}</span><strong>€ {{ fh.amountStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
                 <div style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:8px 10px;flex-wrap:wrap">
                   <span style="width:10px;height:10px;border-radius:50%;background:{{ fh.color }};display:inline-block;flex:none"></span>
                   <span style="font-size:12.5px;font-weight:600;flex:1">{{ fh.label }}</span>
-                  <input type="text" inputmode="decimal" placeholder="{{ t.historyMonthsPlaceholder }}" value="{{ fh.monthsInput }}" onChange="{{ fh.setMonths }}" style="width:44px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:3px 5px;font-size:11px;background:#F6F1E7;color:#634031">
+                  <input type="text" inputmode="decimal" placeholder="{{ t.historyMonthsPlaceholder }}" value="{{ fh.monthsInput }}" onInput="{{ fh.setMonths }}" style="width:44px;border:1px solid rgba(99,64,49,.18);border-radius:6px;padding:3px 5px;font-size:11px;background:#F6F1E7;color:#634031">
                   <label style="display:flex;align-items:center;gap:3px;font-size:10px;color:#634031;cursor:pointer"><input type="checkbox" checked="{{ fh.isAll }}" onChange="{{ fh.toggleAll }}" style="width:11px;height:11px">{{ t.allLoggedMonthsOption }}</label>
                   <span style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ fh.amountStr }}</span>
                   <span class="grip-solo-edit-control" onClick="{{ fh.toggleJoint }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:2px 6px;border-radius:5px;border:1px solid rgba(99,64,49,.18);background:{{ fh.jointBg }};color:{{ fh.jointColor }}">{{ fh.jointLabel }}</span>
@@ -2694,7 +2711,8 @@
                   </sc-if>
                   <button onClick="{{ fh.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px">✕</button>
                 </div>
-              </sc-for>
+              <div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></div></div></details>
+</sc-for>
               <sc-if value="{{ noCalcFixedHistoryRows }}" hint-placeholder-val="{{ false }}">
                 <div style="font-size:11px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
               </sc-if>
@@ -2713,22 +2731,24 @@
           <div style="font-size:12.5px;font-weight:700;margin-top:12px;text-align:right">{{ t.calcFixedTotalLabel }} € {{ calcFixedTotalStr }}</div>
         </details>
 
-        <details class="grip-surface grip-calc-compact-section"><summary><div class="grip-calc-section-title"><span>{{ t.calcExpenseLabel }}</span><strong>€ {{ calcVariableAvgTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcVariableSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary>
-          <div style="font-size:14px;font-weight:700;margin-bottom:4px">{{ t.calcExpenseLabel }}</div>
+        <details class="grip-surface grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>Geplande variabele uitgaven</span><strong>€ {{ calcVariableAvgTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcVariableSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary>
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">Geplande variabele uitgaven</div>
           <div class="grip-solo-technical" style="font-size:11.5px;color:#7A5941;margin-bottom:12px">{{ t.calcOtherIntro }}</div>
 
           <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
             <sc-for list="{{ calcOtherCategoryRows }}" as="oc" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startSoloCalculatorEdit }}"><span>{{ oc.label }}</span><strong>€ {{ oc.avgStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-solo-table-row" style="display:flex;align-items:center;gap:8px;background:#D8C7AB;border-radius:8px;padding:8px 10px">
                 <span style="width:10px;height:10px;border-radius:50%;background:{{ oc.color }};display:inline-block;flex:none"></span>
                 <span class="grip-solo-row-name" style="font-size:12.5px;font-weight:600;flex:1">{{ oc.label }}</span>
                 <span class="grip-solo-technical" style="font-size:12px;color:#7A5941">{{ t.calcAvgSuffix }}</span>
-                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ oc.avgStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ oc.avgStr }}" onChange="{{ oc.editAmount }}" style="width:100%;min-width:0"></sc-if>
+                <sc-if value="{{ soloCalcNotEditing }}" hint-placeholder-val="{{ true }}"><span class="grip-solo-row-amount" style="font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums">€ {{ oc.avgStr }}</span></sc-if><sc-if value="{{ soloCalcEditing }}" hint-placeholder-val="{{ false }}"><input class="grip-control grip-solo-row-amount" type="number" min="0" step="0.01" aria-label="Bedrag" value="{{ oc.avgStr }}" onInput="{{ oc.editAmount }}" style="width:100%;min-width:0"></sc-if>
                 <span class="grip-solo-edit-control" onClick="{{ oc.toggleVisible }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ oc.visibleBg }};color:{{ oc.visibleColor }};opacity:{{ oc.visibleDisabled }}">{{ oc.visibleLabel }}</span>
                 <span class="grip-solo-edit-control" onClick="{{ oc.toggleJoint }}" style="font-size:10px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;border:1px solid rgba(99,64,49,.18);background:{{ oc.jointBg }};color:{{ oc.jointColor }}">{{ oc.jointLabel }}</span>
                 <button class="grip-solo-edit-control" onClick="{{ oc.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px">✕</button>
               </div>
-            </sc-for>
+            <div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelSoloCalculatorEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveSoloCalculatorEdit }}">Opslaan</button></div></div></details>
+</sc-for>
             <sc-if value="{{ noCalcOtherCategoryRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoOtherCategories }}</div>
             </sc-if>
@@ -2758,7 +2778,7 @@
             <div style="display:flex;gap:8px"><sc-if value="{{ calcInlineViewing }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleCalcBulkEdit }}" class="grip-btn grip-btn-secondary">{{ t.calcEditAllLabel }}</button></sc-if><sc-if value="{{ showCalcBulkEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ cancelCalcBulkEdit }}" class="grip-btn grip-btn-secondary">Annuleren</button><button onClick="{{ saveCalcBulkEdit }}" class="grip-btn grip-btn-primary">Opslaan</button></sc-if></div>
           </div>
 
-          <div class="grip-calc-grid" style="padding:0 10px 6px;font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
+          <div class="grip-calc-grid grip-budget-editor-columns" style="padding:0 10px 6px;font-size:10.5px;font-weight:700;color:#7A5941;text-transform:uppercase;letter-spacing:.03em">
             <span style="flex:1">{{ t.colDescription }}</span>
             <span style="width:56px;text-align:center">{{ t.colStatus }}</span>
             <span style="width:60px;text-align:right">{{ t.calcTableTotalCol }}</span>
@@ -2775,7 +2795,7 @@
               <div style="position:absolute;top:30px;right:0;z-index:20;width:260px;background:#F6F1E7;border-radius:12px;padding:12px;box-shadow:0 10px 26px rgba(58,42,31,.22);display:flex;flex-direction:column;gap:6px">
                 <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcIncomeAdd }}" style="border:none;background:transparent;color:#634031;font-size:14px;padding:2px 4px">✕</button></div>
                 <input type="text" placeholder="{{ t.sourcePlaceholder }}" value="{{ newCalcIncomeName }}" onChange="{{ setNewCalcIncomeName }}" onKeyDown="{{ onCalcTableIncomeKeyDown }}" class="grip-control">
-                <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onChange="{{ setNewCalcIncomeAmount }}" onKeyDown="{{ onCalcTableIncomeKeyDown }}" class="grip-control">
+                <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcIncomeAmount }}" onInput="{{ setNewCalcIncomeAmount }}" onKeyDown="{{ onCalcTableIncomeKeyDown }}" class="grip-control">
                 <select value="{{ newCalcIncomeOwnerVal }}" onChange="{{ setNewCalcIncomeOwnerSel }}" class="grip-control">
                   <option value="joint">{{ t.calcJointLabel }}</option>
                   <option value="me">{{ calcTableMeLabel }}</option>
@@ -2787,15 +2807,17 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
             <sc-for list="{{ calcTableIncomeRows }}" as="row" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startCalcRowEditing }}"><span>{{ row.name }}</span><strong>€ {{ row.totalStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <sc-if value="{{ row.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12.5px;flex:1">{{ row.name }}</span></sc-if><sc-if value="{{ row.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ row.name }}" onChange="{{ row.setName }}" class="grip-control" aria-label="Omschrijving" style="width:100%;min-width:0"></sc-if>
                 <span onClick="{{ row.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row.ownerBg }};color:{{ row.ownerColor }};flex:none;width:56px;text-align:center">{{ row.ownerLabel }}</span>
-                <sc-if value="{{ row.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row.totalStr }}</span></sc-if><sc-if value="{{ row.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ row.total }}" onChange="{{ row.setAmount }}" class="grip-control" aria-label="Bedrag" style="width:100%;min-width:0;text-align:right;font-variant-numeric:tabular-nums"></sc-if>
+                <sc-if value="{{ row.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row.totalStr }}</span></sc-if><sc-if value="{{ row.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ row.total }}" onInput="{{ row.setAmount }}" class="grip-control" aria-label="Bedrag" style="width:100%;min-width:0;text-align:right;font-variant-numeric:tabular-nums"></sc-if>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none;color:#66715A">€ {{ row.meStr }}</span>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none;color:#7A4A44">€ {{ row.partnerStr }}</span>
                 <button onClick="{{ row.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px;flex:none;width:16px">✕</button>
               </div>
-            </sc-for>
+            <div class="grip-edit-member-inputs"><label>{{ calcTableMeLabel }}<input class="grip-control" inputmode="decimal" value="{{ row.meStr }}" onInput="{{ row.setMeContribution }}"></label><label>{{ calcTablePartnerLabel }}<input class="grip-control" inputmode="decimal" value="{{ row.partnerStr }}" onInput="{{ row.setPartnerContribution }}"></label></div><div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelCalcBulkEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveCalcBulkEdit }}">Opslaan</button></div></div></details>
+</sc-for>
             <sc-if value="{{ noCalcTableIncomeRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcIncomeItemsEmpty }}</div>
             </sc-if>
@@ -2809,7 +2831,7 @@
             <span style="width:16px"></span>
           </div>
 
-          <details class="grip-calc-compact-section"><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcTableFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
+          <details class="grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>{{ t.calcFixedHeader }}</span><strong>€ {{ calcTableFixedTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcFixedSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
             <span style="font-size:12.5px;font-weight:700">{{ t.calcFixedHeader }}</span>
             <button onClick="{{ toggleCalcFixedAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#5A3B2D;color:#F6F1E7;line-height:1">+</button>
             <sc-if value="{{ showCalcFixedAdd }}" hint-placeholder-val="{{ false }}">
@@ -2817,7 +2839,7 @@
               <div style="position:absolute;top:30px;right:0;z-index:20;width:260px;background:#F6F1E7;border-radius:12px;padding:12px;box-shadow:0 10px 26px rgba(58,42,31,.22);display:flex;flex-direction:column;gap:6px">
                 <div style="display:flex;justify-content:flex-end;margin:-4px -4px 0 0"><button onClick="{{ toggleCalcFixedAdd }}" style="border:none;background:transparent;color:#634031;font-size:14px;padding:2px 4px">✕</button></div>
                 <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newCalcFixedName }}" onChange="{{ setNewCalcFixedName }}" onKeyDown="{{ onCalcTableFixedKeyDown }}" class="grip-control">
-                <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onChange="{{ setNewCalcFixedAmount }}" onKeyDown="{{ onCalcTableFixedKeyDown }}" class="grip-control">
+                <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcFixedAmount }}" onInput="{{ setNewCalcFixedAmount }}" onKeyDown="{{ onCalcTableFixedKeyDown }}" class="grip-control">
                 <select value="{{ newCalcFixedCategory }}" onChange="{{ setNewCalcFixedCategory }}" class="grip-control">
                   <option value="">{{ t.calcGeneralGroup }}</option>
                   <sc-for list="{{ calcFixedCategoryOptions }}" as="fco2" hint-placeholder-count="3">
@@ -2836,15 +2858,17 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
             <sc-for list="{{ calcTableFixedRows }}" as="row2" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startCalcRowEditing }}"><span>{{ row2.name }}</span><strong>€ {{ row2.totalStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <sc-if value="{{ row2.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12.5px;flex:1">{{ row2.name }}</span></sc-if><sc-if value="{{ row2.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ row2.name }}" onChange="{{ row2.setName }}" class="grip-control" aria-label="Omschrijving" style="width:100%;min-width:0"></sc-if>
                 <span onClick="{{ row2.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row2.ownerBg }};color:{{ row2.ownerColor }};flex:none;width:56px;text-align:center">{{ row2.ownerLabel }}</span>
-                <sc-if value="{{ row2.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row2.totalStr }}</span></sc-if><sc-if value="{{ row2.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ row2.total }}" onChange="{{ row2.setAmount }}" class="grip-control" aria-label="Bedrag" style="width:100%;min-width:0;text-align:right;font-variant-numeric:tabular-nums"></sc-if>
+                <sc-if value="{{ row2.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row2.totalStr }}</span></sc-if><sc-if value="{{ row2.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ row2.total }}" onInput="{{ row2.setAmount }}" class="grip-control" aria-label="Bedrag" style="width:100%;min-width:0;text-align:right;font-variant-numeric:tabular-nums"></sc-if>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none;color:#66715A">€ {{ row2.meStr }}</span>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none;color:#7A4A44">€ {{ row2.partnerStr }}</span>
                 <button onClick="{{ row2.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px;flex:none;width:16px">✕</button>
               </div>
-            </sc-for>
+            <div class="grip-edit-member-inputs"><label>{{ calcTableMeLabel }}<input class="grip-control" inputmode="decimal" value="{{ row2.meStr }}" onInput="{{ row2.setMeContribution }}"></label><label>{{ calcTablePartnerLabel }}<input class="grip-control" inputmode="decimal" value="{{ row2.partnerStr }}" onInput="{{ row2.setPartnerContribution }}"></label></div><div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelCalcBulkEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveCalcBulkEdit }}">Opslaan</button></div></div></details>
+</sc-for>
             <sc-if value="{{ noCalcTableFixedRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
             </sc-if>
@@ -2859,8 +2883,8 @@
           </div>
 
           </details>
-<details class="grip-calc-compact-section"><summary><div class="grip-calc-section-title"><span>{{ t.calcExpenseLabel }}</span><strong>€ {{ calcTableVariableTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcVariableSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
-            <span style="font-size:12.5px;font-weight:700">{{ t.calcExpenseLabel }}</span>
+<details class="grip-calc-compact-section" open><summary><div class="grip-calc-section-title"><span>Geplande variabele uitgaven</span><strong>€ {{ calcTableVariableTotalStr }}</strong></div><div class="grip-calc-section-preview"><sc-for list="{{ calcVariableSectionPreview }}" as="preview" hint-placeholder-count="3"><div><span>{{ preview.name }}</span><span>€ {{ preview.amountStr }}</span></div></sc-for></div><span class="grip-calc-section-hint">Alle posten bekijken / beheren</span></summary><div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px;position:relative">
+            <span style="font-size:12.5px;font-weight:700">Geplande variabele uitgaven</span>
             <button onClick="{{ toggleCalcVariableAdd }}" style="border:none;border-radius:7px;width:24px;height:24px;font-size:15px;font-weight:700;background:#5A3B2D;color:#F6F1E7;line-height:1">+</button>
             <sc-if value="{{ showCalcVariableAdd }}" hint-placeholder-val="{{ false }}">
               <div onClick="{{ toggleCalcVariableAdd }}" style="position:fixed;inset:0;z-index:19"></div>
@@ -2876,7 +2900,7 @@
                 <button onClick="{{ addCalcOtherCategory }}" disabled="{{ addCalcOtherCategoryDisabled }}" style="border:none;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;background:#5A3B2D;color:#F6F1E7">{{ t.addShort }}</button>
                 <div style="height:1px;background:rgba(99,64,49,.18);margin:4px 0"></div>
                 <input type="text" placeholder="{{ t.whichBillPlaceholder }}" value="{{ newCalcVariableName }}" onChange="{{ setNewCalcVariableName }}" onKeyDown="{{ onCalcVariableKeyDown }}" class="grip-control">
-                <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcVariableAmount }}" onChange="{{ setNewCalcVariableAmount }}" onKeyDown="{{ onCalcVariableKeyDown }}" class="grip-control">
+                <input type="text" inputmode="decimal" placeholder="{{ t.amountEuroPlaceholder }}" value="{{ newCalcVariableAmount }}" onInput="{{ setNewCalcVariableAmount }}" onKeyDown="{{ onCalcVariableKeyDown }}" class="grip-control">
                 <select value="{{ newCalcVariableOwnerVal }}" onChange="{{ setNewCalcVariableOwnerSel }}" class="grip-control">
                   <option value="joint">{{ t.calcJointLabel }}</option>
                   <option value="me">{{ calcTableMeLabel }}</option>
@@ -2888,15 +2912,17 @@
           </div>
           <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
             <sc-for list="{{ calcTableVariableRows }}" as="row3" hint-placeholder-count="2">
+<details class="grip-budget-edit-row"><summary onClick="{{ startCalcRowEditing }}"><span>{{ row3.name }}</span><strong>€ {{ row3.totalStr }}</strong><span class="grip-budget-edit-action">Bewerken</span></summary><div class="grip-budget-edit-fields">
               <div class="grip-calc-grid" style="background:#D8C7AB;border-radius:8px;padding:7px 10px">
                 <sc-if value="{{ row3.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12.5px;flex:1">{{ row3.name }}</span></sc-if><sc-if value="{{ row3.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" value="{{ row3.name }}" onChange="{{ row3.setName }}" class="grip-control" aria-label="Omschrijving" style="width:100%;min-width:0"></sc-if>
                 <span onClick="{{ row3.cycleOwner }}" style="font-size:9.5px;font-weight:600;cursor:pointer;padding:3px 7px;border-radius:6px;background:{{ row3.ownerBg }};color:{{ row3.ownerColor }};flex:none;width:56px;text-align:center">{{ row3.ownerLabel }}</span>
-                <sc-if value="{{ row3.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row3.totalStr }}</span></sc-if><sc-if value="{{ row3.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ row3.total }}" onChange="{{ row3.setAmount }}" class="grip-control" aria-label="Bedrag" style="width:100%;min-width:0;text-align:right;font-variant-numeric:tabular-nums"></sc-if>
+                <sc-if value="{{ row3.inlineViewing }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none">€ {{ row3.totalStr }}</span></sc-if><sc-if value="{{ row3.inlineEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ row3.total }}" onInput="{{ row3.setAmount }}" class="grip-control" aria-label="Bedrag" style="width:100%;min-width:0;text-align:right;font-variant-numeric:tabular-nums"></sc-if>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none;color:#66715A">€ {{ row3.meStr }}</span>
                 <span style="font-size:12px;font-variant-numeric:tabular-nums;width:60px;text-align:right;flex:none;color:#7A4A44">€ {{ row3.partnerStr }}</span>
                 <button onClick="{{ row3.remove }}" style="border:none;background:transparent;color:#634031;font-size:11px;flex:none;width:16px">✕</button>
               </div>
-            </sc-for>
+            <div class="grip-edit-member-inputs"><label>{{ calcTableMeLabel }}<input class="grip-control" inputmode="decimal" value="{{ row3.meStr }}" onInput="{{ row3.setMeContribution }}"></label><label>{{ calcTablePartnerLabel }}<input class="grip-control" inputmode="decimal" value="{{ row3.partnerStr }}" onInput="{{ row3.setPartnerContribution }}"></label></div><div class="grip-edit-row-actions"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelCalcBulkEdit }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ saveCalcBulkEdit }}">Opslaan</button></div></div></details>
+</sc-for>
             <sc-if value="{{ noCalcTableVariableRows }}" hint-placeholder-val="{{ false }}">
               <div style="font-size:11.5px;color:#7A5941">{{ t.calcNoItemsYet }}</div>
             </sc-if>
@@ -2936,6 +2962,8 @@
 
 
       </div>
+        </div></div>
+      <div class="grip-calculator-overview-result" style="display:{{ calculatorResultsDisplay }}">
       <div class="grip-calculation-operator" aria-hidden="true">=</div>
       <div class="grip-surface grip-calculator-distribution" style="margin:0">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px">
@@ -2950,6 +2978,7 @@
           </div>
         </sc-if>
         <div class="grip-personal-result-explanation">Na uitgaven en gepland sparen · een minbedrag betekent een tekort.</div>
+      </div>
       </div>
 
     </sc-if>
@@ -3225,6 +3254,13 @@ class Component extends DCLogic {
     calcAllocations: {},
     calcAllocationSelected: {},
     calcSelectedMonth: this.todayStr().slice(0, 7),
+    calculatorEditorOpen: false,
+    sharedCalcBase: null,
+    sharedCalcDraft: null,
+    budgetScenarioBase: null,
+    budgetEditorMessage: '',
+    budgetLeaveWarning: false,
+    calcRowEditError: '',
     calcScenarios: {},
     merchantCategoryRules: {},
     newCalcExtraLabel: '',
@@ -3303,10 +3339,7 @@ class Component extends DCLogic {
     dismissed: [],
     view: 'overview',
     spendingFilter: 'all',
-    plannerCategoryRemovalId: null,
-    plannerCategoryRemovalMode: null,
-    plannerCategoryReplacement: '',
-    plannerCategoryRemovalError: '',
+    categoryDeletionNotice: '',
     categoryFilters: [],
     amountMin: '',
     amountMax: '',
@@ -3381,8 +3414,9 @@ class Component extends DCLogic {
   };
 
   soloCalculatorEditing() { return this.state.mode === 'personal' && this.state.view === 'calculator' && !!this.state.soloCalcDraft; }
-  ws() { return this.soloCalculatorEditing() ? this.state.soloCalcDraft : this.state.workspaces[this.state.mode]; }
+  ws() { return this.soloCalculatorEditing() ? this.state.soloCalcDraft : this.state.mode === 'shared' && this.state.calculatorEditorOpen && this.state.sharedCalcDraft ? this.state.sharedCalcDraft : this.state.workspaces[this.state.mode]; }
   startSoloCalculatorEdit() {
+    if (this.soloCalculatorEditing()) return;
     const base = JSON.parse(JSON.stringify(this.state.workspaces.personal));
     this.setState({ soloCalcBase: base, soloCalcDraft: JSON.parse(JSON.stringify(base)), soloCalcEditError: '' }, () => {
       document.querySelectorAll('.grip-solo-calculator .grip-calc-compact-section').forEach(section => { section.open = true; });
@@ -3440,6 +3474,10 @@ class Component extends DCLogic {
   }
   setWsKey(key, patch, cb) {
     if (supabaseClient && (!this.state.session?.user?.id || this.state.dataUserId !== this.state.session.user.id)) return;
+    if (key === 'shared' && this.state.calculatorEditorOpen && this.state.sharedCalcDraft && !this._savingBudgetEditor) {
+      this.setState(s => ({ sharedCalcDraft: { ...s.sharedCalcDraft, ...(typeof patch === 'function' ? patch(s.sharedCalcDraft) : patch) } }), cb);
+      return;
+    }
     if (key === 'personal' && this.soloCalculatorEditing()) {
       this.setState(s => ({ soloCalcDraft: { ...s.soloCalcDraft, ...(typeof patch === 'function' ? patch(s.soloCalcDraft) : patch) } }), cb);
       return;
@@ -3457,7 +3495,8 @@ class Component extends DCLogic {
   }
 
   setMode(mode) {
-    this.setState({ mode, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist());
+    if (this.budgetEditorDirty()) { this._budgetLeaveAction = () => this.setMode(mode); this.setState({ budgetLeaveWarning: true }); return; }
+    this.setState({ mode, calculatorEditorOpen: false, soloCalcBase: null, soloCalcDraft: null, sharedCalcBase: null, sharedCalcDraft: null, budgetScenarioBase: null, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist());
   }
 
   fmt(n) {
@@ -3711,7 +3750,7 @@ class Component extends DCLogic {
 
   persist() {
     if (supabaseClient && (!this.state.session?.user || this._loadedUserId !== this.state.session.user.id)) return;
-    if (this.soloCalculatorEditing()) { this._soloCalcDeferredPersist = true; return; }
+    if (!this._savingBudgetEditor && (this.soloCalculatorEditing() || this.state.sharedCalcDraft)) { this._soloCalcDeferredPersist = true; return; }
     this._soloCalcDeferredPersist = false;
     const revision = ++this._localRevision;
     const snapshot = this.persistedSnapshot({ _clientRevision: revision, _clientUpdatedAt: new Date().toISOString(), _pendingSave: true });
@@ -3897,6 +3936,7 @@ class Component extends DCLogic {
           });
           dirtyOverlay[k] = merged;
         } else if (localVal && remoteVal && typeof localVal === 'object' && typeof remoteVal === 'object' && !Array.isArray(localVal)) {
+          if (k === 'calcMonthlyOverrides') { dirtyOverlay[k] = this.mergeBudgetEditorChanges(baseline[k] || {}, localVal, remoteVal); return; }
           const base = baseline[k] || {}, mergedObject = { ...remoteVal };
           for (const field of new Set([...Object.keys(base), ...Object.keys(localVal)])) {
             if (JSON.stringify(localVal[field]) === JSON.stringify(base[field])) continue;
@@ -4005,10 +4045,16 @@ class Component extends DCLogic {
       const amount = resolved.amount;
       // Shared Planner budgets belong to the shared workspace and use its equal allocation.
       // Personal budgets stay in Solo; visible personal transactions are not budget sources.
-      const me = sharedMode ? Math.round(amount * 100 / 2) / 100 : amount;
-      const partner = sharedMode ? Math.round((amount - me) * 100) / 100 : 0;
+      const rowKey = 'variable:' + group.id;
+      const monthOverride = (ws.calcMonthlyOverrides || {})[this.state.calcSelectedMonth]?.[rowKey] || {};
+      const draft = this.state.showCalcBulkEdit ? this.state.calcBulkEditDrafts[rowKey] || {} : {};
+      const defaultMe = sharedMode ? Math.round(amount * 100 / 2) / 100 : amount;
+      const shares = sharedMode ? this.calcAllocatedShares(amount, draft.memberAllocation || monthOverride.memberAllocation, defaultMe, Math.round((amount - defaultMe) * 100) / 100) : { me: amount, partner: 0 };
+      const me = shares.me, partner = shares.partner;
       return [{ id: group.id, name: group.name, total: amount, me, partner,
         totalStr: this.fmt(amount), meStr: this.fmt(me), partnerStr: this.fmt(partner),
+        setMeContribution: e => this.setCalcMemberContribution(rowKey, amount, this.state.session?.user?.id, e),
+        setPartnerContribution: e => this.setCalcMemberContribution(rowKey, amount, this.state.householdPartnerUserId, e),
         ownerLabel: sharedMode ? jointLabel : meLabel, ownerBg: sharedMode ? '#634031' : '#7C8972', ownerColor: '#F6F1E7',
         editable: false, notEditable: true, setName: null, setAmount: null, cycleOwner: null, remove: null
       }];
@@ -4164,8 +4210,55 @@ class Component extends DCLogic {
     return matches.length === 1 ? matches[0].id : id;
   }
 
+  categorySpending(ws, monthDate, filters = {}) {
+    const catalog = ws.categoryOptions || [];
+    const resolve = reference => {
+      const removed = (ws.expenseCategoryRemovals || []).find(item => item.id === reference && item.replacementId);
+      return this.expenseCategoryIdentity(removed ? removed.replacementId : reference, catalog);
+    };
+    const groups = new Map();
+    const add = reference => {
+      const id = resolve(reference);
+      if (!groups.has(id)) {
+        const category = catalog.find(item => item.id === id);
+        groups.set(id, { id, label: this.expenseCategoryLabel(id, catalog), color: category?.color || '#634031', ids: new Set([id]), txs: [], amount: 0, soloAmount: 0, sharedAmount: 0 });
+      }
+      groups.get(id).ids.add(reference);
+      return groups.get(id);
+    };
+    catalog.forEach(category => { const group = add(category.id); (category.aliases || []).forEach(alias => { if (resolve(alias) === group.id) group.ids.add(alias); }); });
+    const seen = new Set();
+    (ws.transactions || []).forEach(tx => {
+      const date = String(tx.date || '').slice(0, 10);
+      const parsed = new Date(date + 'T00:00:00');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(parsed.getTime()) || parsed.getFullYear() !== monthDate.getFullYear() || parsed.getMonth() !== monthDate.getMonth()) return;
+      if (filters.variableOnly && tx.source === 'recurring') return;
+      const group = add(tx.category);
+      const owner = tx.mirrorOwner || tx.addedBy || '';
+      // Only stable record identity can establish a duplicate; equal names/amounts cannot.
+      const key = tx.id ? JSON.stringify([owner, tx.mirrorSourceId || tx.id]) : null;
+      if (key && seen.has(key)) return;
+      if (key) seen.add(key);
+      if (filters.person === 'joint' && tx.mirrorOwner) return;
+      if (filters.person === 'me' && owner !== filters.userId) return;
+      if (filters.person === 'partner' && (!filters.partnerId || owner !== filters.partnerId)) return;
+      if (filters.categories?.length && !filters.categories.some(id => resolve(id) === group.id)) return;
+      if (filters.from && date < filters.from || filters.to && date > filters.to) return;
+      const amount = this.safeNumber(tx.amount);
+      if (Number.isFinite(filters.min) && amount < filters.min || Number.isFinite(filters.max) && amount > filters.max) return;
+      group.txs.push(tx);
+      group.amount += amount;
+      if (filters.shared && !tx.mirrorOwner) group.sharedAmount += amount;
+      else group.soloAmount += amount;
+    });
+    const orphanIds = [...groups.keys()].filter(id => !catalog.some(category => category.id === id)).sort((a, b) => String(a).localeCompare(String(b)));
+    return [...groups.values()].map(group => ({ ...group, label: orphanIds.includes(group.id) ? group.label + ' · ' + (orphanIds.indexOf(group.id) + 1) : group.label }))
+      .sort((a, b) => b.amount - a.amount || String(a.id).localeCompare(String(b.id)));
+  }
+
   expenseCategoryLabel(id, catalog) {
     const category = (catalog || []).find(c => c.id === this.expenseCategoryIdentity(id, catalog));
+    if (!category) return this.tf('Unknown category', 'Onbekende categorie', 'Unbekannte Kategorie', 'Catégorie inconnue', 'Categoría desconocida');
     const label = String(category?.label || category?.name || '').trim();
     // Missing references are not names. Keep the stored reference untouched.
     return label && label !== String(id) && !/^(?:mirror_|monthly-category:|[0-9a-f]{8}-[0-9a-f-]{27,})/i.test(label)
@@ -4608,7 +4701,10 @@ class Component extends DCLogic {
     return lang === 'nl' ? nl : lang === 'de' ? de : lang === 'fr' ? fr : lang === 'es' ? es : en;
   }
 
-  setView(view) { this.setState({ view, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist()); }
+  setView(view) {
+    if (view !== this.state.view && this.budgetEditorDirty()) { this._budgetLeaveAction = () => this.setView(view); this.setState({ budgetLeaveWarning: true }); return; }
+    this.setState({ view, ...(view !== 'calculator' ? { calculatorEditorOpen: false, soloCalcBase: null, soloCalcDraft: null, sharedCalcBase: null, sharedCalcDraft: null, budgetScenarioBase: null } : { calculatorEditorOpen: this.state.view !== 'calculator' ? false : this.state.calculatorEditorOpen }), spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist());
+  }
   toggleSettings() {
     const latest = (this.ws().balanceAdjustments || []).slice(-1)[0];
     this.setState(s => ({ showSettings: !s.showSettings, displayNameInput: String(s.session?.user?.user_metadata?.display_name || s.session?.user?.user_metadata?.name || '').trim(), displayNameMessage: '', balanceAdjustmentInput: latest ? String(latest.actualBalance) : '', balanceAdjustmentDateInput: latest ? latest.date : this.todayStr(), balanceAdjustmentError: '' }));
@@ -4941,14 +5037,55 @@ class Component extends DCLogic {
     this.setWs(w => ({ categoryOptions: w.categoryOptions.some(c => this.normalizedCategoryName(c.label) === normalizedLabel) ? w.categoryOptions : [...w.categoryOptions, category] }), () => this.persist());
     this.setState({ newCategoryName: '' });
   }
-  removeCategory(id) {
-    if (this.expenseCategoryLabel(id, this.ws().categoryOptions) === this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre')) {
-      this.setState({ plannerCategoryRemovalId: id, plannerCategoryRemovalMode: this.state.mode, plannerCategoryReplacement: '', plannerCategoryRemovalError: '' });
-      return;
-    }
-    const inUse = this.ws().transactions.some(t => t.category === id);
-    if (inUse) return;
-    this.setWs(w => ({ categoryOptions: w.categoryOptions.filter(c => c.id !== id) }), () => this.persist());
+  unresolvedExpenseCategories(ws) {
+    const catalog = ws.categoryOptions || [];
+    const references = [...catalog.map(category => category.id), ...(ws.transactions || []).map(tx => tx.category), ...(ws.spendHistory || []).flatMap(month => (month.items || []).map(tx => tx.category))];
+    const ids = [...new Set(references.filter(id => id !== undefined && id !== null && id !== '').map(id => this.expenseCategoryIdentity(id, catalog)))];
+    return ids.filter(id => {
+      const category = catalog.find(item => item.id === id);
+      return !category || this.expenseCategoryLabel(id, catalog) === this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre');
+    }).sort((a, b) => String(a).localeCompare(String(b))).map((id, index) => ({ id, label: this.expenseCategoryLabel(id, catalog) + ' · ' + (index + 1), repair: () => this.removeCategory(id) }));
+  }
+
+  async removeCategory(id) {
+    if (this._plannerCategoryRemovalBusy) return;
+    const mode = this.state.mode, userId = this.state.session?.user?.id, epoch = this._accountEpoch;
+    const currentAccount = () => this.state.mode === mode && this.state.session?.user?.id === userId && this._accountEpoch === epoch;
+    const fallbackId = 'grip:uncategorized:expense';
+    const notify = message => { if (currentAccount()) this.setState({ categoryDeletionNotice: message }); };
+    if (!id || id === fallbackId) { notify('Ongecategoriseerd blijft beschikbaar voor transacties zonder categorie.'); return; }
+    if (supabaseClient && (!userId || this.state.dataUserId !== userId || this._loadedUserId !== userId)) { notify('Verwijderen niet mogelijk: log opnieuw in of wacht tot je account is geladen.'); return; }
+    this._plannerCategoryRemovalBusy = true;
+    try {
+      await new Promise(resolve => this.setWs(current => {
+        const catalog = current.categoryOptions || [];
+        const source = catalog.find(category => category.id === id);
+        const ids = new Set([id, ...(source?.aliases || []).filter(alias => !catalog.some(category => category.id === alias) && this.expenseCategoryIdentity(alias, catalog) === id)]);
+        const keys = [...ids];
+        const name = String(source?.label || '').trim().toLocaleLowerCase('nl-NL');
+        if (name && catalog.filter(category => String(category.label || '').trim().toLocaleLowerCase('nl-NL') === name).length === 1) keys.push(name);
+        const next = { ...current, categoryOptions: [...catalog], categoryBudgets: { ...(current.categoryBudgets || {}) } };
+        if (!next.categoryOptions.some(category => category.id === fallbackId)) next.categoryOptions.push({ id: fallbackId, label: 'Ongecategoriseerd', color: '#887562' });
+        next.categoryOptions = next.categoryOptions.map(category => ids.has(category.canonicalId) ? { ...category, canonicalId: fallbackId } : category);
+        next.expenseCategoryRemovals = [...(current.expenseCategoryRemovals || []).filter(item => !ids.has(item.id)), ...[...ids].map(oldId => ({ id: oldId, replacementId: fallbackId, budgetKeys: oldId === id ? keys : [oldId] }))];
+        this.applyExpenseCategoryRemovals(next);
+        return next;
+      }, resolve));
+      this.persist();
+      notify('Categorie verwijderd. Gekoppelde transacties staan onder Ongecategoriseerd. Opslaan…');
+      if (supabaseClient) {
+        if (!this.requireFreshSession()) throw new Error('Log opnieuw in om de verwijdering op te slaan; de lokale wijziging is behouden.');
+        clearTimeout(this._persistTimer);
+        if (mode === 'shared') {
+          if (!this.state.householdId) throw new Error('Geen gedeelde werkruimte beschikbaar. De lokale wijziging is behouden; probeer opnieuw.');
+          await new Promise(resolve => this.syncMyMirrorsToShared(resolve));
+          if (this._sharedDirtyKeys.has('expenseCategoryRemovals') || !(this.state.workspaces.shared.expenseCategoryRemovals || []).some(item => item.id === id)) throw new Error('Synchroniseren mislukt. De lokale wijziging is behouden; controleer je verbinding en probeer opnieuw.');
+        }
+        if (this.localPersistedState()._pendingSave && !await this.flushPendingLocal()) throw new Error('Opslaan mislukt. De lokale wijziging is behouden; controleer je verbinding of log opnieuw in.');
+      }
+      notify('Categorie verwijderd en opgeslagen. Transacties zijn behouden onder Ongecategoriseerd.');
+    } catch (error) { notify(error.message || 'Verwijderen mislukt. Probeer opnieuw.'); }
+    finally { this._plannerCategoryRemovalBusy = false; }
   }
   setCategoryColor(id, color) {
     this.setWs(w => ({ categoryOptions: w.categoryOptions.map(c => c.id === id ? { ...c, color } : c) }), () => this.persist());
@@ -4965,64 +5102,12 @@ class Component extends DCLogic {
     ws.categoryOptions = (ws.categoryOptions || []).filter(c => !removed.has(c.id)).map(c => ({ ...c, aliases: (c.aliases || []).filter(id => !removed.has(id)) }));
     ws.transactions = (ws.transactions || []).map(tx => resolve(tx.category) !== tx.category ? { ...tx, category: resolve(tx.category) } : tx);
     ws.spendHistory = (ws.spendHistory || []).map(month => ({ ...month, items: (month.items || []).map(item => resolve(item.category) !== item.category ? { ...item, category: resolve(item.category) } : item) }));
+    ws.quitGoals = (ws.quitGoals || []).map(goal => resolve(goal.category) !== goal.category ? { ...goal, category: resolve(goal.category) } : goal);
     ws.calcOtherCategories = (ws.calcOtherCategories || []).filter(item => !removed.has(item.id));
     ws.categoryBudgets = { ...(ws.categoryBudgets || {}) };
     removals.forEach(item => (item.budgetKeys || [item.id]).forEach(key => { delete ws.categoryBudgets[key]; }));
   }
 
-  async confirmPlannerCategoryRemoval() {
-    const id = this.state.plannerCategoryRemovalId, replacementId = this.state.plannerCategoryReplacement;
-    if (this._plannerCategoryRemovalBusy) return;
-    if (!id || this.state.mode !== this.state.plannerCategoryRemovalMode) { this.setState({ plannerCategoryRemovalError: 'De werkruimte is gewijzigd. Open de verwijderactie opnieuw.' }); return; }
-    const mode = this.state.mode, userId = this.state.session?.user?.id, epoch = this._accountEpoch;
-    const stillCurrent = () => this.state.mode === mode && this.state.session?.user?.id === userId && this._accountEpoch === epoch;
-    const ws = this.ws(), catalog = ws.categoryOptions || [];
-    const source = catalog.find(c => c.id === id);
-    const canonicalId = this.expenseCategoryIdentity(id, catalog);
-    const ids = new Set([id, ...catalog.filter(c => this.expenseCategoryIdentity(c.id, catalog) === canonicalId).map(c => c.id), ...(source?.aliases || []).filter(alias => this.expenseCategoryIdentity(alias, catalog) === canonicalId)]);
-    const linked = (ws.transactions || []).some(tx => ids.has(tx.category)) || (ws.spendHistory || []).some(month => (month.items || []).some(item => ids.has(item.category)));
-    const budget = this.resolvePlannerCategoryBudget(ws, source || { id }, catalog);
-    const target = catalog.find(c => c.id === replacementId && !ids.has(c.id) && !c.canonicalId && !(ws.expenseCategoryRemovals || []).some(item => item.id === c.id));
-    if ((linked || budget.amount > 0 || replacementId) && !target) { this.setState({ plannerCategoryRemovalError: 'Kies eerst een bestaande vervangende categorie. Maak zo nodig een categorie aan.' }); return; }
-    this._plannerCategoryRemovalBusy = true;
-    this.setState({ plannerCategoryRemovalError: 'Verwijderen en opslaan…' });
-    try {
-    await new Promise(resolve => this.setWs(current => {
-      if ((current.expenseCategoryRemovals || []).some(item => item.id === id)) return {};
-      const next = { ...current, categoryBudgets: { ...(current.categoryBudgets || {}) } };
-      const keys = [...ids];
-      const name = String(source?.label || '').trim().toLocaleLowerCase('nl-NL');
-      if (name && catalog.filter(c => String(c.label || '').trim().toLocaleLowerCase('nl-NL') === name).length === 1) keys.push(name);
-      if (target && budget.amount > 0) {
-        const targetBudget = this.resolvePlannerCategoryBudget(current, target, catalog);
-        const total = targetBudget.amount + budget.amount;
-        next.categoryBudgets[target.id] = total;
-        const targetName = String(target.label || '').trim().toLocaleLowerCase('nl-NL');
-        if (targetName && catalog.filter(c => String(c.label || '').trim().toLocaleLowerCase('nl-NL') === targetName).length === 1) next.categoryBudgets[targetName] = total;
-      }
-      next.expenseCategoryRemovals = [...(current.expenseCategoryRemovals || []).filter(item => !ids.has(item.id)), ...[...ids].map(oldId => ({ id: oldId, replacementId: target?.id || null, budgetKeys: oldId === id ? keys : [oldId] }))];
-      this.applyExpenseCategoryRemovals(next);
-      return next;
-    }, resolve));
-    if (!stillCurrent()) throw new Error('De sessie of werkruimte is gewijzigd. Controleer de categorie opnieuw.');
-    const updated = this.ws();
-    if ((updated.categoryOptions || []).some(c => ids.has(c.id)) || (updated.transactions || []).some(tx => ids.has(tx.category)) || (updated.spendHistory || []).some(month => (month.items || []).some(item => ids.has(item.category)))) throw new Error('De categorie kon niet volledig worden vervangen. Het formulier blijft open.');
-    this.persist();
-    if (supabaseClient) {
-      if (!this.requireFreshSession()) throw new Error('Log opnieuw in om de verwijdering op te slaan. De lokale wijziging blijft bewaard.');
-      clearTimeout(this._persistTimer);
-      if (mode === 'shared') {
-        if (!this.state.householdId) throw new Error('Geen gedeelde werkruimte beschikbaar; verwijdering is nog niet gesynchroniseerd.');
-        await new Promise(resolve => this.syncMyMirrorsToShared(resolve));
-        if (this._sharedDirtyKeys.has('expenseCategoryRemovals') || !(this.state.workspaces.shared.expenseCategoryRemovals || []).some(item => item.id === id)) throw new Error('Synchroniseren is niet gelukt. De lokale wijziging is behouden. Probeer opnieuw.');
-      }
-      if (!await this.flushPendingLocal()) throw new Error('Opslaan is niet gelukt. De lokale wijziging is behouden. Probeer opnieuw.');
-    }
-    if (stillCurrent() && this.state.plannerCategoryRemovalId === id) this.setState({ plannerCategoryRemovalId: null, plannerCategoryReplacement: '', plannerCategoryRemovalError: '' });
-    } catch (error) {
-      if (stillCurrent()) this.setState({ plannerCategoryRemovalError: error.message || 'Verwijderen is mislukt. Probeer opnieuw.' });
-    } finally { this._plannerCategoryRemovalBusy = false; }
-  }
   renameExpenseCategory(id, e) {
     const label = String(e.target.value || '').trim();
     const normalized = this.normalizedCategoryName(label);
@@ -5235,8 +5320,112 @@ class Component extends DCLogic {
     const value = field === 'amount' ? (this.parseAmt(raw) || 0) : raw;
     this.setWsKey(sourceKey, ws => ({ [listKey]: (ws[listKey] || []).map(it => it.id === id ? { ...it, [field]: value } : it) }), () => this.persist());
   }
+  calcAllocatedShares(amount, allocation, me, partner) {
+    const mine = this.state.session?.user?.id, theirs = this.state.householdPartnerUserId;
+    if (!mine || !theirs || !allocation || !Object.prototype.hasOwnProperty.call(allocation, mine) || !Object.prototype.hasOwnProperty.call(allocation, theirs)) return { me, partner };
+    const a = Number(allocation[mine]), b = Number(allocation[theirs]);
+    if (!Number.isFinite(a) || !Number.isFinite(b) || a < 0 || b < 0 || a + b <= 0) return { me, partner };
+    const own = Math.round(amount * a / (a + b) * 100) / 100;
+    return { me: own, partner: Math.round((amount - own) * 100) / 100 };
+  }
+  setCalcMemberContribution(rowKey, total, memberId, e) {
+    const mine = this.state.session?.user?.id, theirs = this.state.householdPartnerUserId;
+    const amount = this.parseAmt(e.target.value), sum = this.safeNumber(total);
+    if (!mine || !theirs || ![mine, theirs].includes(memberId) || !Number.isFinite(amount) || amount < 0 || amount > sum) { this.setState({ calcRowEditError: 'Vul een bijdrage tussen € 0 en het maandtotaal in. Beide leden moeten geladen zijn.' }); return; }
+    if (!this.state.showCalcBulkEdit) this.setState({ showCalcBulkEdit: true });
+    this.updateCalcBulkDraft(rowKey, {}, 'memberAllocation', { [memberId]: amount, [memberId === mine ? theirs : mine]: Math.round((sum - amount) * 100) / 100 });
+    this.setState({ calcRowEditError: '' });
+  }
+  startCalcRowEditing() { if (!this.state.showCalcBulkEdit) this.setState({ showCalcBulkEdit: true, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [] }); }
   toggleCalcSectionAdd(section) { this.setState(s => ({ ['showCalc' + section + 'Add']: !s['showCalc' + section + 'Add'] })); }
-  toggleCalculatorEditor() { this.setState(s => ({ calculatorEditorOpen: !s.calculatorEditorOpen })); }
+  budgetEditorDirty() {
+    if (!this.state.calculatorEditorOpen) return false;
+    const base = this.state.mode === 'shared' ? this.state.sharedCalcBase : this.state.soloCalcBase;
+    const draft = this.state.mode === 'shared' ? this.state.sharedCalcDraft : this.state.soloCalcDraft;
+    return !!base && (JSON.stringify(base) !== JSON.stringify(draft) || Object.keys(this.state.calcBulkEditDrafts || {}).length > 0 || (this.state.calcBulkEditDeleteKeys || []).length > 0 || JSON.stringify(this.state.budgetScenarioBase) !== JSON.stringify(this.state.calcScenarios));
+  }
+  mergeBudgetEditorChanges(base, draft, current) {
+    if (JSON.stringify(base) === JSON.stringify(draft)) return current;
+    if (Array.isArray(draft) && draft.every(item => item && item.id != null)) {
+      const before = new Map((base || []).map(item => [item.id, item])), after = new Map(draft.map(item => [item.id, item]));
+      const rows = (current || []).filter(item => !before.has(item.id) || after.has(item.id)).map(item => before.has(item.id) && after.has(item.id) ? this.mergeBudgetEditorChanges(before.get(item.id), after.get(item.id), item) : item);
+      after.forEach((item, id) => { if (!before.has(id) && !rows.some(row => row.id === id)) rows.push(item); });
+      return rows;
+    }
+    if (draft && typeof draft === 'object' && !Array.isArray(draft)) {
+      const result = { ...(current || {}) };
+      for (const key of new Set([...Object.keys(base || {}), ...Object.keys(draft)])) {
+        if (JSON.stringify(base?.[key]) === JSON.stringify(draft[key])) continue;
+        if (!Object.prototype.hasOwnProperty.call(draft, key)) delete result[key];
+        else result[key] = this.mergeBudgetEditorChanges(base?.[key], draft[key], result[key]);
+      }
+      return result;
+    }
+    return draft;
+  }
+  cancelBudgetEditor(close = false, after) {
+    const scenario = this.state.budgetScenarioBase;
+    const failed = this._budgetFailedCommit;
+    this._budgetFailedCommit = null;
+    this.setState(s => ({ ...(failed && failed.epoch === this._accountEpoch ? { workspaces: { ...s.workspaces, [failed.mode]: this.mergeBudgetEditorChanges(failed.draft, failed.base, s.workspaces[failed.mode]) } } : {}), soloCalcBase: null, soloCalcDraft: null, sharedCalcBase: null, sharedCalcDraft: null, budgetScenarioBase: null, ...(scenario ? { calcScenarios: scenario } : {}), showCalcBulkEdit: false, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [], calcRowEditError: '', soloCalcEditError: '', budgetLeaveWarning: false, budgetEditorMessage: 'Wijzigingen geannuleerd.', calculatorEditorOpen: false }), () => {
+      this.persist();
+      if (!close) this.toggleCalculatorEditor();
+      if (after) after();
+    });
+  }
+  toggleCalculatorEditor() {
+    if (this.state.calculatorEditorOpen) {
+      if (this.budgetEditorDirty()) { this._budgetLeaveAction = null; this.setState({ budgetLeaveWarning: true }); return; }
+      this.cancelBudgetEditor(true); return;
+    }
+    const clone = value => JSON.parse(JSON.stringify(value));
+    const base = clone(this.state.workspaces[this.state.mode]);
+    document.querySelectorAll('.grip-budget-field-dirty').forEach(input => input.classList.remove('grip-budget-field-dirty'));
+    if (!this._budgetBeforeUnload) { this._budgetBeforeUnload = event => { if (this.budgetEditorDirty()) { event.preventDefault(); event.returnValue = ''; } }; window.addEventListener('beforeunload', this._budgetBeforeUnload); }
+    this.setState({ calculatorEditorOpen: true, budgetEditorMessage: '', budgetScenarioBase: clone(this.state.calcScenarios), ...(this.state.mode === 'shared' ? { sharedCalcBase: base, sharedCalcDraft: clone(base) } : { soloCalcBase: base, soloCalcDraft: clone(base) }) });
+  }
+  async saveBudgetEditor() {
+    if (this._savingBudgetEditor) return;
+    const mode = this.state.mode, userId = this.state.session?.user?.id, epoch = this._accountEpoch;
+    const base = mode === 'shared' ? this.state.sharedCalcBase : this.state.soloCalcBase;
+    let draft = mode === 'shared' ? this.state.sharedCalcDraft : this.state.soloCalcDraft;
+    if (!base || !draft) return;
+    const invalidAmount = (value, before) => JSON.stringify(value) !== JSON.stringify(before) && value && typeof value === 'object' && Object.entries(value).some(([key, child]) => JSON.stringify(child) !== JSON.stringify(before?.[key]) && (['amount', 'contributionAmount'].includes(key) ? !Number.isFinite(this.parseAmt(child)) || this.parseAmt(child) < 0 : invalidAmount(child, before?.[key])));
+    if (invalidAmount(draft, base) || invalidAmount(this.state.calcBulkEditDrafts, {})) { this.setState({ budgetEditorMessage: 'Vul geldige, niet-negatieve bedragen in voordat je opslaat.' }); return; }
+    if (supabaseClient && (!userId || this.state.dataUserId !== userId || this._loadedUserId !== userId)) { this.setState({ budgetEditorMessage: 'Je account is nog niet geladen. Probeer opnieuw nadat je bent ingelogd.' }); return; }
+    if (this.state.calcRowEditError || this.state.soloCalcEditError) { this.setState({ budgetEditorMessage: 'Controleer de gemarkeerde bedragen voordat je opslaat.' }); return; }
+    draft = JSON.parse(JSON.stringify(draft));
+    if (mode === 'shared') {
+      const month = this.state.calcSelectedMonth;
+      const overrides = { ...((draft.calcMonthlyOverrides || {})[month] || {}) };
+      Object.entries(this.state.calcBulkEditDrafts || {}).forEach(([key, value]) => { overrides[key] = { ...(overrides[key] || {}), ...value, deleted: false }; });
+      (this.state.calcBulkEditDeleteKeys || []).forEach(key => { overrides[key] = { ...(overrides[key] || {}), deleted: true }; });
+      draft.calcMonthlyOverrides = { ...(draft.calcMonthlyOverrides || {}), [month]: overrides };
+    }
+    this._savingBudgetEditor = true;
+    this.setState({ budgetEditorMessage: 'Wijzigingen opslaan…' });
+    try {
+      await new Promise(resolve => this.setState(s => {
+        const next = this.mergeBudgetEditorChanges(base, draft, s.workspaces[mode]);
+        if (mode === 'shared') Object.keys(next).filter(key => JSON.stringify(next[key]) !== JSON.stringify(s.workspaces.shared[key])).forEach(key => this.markSharedDirty(key));
+        return { workspaces: { ...s.workspaces, [mode]: next } };
+      }, resolve));
+      this.persist(); clearTimeout(this._persistTimer);
+      if (supabaseClient) {
+        if (!this.requireFreshSession()) throw new Error('Log opnieuw in om op te slaan. Je concept is behouden.');
+        if (!await this.flushPendingLocal()) throw new Error('Opslaan mislukt. Controleer je verbinding en probeer opnieuw; je concept blijft behouden.');
+        if (mode === 'shared') {
+          if (!this.state.householdId) throw new Error('Gedeelde werkruimte ontbreekt. Je concept blijft behouden.');
+          await new Promise(resolve => this.syncMyMirrorsToShared(resolve));
+          if (this._sharedDirtyKeys.size) throw new Error('Shared-synchronisatie is nog niet voltooid. Probeer opnieuw; je concept blijft behouden.');
+        }
+      }
+      if (epoch !== this._accountEpoch || userId !== this.state.session?.user?.id) return;
+      this._budgetFailedCommit = null;
+      this.setState({ soloCalcBase: null, soloCalcDraft: null, sharedCalcBase: null, sharedCalcDraft: null, budgetScenarioBase: null, showCalcBulkEdit: false, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [], calculatorEditorOpen: false, budgetLeaveWarning: false, budgetEditorMessage: 'Wijzigingen opgeslagen.' });
+    } catch (error) { if (epoch === this._accountEpoch) { this._budgetFailedCommit = { mode, base, draft, epoch }; this.setState({ budgetEditorMessage: error.message }); } }
+    finally { this._savingBudgetEditor = false; }
+  }
   toggleCalcBulkEdit() {
     if (this.state.showCalcBulkEdit) this.cancelCalcBulkEdit();
     else this.setState({ showCalcBulkEdit: true, calcBulkEditDrafts: {}, calcBulkEditDeleteKeys: [] }, () => {
@@ -5266,8 +5455,11 @@ class Component extends DCLogic {
       Object.entries(drafts).forEach(([key, value]) => { monthOverrides[key] = { ...(monthOverrides[key] || {}), ...value, deleted: false }; });
       deleted.forEach(key => { monthOverrides[key] = { ...(monthOverrides[key] || {}), deleted: true }; });
       return { calcMonthlyOverrides: { ...(ws.calcMonthlyOverrides || {}), [month]: monthOverrides } };
-    }, () => this.persist());
-    this.cancelCalcBulkEdit();
+    }, () => {
+      this.persist();
+      if (this.state.householdId) this.syncMyMirrorsToShared();
+      this.cancelCalcBulkEdit();
+    });
   }
   removeCalcMonthRow(rowKey) {
     if (!window.confirm(this.tf('Remove this item from this calculation month?', 'Dit item uit deze berekeningsmaand verwijderen?', 'Diesen Eintrag aus diesem Berechnungsmonat entfernen?', 'Supprimer cet élément de ce mois de calcul ?', '¿Eliminar este elemento de este mes de cálculo?'))) return;
@@ -5375,8 +5567,8 @@ class Component extends DCLogic {
       const effectiveOwner = effective.owner || baseOwner;
       const ownerLabel = effectiveOwner === 'me' ? meLabel : effectiveOwner === 'partner' ? partnerLabel : jointLabel;
       const ownerBg = effectiveOwner === 'me' ? '#7C8972' : effectiveOwner === 'partner' ? '#7A4A44' : '#634031';
-      const meAmt = effectiveOwner === 'me' ? effectiveAmount : effectiveOwner === 'joint' ? effectiveAmount / 2 : 0;
-      const partnerAmt = effectiveOwner === 'partner' ? effectiveAmount : effectiveOwner === 'joint' ? effectiveAmount / 2 : 0;
+      const allocation = this.calcAllocatedShares(effectiveAmount, effective.memberAllocation, effectiveOwner === 'me' ? effectiveAmount : effectiveOwner === 'joint' ? effectiveAmount / 2 : 0, effectiveOwner === 'partner' ? effectiveAmount : effectiveOwner === 'joint' ? effectiveAmount / 2 : 0);
+      const meAmt = allocation.me, partnerAmt = allocation.partner;
       // Fixed (recurring) rows often carry their source frequency/day — compute a real date for
       // the monthly expense timeline. Variable/category-average rows have no individual date.
       let dateLabel = '', sortDate = null;
@@ -5393,6 +5585,8 @@ class Component extends DCLogic {
       return {
         id: it.id, name: effective.name, total: effective.amount, me: meAmt, partner: partnerAmt,
         totalStr: this.fmt(effectiveAmount), meStr: this.fmt(meAmt), partnerStr: this.fmt(partnerAmt),
+        setMeContribution: e => this.setCalcMemberContribution(rowKey, effectiveAmount, this.state.session?.user?.id, e),
+        setPartnerContribution: e => this.setCalcMemberContribution(rowKey, effectiveAmount, this.state.householdPartnerUserId, e),
         ownerLabel, ownerBg, ownerColor: '#F6F1E7', editable: true, notEditable: false,
         setName: (e) => this.updateCalcBulkDraft(rowKey, { ...baseDraft, ...persistedOverride }, 'name', e),
         setAmount: (e) => this.updateCalcBulkDraft(rowKey, { ...baseDraft, ...persistedOverride }, 'amount', e),
@@ -5938,6 +6132,7 @@ class Component extends DCLogic {
   setCalcSelectedMonth(e) {
     const month = e.target.value;
     if (!/^\d{4}-\d{2}$/.test(month)) return;
+    if (month !== this.state.calcSelectedMonth && this.budgetEditorDirty()) { this._budgetLeaveAction = () => this.setCalcSelectedMonth({ target: { value: month } }); this.setState({ budgetLeaveWarning: true }); return; }
     const currentMonth = this.todayStr().slice(0, 7);
     this.setState(s => ({
       calcSelectedMonth: month,
@@ -7167,18 +7362,25 @@ class Component extends DCLogic {
           `${historicalAverageDifferencePct}% ${variableExpensesMonth <= historicalVariableAverage ? 'menos' : 'más'} que el promedio de los últimos ${completedVariableMonthTotals.length} meses.`
         )
       : '';
-    const variableCategoryBudgets = ws.categoryBudgets || {};
-    const variableExpenseCategoryTotals = [...new Set(variableMonthTx.map(t => canonicalExpenseCategoryId(t.category)))].map(categoryId => {
-      const category = canonicalExpenseCategory(categoryId);
-      const amount = variableMonthTx.filter(t => canonicalExpenseCategoryId(t.category) === categoryId).reduce((s, t) => s + this.safeNumber(t.amount), 0);
-      const budget = Math.max(0, ...(expenseCategoryIdsByCanonical[categoryId] || [categoryId]).map(id => variableCategoryBudgets[id] || 0));
+    const categorySpendingFilters = {
+      variableOnly: true, shared: this.state.mode === 'shared',
+      person: this.state.mode === 'shared' ? this.state.spendingFilter : 'all',
+      userId: this.state.session?.user?.id, partnerId: this.state.householdPartnerUserId,
+      categories: this.state.categoryFilters || [], from: this.state.spendingDateFrom, to: this.state.spendingDateTo,
+      min: this.parseAmt(this.state.amountMin), max: this.parseAmt(this.state.amountMax)
+    };
+    const categorySpendingRows = this.categorySpending(ws, now, categorySpendingFilters);
+    const variableExpenseCategoryTotals = categorySpendingRows.filter(group => group.txs.length).map(group => {
+      const category = (ws.categoryOptions || []).find(item => item.id === group.id) || { id: group.id, aliases: [...group.ids] };
+      const planned = this.resolvePlannerCategoryBudget(ws, category, ws.categoryOptions || []);
+      const budget = planned.amount;
       return {
-        id: categoryId,
-        label: category ? category.label : this.expenseCategoryLabel(categoryId, ws.categoryOptions),
-        color: (category && category.color) || '#634031',
-        amountStr: this.fmt(amount),
-        pct: budget > 0 ? Math.min(100, (amount / budget) * 100) : 0,
-        barOpacity: budget > 0 ? 1 : 0
+        id: group.id, label: group.label, color: group.color,
+        amountStr: this.fmt(group.amount),
+        hasBudget: planned.configured,
+        budgetStr: this.fmt(budget), remainingStr: this.fmt(budget - group.amount),
+        showProgress: planned.configured && budget > 0,
+        pct: budget > 0 ? Math.max(0, Math.min(100, (group.amount / budget) * 100)) : 0
       };
     });
     const automaticSavingsPlans = ws.savingsGoals
@@ -7233,23 +7435,9 @@ class Component extends DCLogic {
       return { label, color: ['#634031', '#BC7B62', '#7C8972', '#D8C7AB'][index], amountStr: this.fmt(allocationValues[index]), pct, pctLabel: Math.round(pct), detail: `${label}: € ${this.fmt(allocationValues[index])}` };
     });
 
-    const overviewCategoryMap = new Map();
-    expenseCategoriesMerged.forEach(opt => {
-      const key = opt.id;
-      if (!overviewCategoryMap.has(key)) overviewCategoryMap.set(key, { key, label: this.expenseCategoryLabel(opt.id, ws.categoryOptions), color: opt.color || '#634031', ids: new Set() });
-      (expenseCategoryIdsByCanonical[opt.id] || [opt.id]).forEach(id => overviewCategoryMap.get(key).ids.add(id));
-    });
-    monthTx.forEach(tx => {
-      if ([...overviewCategoryMap.values()].some(group => group.ids.has(tx.category))) return;
-      const key = tx.category || 'other';
-      if (!overviewCategoryMap.has(key)) overviewCategoryMap.set(key, { key, label: this.expenseCategoryLabel(tx.category, ws.categoryOptions), color: '#634031', ids: new Set([tx.category]) });
-    });
     const categoryBudgetFor = (workspace, ids) => Math.max(0, ...[...ids].map(id => this.safeNumber((workspace.categoryBudgets || {})[id])));
-    const categories = [...overviewCategoryMap.values()].map(group => {
-      const txs = monthTx.filter(t => group.ids.has(t.category));
-      const soloAmount = txs.filter(t => this.state.mode !== 'shared' || !!t.mirrorOwner).reduce((s, t) => s + this.safeNumber(t.amount), 0);
-      const sharedAmount = txs.filter(t => this.state.mode === 'shared' && !t.mirrorOwner).reduce((s, t) => s + this.safeNumber(t.amount), 0);
-      const amount = soloAmount + sharedAmount;
+    const categories = categorySpendingRows.map(group => {
+      const { txs, soloAmount, sharedAmount, amount } = group;
       const soloBudget = categoryBudgetFor(this.state.workspaces.personal, group.ids);
       const sharedBudget = this.state.mode === 'shared' ? categoryBudgetFor(this.state.workspaces.shared, group.ids) : 0;
       const categoryBudget = this.state.mode === 'shared' ? soloBudget + sharedBudget : soloBudget;
@@ -7259,7 +7447,7 @@ class Component extends DCLogic {
       const capScale = combinedPct > 100 ? 100 / combinedPct : 1;
       const topTx = txs.reduce((best, t) => (!best || this.safeNumber(t.amount) > this.safeNumber(best.amount)) ? t : best, null);
       return {
-        id: group.key,
+        id: group.id,
         label: group.label,
         color: group.color,
         amount,
@@ -7268,8 +7456,8 @@ class Component extends DCLogic {
         soloPct: uncappedSoloPct * capScale,
         sharedPct: uncappedSharedPct * capScale,
         top: topTx ? `${topTx.note} — € ${this.fmt(topTx.amount)}` : 'No expenses yet',
-        expanded: this.state.expanded === group.key,
-        toggle: () => this.toggleExpand(group.key)
+        expanded: this.state.expanded === group.id,
+        toggle: () => this.toggleExpand(group.id)
       };
     });
 
@@ -7599,7 +7787,7 @@ class Component extends DCLogic {
         id: cat.id,
         label: cat.label,
         color: cat.color,
-        canRemove: cat.label === this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre') || !ws.transactions.some(t => t.category === cat.id),
+        canRemove: true,
         remove: () => this.removeCategory(cat.id),
         spentStr: this.fmt(spent),
         spentColor: '#BC6F52',
@@ -8211,11 +8399,21 @@ class Component extends DCLogic {
       isPlanner: this.state.view === 'planner',
       isCalculator: this.state.view === 'calculator',
       calculatorEditorDisplay: this.state.calculatorEditorOpen ? 'block' : 'none',
+      calculatorLiveEditStatus: this.budgetEditorDirty() ? 'Concept · gemarkeerde velden zijn nog niet opgeslagen' : 'Gelijk aan je opgeslagen maandplan',
+      budgetEditorMessage: this.state.budgetEditorMessage || '',
+      budgetLeaveWarning: !!this.state.budgetLeaveWarning,
+      saveBudgetEditor: () => this.saveBudgetEditor(),
+      cancelBudgetEditor: () => this.cancelBudgetEditor(),
+      markBudgetEditorInput: e => { if (e.target?.classList) e.target.classList.add('grip-budget-field-dirty'); },
+      keepBudgetEditing: () => { this._budgetLeaveAction = null; this.setState({ budgetLeaveWarning: false }); },
+      discardBudgetAndLeave: () => { const action = this._budgetLeaveAction; this._budgetLeaveAction = null; this.cancelBudgetEditor(true, action); },
       calculatorResultsDisplay: this.state.calculatorEditorOpen ? 'none' : 'block',
-      calculatorEditorButtonLabel: this.state.calculatorEditorOpen ? 'Terug naar resultaat' : 'Budget bewerken',
+      calculatorEditorButtonLabel: this.state.calculatorEditorOpen ? 'Terug naar overzicht' : 'Budget bewerken',
       calculatorDashboardTitle: this.state.calculatorEditorOpen ? 'Budget bewerken' : 'Jouw financiële maandplan',
-      calculatorDashboardHint: (this.soloCalculatorEditing() || this.state.showCalcBulkEdit) ? 'Conceptwijzigingen — gebruik Opslaan of Annuleren in de bewerkweergave.' : 'Inkomen, geplande uitgaven en sparen bepalen wat je kunt verdelen.',
+      calculatorDashboardHint: this.budgetEditorDirty() ? 'Conceptwijzigingen — gebruik Wijzigingen opslaan of Annuleren.' : 'Inkomen, geplande uitgaven en sparen bepalen wat je kunt verdelen.',
       toggleCalculatorEditor: () => this.toggleCalculatorEditor(),
+      startCalcRowEditing: () => this.startCalcRowEditing(),
+      calcRowEditError: this.state.calcRowEditError || '',
       calculatorNavBg: this.state.view === 'calculator' ? 'rgba(216,199,171,.16)' : 'transparent',
       calculatorNavColor: this.state.view === 'calculator' ? '#F6F1E7' : 'rgba(246,241,231,.55)',
       setViewCalculator: () => this.setView('calculator'),
@@ -8243,7 +8441,6 @@ class Component extends DCLogic {
         return [
           { key: 'recurringIncome', label: this.tf('Recurring income', 'Vast inkomen', 'Wiederkehrendes Einkommen', 'Revenus récurrents', 'Ingresos recurrentes'), items: (scenario.recurringIncome || []).map(item => editableRow('recurringIncome', item, true)) },
           { key: 'fixedExpenses', label: this.tf('Fixed expenses', 'Vaste lasten', 'Fixkosten', 'Charges fixes', 'Gastos fijos'), items: (scenario.fixedExpenses || []).map(item => editableRow('fixedExpenses', item, true)) },
-          { key: 'automaticSavings', label: this.tf('Automatic saving', 'Automatisch sparen', 'Automatisches Sparen', 'Épargne automatique', 'Ahorro automático'), items: (scenario.automaticSavings || []).map(item => editableRow('automaticSavings', item, true)) },
           { key: 'variableEstimates', label: this.tf('Variable expense estimates', 'Inschatting variabele uitgaven', 'Schätzung variabler Ausgaben', 'Estimation des dépenses variables', 'Estimación de gastos variables'), items: (scenario.variableEstimates || []).map(item => editableRow('variableEstimates', item, false)) }
         ].map(group => ({ ...group, empty: group.items.length === 0, add: () => this.addCalcScenarioItem(group.key) }));
       })(),
@@ -8331,7 +8528,7 @@ class Component extends DCLogic {
       showCalcVariableAdd: this.state.showCalcVariableAdd, toggleCalcVariableAdd: () => this.toggleCalcSectionAdd('Variable'),
       showCalcBulkEdit: this.state.showCalcBulkEdit, toggleCalcBulkEdit: () => this.toggleCalcBulkEdit(),
       calcInlineViewing: !this.state.showCalcBulkEdit,
-      cancelCalcBulkEdit: () => this.cancelCalcBulkEdit(), saveCalcBulkEdit: () => this.saveCalcBulkEdit(),
+      cancelCalcBulkEdit: () => this.cancelBudgetEditor(), saveCalcBulkEdit: () => this.saveBudgetEditor(),
       addCalcTableIncomeItem: () => this.addCalcTableItem('income'),
       addCalcTableIncomeItemDisabled: !(this.state.newCalcIncomeName || '').trim() || !this.parseAmt(this.state.newCalcIncomeAmount),
       addCalcTableFixedItem: () => this.addCalcTableItem('fixed'),
@@ -8415,8 +8612,8 @@ class Component extends DCLogic {
       soloCalcNotEditing: !this.soloCalculatorEditing(),
       soloCalcEditClass: this.soloCalculatorEditing() ? 'is-editing' : '',
       startSoloCalculatorEdit: () => this.startSoloCalculatorEdit(),
-      cancelSoloCalculatorEdit: () => this.cancelSoloCalculatorEdit(),
-      saveSoloCalculatorEdit: () => this.saveSoloCalculatorEdit(),
+      cancelSoloCalculatorEdit: () => this.cancelBudgetEditor(),
+      saveSoloCalculatorEdit: () => this.saveBudgetEditor(),
       soloCalcEditError: this.state.soloCalcEditError || '',
       soloCalcIncomeSummary: this.fmt(calcSoloIncomeTotal),
       calculatorSummaryIncome: this.fmt(calcIsSharedMode ? calcTableIncomeSums.total : calcSoloIncomeTotal),
@@ -8601,15 +8798,15 @@ class Component extends DCLogic {
       monthLabel: MONTHS_SHORT[m],
       currentMonthFullName,
       categories,
-      showCategorySplitLegend: this.state.mode === 'shared',
+      showCategorySplitLegend: false,
       categorySplitSoloLabel: 'Solo',
       categorySplitSharedLabel: this.tf('Shared', 'Gedeeld', 'Geteilt', 'Partagé', 'Compartido'),
       recurring,
       overviewRecurring,
-      overviewVisibleCategories: categories.slice().sort((a, b) => b.amount - a.amount).slice(0, this.state.overviewShowAllCategories ? categories.length : 3),
-      overviewHasMoreCategories: categories.length > 3,
+      overviewVisibleCategories: categories.filter(category => category.amount !== 0).slice(0, this.state.overviewShowAllCategories ? categories.length : 5).map(category => ({ ...category, spendingPct: Math.max(0, Math.min(100, category.amount / (Math.max(0, ...categories.map(item => item.amount)) || 1) * 100)) })),
+      overviewHasMoreCategories: categories.filter(category => category.amount !== 0).length > 5,
       toggleOverviewCategories: () => this.setState(s => ({ overviewShowAllCategories: !s.overviewShowAllCategories })),
-      overviewCategoryExpandLabel: this.state.overviewShowAllCategories ? 'Minder tonen' : 'Alle categorieën bekijken',
+      overviewCategoryExpandLabel: this.state.overviewShowAllCategories ? 'Minder tonen' : 'Meer tonen',
       overviewVisibleRecurring: this.state.overviewShowAllRecurring ? overviewRecurring : overviewRecurring.slice(0, 3),
       overviewHasMoreRecurring: overviewRecurring.length > 3,
       toggleOverviewRecurring: () => this.setState(s => ({ overviewShowAllRecurring: !s.overviewShowAllRecurring })),
@@ -8629,6 +8826,7 @@ class Component extends DCLogic {
       incomeHistoryTitle: this.tf('Add income history', 'Inkomstenhistorie aanvullen', 'Einkommenshistorie ergänzen', "Compléter l’historique des revenus", 'Completar historial de ingresos'),
       categoryOptions: expenseCategoriesMerged,
       categoriesWithUsage,
+      unresolvedExpenseCategories: this.unresolvedExpenseCategories(ws),
       categorySuggestions: t.spendingSuggestions.filter(label => !expenseCategoriesMerged.some(c => normalizeExpenseCategoryName(c.label) === normalizeExpenseCategoryName(label))).map(label => ({ label, add: () => this.addSuggestedCategory('categoryOptions', label) })),
       newCategoryName: this.state.newCategoryName,
       setNewCategoryName: (e) => this.setNewCategoryName(e),
@@ -8955,13 +9153,7 @@ class Component extends DCLogic {
       onRecurringIncomeKeyDown: (e) => this.onRecurringIncomeKeyDown(e),
       addRecIncomeDisabled: !(this.state.newRecIncomeName && this.parseAmt(this.state.newRecIncomeAmount) > 0 && (this.state.newRecIncomeFrequency === 'every4weeks' ? this.state.newRecIncomeStartDate : parseInt(this.state.newRecIncomeDay, 10) >= 1)),
       plannerCategories,
-      plannerCategoryRemovalOpen: !!this.state.plannerCategoryRemovalId && this.state.plannerCategoryRemovalMode === this.state.mode,
-      plannerCategoryReplacement: this.state.plannerCategoryReplacement || '',
-      plannerCategoryRemovalError: this.state.plannerCategoryRemovalError || '',
-      plannerCategoryReplacementOptions: (ws.categoryOptions || []).filter(c => c.id !== this.state.plannerCategoryRemovalId && !c.canonicalId && this.expenseCategoryLabel(c.id, ws.categoryOptions) !== this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre')).map(c => ({ id: c.id, label: this.expenseCategoryLabel(c.id, ws.categoryOptions) })),
-      setPlannerCategoryReplacement: e => this.setState({ plannerCategoryReplacement: e.target.value, plannerCategoryRemovalError: '' }),
-      cancelPlannerCategoryRemoval: () => this.setState({ plannerCategoryRemovalId: null, plannerCategoryRemovalError: '' }),
-      confirmPlannerCategoryRemoval: () => this.confirmPlannerCategoryRemoval(),
+      categoryDeletionNotice: this.state.categoryDeletionNotice || '',
       plannerAllocatedStr: this.fmt(plannerAllocated),
       plannerUnallocatedStr: this.fmt(Math.abs(plannerUnallocated)),
       plannerUnallocatedLabel: plannerUnallocated < 0 ? this.tf('over-allocated', 'over-toegewezen', 'über-zugewiesen', 'sur-alloué', 'sobre-asignado') : this.tf('unallocated', 'niet-toegewezen', 'nicht zugewiesen', 'non alloué', 'no asignado'),
