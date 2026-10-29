@@ -821,6 +821,21 @@
     .grip-main .grip-income-next-line{align-items:baseline}
     .grip-main .grip-planner-summary{padding:16px!important}
   }
+  /* Spending table: reserve category width; truncate text, never stack letters. */
+  .grip-view-spending .grip-expense-variable-list{overflow-x:auto;min-width:0;max-width:100%}
+  .grip-view-spending .grip-expense-variable-list .income-grid.row{min-width:660px;box-sizing:border-box;column-gap:12px;align-items:center}
+  .grip-view-spending .grip-expense-variable-list .grip-transaction-category{min-width:144px;max-width:100%;overflow:hidden;white-space:nowrap;overflow-wrap:normal;word-break:normal}
+  .grip-view-spending .grip-transaction-category>.grip-transaction-category-label{display:block;width:auto;height:auto;min-width:0;flex:1 1 auto;border-radius:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal;word-break:normal}
+  .grip-view-spending .grip-expense-variable-list .chip{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal!important;word-break:normal;display:block;line-height:22px}
+  .grip-view-spending .grip-expense-variable-list .col-amt{white-space:nowrap;text-align:right}
+  /* Calculation flow; existing cards, chart and editor remain intact. */
+  .grip-view-calculator .grip-calculator-results-breakdown{grid-template-columns:minmax(0,1fr);gap:30px 16px;align-items:stretch}
+  .grip-view-calculator .grip-calculator-results-breakdown>.grip-result-income{grid-column:1/-1}
+  .grip-view-calculator :is(.grip-result-fixed,.grip-result-variable){position:relative;min-width:0;margin:0}
+  .grip-view-calculator :is(.grip-result-fixed,.grip-result-variable)::before{content:'−';position:absolute;top:-26px;left:0;right:0;text-align:center;font-size:18px;font-weight:400;line-height:22px;color:#9B8774;pointer-events:none}
+  .grip-view-calculator .grip-calculation-operator{display:flex;align-items:center;justify-content:center;gap:12px;color:#9B8774;font-size:18px;line-height:1;margin:12px 0;user-select:none}
+  .grip-view-calculator .grip-calculation-operator::before,.grip-view-calculator .grip-calculation-operator::after{content:'';height:1px;background:rgba(99,64,49,.12);flex:1;max-width:90px}
+  @media(min-width:1000px){.grip-view-calculator .grip-calculator-results-breakdown{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </helmet>
@@ -914,7 +929,8 @@
     </div>
     <div style="margin-top:auto;font-size:11.5px;color:#B5A493;line-height:1.5">
       {{ t.loggedInAs }}
-      <input type="text" value="{{ name }}" onChange="{{ setName }}" style="display:block;width:100%;margin-top:4px;background:transparent;border:none;outline:none;padding:0;font-weight:600;color:#F6F1E7;font-size:13px">
+      <div style="display:block;width:100%;margin-top:4px;font-weight:600;color:#F6F1E7;font-size:13px">{{ authenticatedAccountName }}</div>
+      <div style="font-size:10px;color:#D8C7AB;overflow-wrap:anywhere;margin-top:4px">{{ authenticatedAccountEmail }}</div>
       <div style="display:flex;gap:10px;margin-top:10px">
         <div onClick="{{ toggleSettings }}" style="cursor:pointer;color:#C8A66B;font-weight:600;font-size:11.5px">{{ t.settings }}</div>
         <sc-if value="{{ showSignOut }}" hint-placeholder-val="{{ false }}">
@@ -1744,7 +1760,7 @@
                 <button class="grip-transaction-edit-link" onClick="{{ tx.edit }}" disabled="{{ spendingTransactionsEditing }}" title="Transactie bewerken">{{ tx.note }}</button>
               </div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:6px;min-width:0"><sc-if value="{{ tx.isRecurring }}" hint-placeholder-val="{{ false }}"><span title="{{ t.autoAddedTooltip }}" style="flex:none;font-size:11px;color:#8A7358">↻</span></sc-if><input type="text" value="{{ tx.note }}" onChange="{{ tx.setNote }}" class="grip-control" style="width:100%;min-width:0"></div></sc-if>
-              <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div class="grip-transaction-category"><span style="background:{{ tx.categoryColor }}"></span>{{ tx.categoryLabel }}</div></sc-if>
+              <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div class="grip-transaction-category" title="{{ tx.categoryLabel }}"><span style="background:{{ tx.categoryColor }}"></span><span class="grip-transaction-category-label">{{ tx.categoryLabel }}</span></div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><select value="{{ tx.category }}" onChange="{{ tx.setCategory }}" class="grip-control" style="width:100%;min-width:0"><sc-for list="{{ categoryOptions }}" as="c" hint-placeholder-count="5"><option value="{{ c.id }}">{{ c.label }}</option></sc-for></select></sc-if>
               <sc-if value="{{ tx.notEditing }}" hint-placeholder-val="{{ true }}"><div class="col-amt" style="font-weight:600;color:#BC6F52">-€ {{ tx.amountStr }}</div></sc-if>
               <sc-if value="{{ tx.isEditing }}" hint-placeholder-val="{{ false }}"><input type="text" inputmode="decimal" value="{{ tx.amountStr }}" onChange="{{ tx.setAmount }}" class="grip-control" style="width:100%;min-width:0;text-align:right"></sc-if>
@@ -2353,6 +2369,7 @@
         </div>
         <sc-if value="{{ calculatorAllocationNote }}" hint-placeholder-val="{{ false }}"><div class="grip-budget-allocation-note">{{ calculatorAllocationNote }}</div></sc-if>
       </div>
+      <div class="grip-calculation-operator" aria-hidden="true">−</div>
       <div class="grip-planned-saving-block">
         <div class="grip-planned-saving-heading"><span class="grip-calc-icon-heading"><span class="grip-calc-icon grip-calc-icon-savings" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M11 17h3v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-3a3.16 3.16 0 0 0 2-2h1a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-1a5 5 0 0 0-2-4V3a4 4 0 0 0-3.2 1.6l-.3.4H11a6 6 0 0 0-6 6v1a5 5 0 0 0 2 4v3a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1z"/><path d="M16 10h.01"/><path d="M2 8v1a2 2 0 0 0 2 2h1"/></svg></span><span>Gepland sparen</span></span><strong>€ {{ soloCalcSavingsSummary }}</strong></div>
         <sc-if value="{{ noAutomaticSavingsPlans }}" hint-placeholder-val="{{ true }}"><div class="grip-planned-saving-note">{{ noAutomaticSavingsPlansLabel }}</div></sc-if>
@@ -2808,7 +2825,8 @@
 
 
       </div>
-      <div class="grip-surface grip-calculator-distribution" style="margin:20px 0 0">
+      <div class="grip-calculation-operator" aria-hidden="true">=</div>
+      <div class="grip-surface grip-calculator-distribution" style="margin:0">
         <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px">
           <span class="grip-calc-icon-heading" style="font-size:13px;font-weight:700;color:#634031"><span class="grip-calc-icon grip-calc-icon-remaining" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg></span><span>{{ calcPersonalDistributableLabel }}</span></span>
           <sc-if value="{{ calcIsPersonalMode }}" hint-placeholder-val="{{ true }}"><strong style="font-size:22px;color:#3A261D;font-variant-numeric:tabular-nums">€ {{ calcDistributableStr }}</strong></sc-if>
@@ -3288,6 +3306,7 @@ class Component extends DCLogic {
     this.setWsKey(this.state.mode, patch, cb);
   }
   setWsKey(key, patch, cb) {
+    if (supabaseClient && (!this.state.session?.user?.id || this.state.dataUserId !== this.state.session.user.id)) return;
     if (key === 'personal' && this.soloCalculatorEditing()) {
       this.setState(s => ({ soloCalcDraft: { ...s.soloCalcDraft, ...(typeof patch === 'function' ? patch(s.soloCalcDraft) : patch) } }), cb);
       return;
@@ -3334,6 +3353,65 @@ class Component extends DCLogic {
   }
 
   loginTimestampKey(userId) { return `${STORAGE_KEY}_last_login_${userId}`; }
+  acceptAuthSession(session) {
+    const verification = this._authVerification = (this._authVerification || 0) + 1;
+    this._verifiedUserId = null;
+    if (!session?.user?.id) { this.activateVerifiedSession(null); return Promise.resolve(false); }
+    if (this._contextUserId !== session.user.id) this.activateVerifiedSession(null);
+    this.setState({ authChecked: true });
+    // getSession/local storage is not proof of identity. Verify the token with Auth.
+    return supabaseClient.auth.getUser(session.access_token).then(({ data, error }) => {
+      if (verification !== this._authVerification) return false;
+      if (error || !data?.user || data.user.id !== session.user.id) {
+        this.activateVerifiedSession(null);
+        this.setState({ authError: 'Je account kon niet veilig worden gecontroleerd. Log opnieuw in.' });
+        return false;
+      }
+      this._verifiedUserId = data.user.id;
+      this.activateVerifiedSession({ ...session, user: data.user });
+      return true;
+    }).catch(() => {
+      if (verification === this._authVerification) {
+        this.activateVerifiedSession(null);
+        this.setState({ authError: 'Accountcontrole mislukt. Controleer je verbinding en log opnieuw in.' });
+      }
+      return false;
+    });
+  }
+
+  activateVerifiedSession(session) {
+    const userId = session?.user?.id || null;
+    if (this._contextUserId !== userId) {
+      this._accountEpoch = (this._accountEpoch || 0) + 1;
+      const previousId = this._contextUserId;
+      if (previousId) {
+        const drafts = {};
+        for (const key of ['soloCalcDraft', 'soloCalcBase', 'calcBulkEditDrafts', 'spendingTransactionDrafts']) if (this.state[key]) drafts[key] = this.state[key];
+        localStorage.setItem(`${STORAGE_KEY}_drafts_${previousId}`, JSON.stringify(drafts));
+      }
+      ++this._userDataLoadId;
+      clearTimeout(this._persistTimer);
+      clearInterval(this._sharedCategoryPoll);
+      if (this._sharedCategoryChannel) supabaseClient.removeChannel(this._sharedCategoryChannel);
+      this._sharedCategoryChannel = null;
+      this._watchedHousehold = null;
+      this._loadedUserId = null;
+      this._loadingUserId = null;
+      this._sharedSyncAgain = false;
+      this._sharedSyncBusy = false;
+      this._sharedSyncCallbacks = [];
+      this._sharedDirtyKeys.clear();
+      this._sharedKeyRevisions = {};
+      this._lastSyncedShared = null;
+      this._contextUserId = userId;
+      this.setState({ ...JSON.parse(JSON.stringify(this._accountStateDefaults || {})), session, authChecked: true, dataUserId: null, soloCalcDraft: null, soloCalcBase: null, name: session?.user?.user_metadata?.name || '', workspaces: { personal: this.defaultWorkspace('personal'), shared: this.defaultWorkspace('shared') } }, () => { if (userId) this.loadUserData(userId); });
+      return;
+    }
+    this.setState({ session, authChecked: true }, () => {
+      if (userId && this._loadedUserId !== userId) this.loadUserData(userId);
+      else if (userId) this.flushPendingLocal();
+    });
+  }
   recordSuccessfulLogin(session) {
     if (!session || !session.user) return;
     localStorage.setItem(this.loginTimestampKey(session.user.id), String(Date.now()));
@@ -3351,6 +3429,7 @@ class Component extends DCLogic {
   expireAuthentication() {
     clearTimeout(this._persistTimer);
     if (supabaseClient) supabaseClient.auth.signOut({ scope: 'local' }).catch(() => {});
+    this.acceptAuthSession(null);
     this.setState({
       session: null,
       authChecked: true,
@@ -3376,7 +3455,10 @@ class Component extends DCLogic {
   queueDashboardSave(snapshot, revision, userId) {
     if (!supabaseClient || !userId) return Promise.resolve(false);
     this._persistChain = this._persistChain.catch(() => {}).then(async () => {
-      if (!this.requireFreshSession() || this.state.session?.user?.id !== userId || this._loadedUserId !== userId || snapshot._ownerUserId !== userId) return false;
+    if (!this.requireFreshSession() || this._verifiedUserId !== userId || this.state.session?.user?.id !== userId || this._loadedUserId !== userId || snapshot._ownerUserId !== userId) return false;
+      const epoch = this._accountEpoch;
+      const { data: identity, error: identityError } = await supabaseClient.auth.getUser();
+      if (identityError || identity?.user?.id !== userId || epoch !== this._accountEpoch || this.state.session?.user?.id !== userId) throw new Error('Accountcontrole voor opslaan mislukt; lokale gegevens blijven behouden.');
       const { error } = await supabaseClient.from('grip_dashboards').upsert({
         user_id: userId,
         data: { ...snapshot, _pendingSave: false },
@@ -3434,6 +3516,8 @@ class Component extends DCLogic {
   }
 
   syncMyMirrorsToShared(cb) {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     if (!supabaseClient || !this.state.session || !this.state.householdId) { if (cb) cb(); return; }
     if (this._loadedUserId !== this.state.session.user.id) return;
     this.watchSharedCategories(this.state.householdId);
@@ -3441,6 +3525,7 @@ class Component extends DCLogic {
     if (this._sharedSyncBusy) { this._sharedSyncAgain = true; if (cb) (this._sharedSyncCallbacks ||= []).push(cb); return; }
     this._sharedSyncBusy = true;
     const myId = this.state.session.user.id;
+    const accountEpoch = this._accountEpoch;
     const householdId = this.state.householdId;
     const personalWs = this.state.workspaces.personal;
     // Capture the CURRENT local shared workspace before fetching, and which keys on it have
@@ -3453,7 +3538,8 @@ class Component extends DCLogic {
     // concurrent changes with a stale local copy (classic last-write-wins bug) for the
     // mirror-derived fields specifically — so we still fetch fresh for those.
     supabaseClient.from('grip_shared_dashboards').select('data, updated_at').eq('household_id', householdId).maybeSingle().then(({ data, error }) => {
-      if (this.state.session?.user?.id !== myId || this.state.householdId !== householdId) { this._sharedSyncBusy = false; return; }
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
+      if (accountEpoch !== this._accountEpoch || this.state.session?.user?.id !== myId || this.state.householdId !== householdId) { this._sharedSyncBusy = false; return; }
       if (error) { this._sharedSyncBusy = false; console.error('Shared fetch error before sync', error); this.setState({ persistenceError: 'Synchroniseren van Gedeeld is mislukt. Je lokale wijzigingen zijn behouden.' }); if (cb) cb(); return; }
       const sharedWs = { ...this.defaultWorkspace('shared'), ...(data && data.data ? data.data : {}) };
       const patch = {};
@@ -3621,6 +3707,7 @@ class Component extends DCLogic {
       merged.incomeEntries = (merged.incomeEntries || []).filter(entry => !deletedIncomeIds.has(entry.id));
       this.setState(s => ({ workspaces: { ...s.workspaces, shared: merged } }), () => {
         this.persistShared(merged, data ? data.updated_at : null).then(saved => {
+          if (accountEpoch !== this._accountEpoch) return;
           if (saved) {
             dirtyKeysSnapshot.forEach(k => {
               if ((this._sharedKeyRevisions[k] || 0) === dirtyRevisionsSnapshot[k]) this._sharedDirtyKeys.delete(k);
@@ -3747,6 +3834,8 @@ class Component extends DCLogic {
   }
 
   persistShared(explicitData, expectedVersion) {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     if (!supabaseClient || !this.state.householdId) return Promise.resolve(false);
     if (!this.requireFreshSession()) return Promise.resolve(false);
     const dataToSave = explicitData || this.state.workspaces.shared;
@@ -3779,9 +3868,13 @@ class Component extends DCLogic {
   }
 
   loadHousehold(userId) {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     if (!supabaseClient) return;
+    const accountEpoch = this._accountEpoch;
     supabaseClient.from('household_members').select('household_id, households(invite_code)').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
-      if (this.state.session?.user?.id !== userId || this._loadedUserId !== userId) return;
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
+      if (accountEpoch !== this._accountEpoch || this.state.session?.user?.id !== userId || this._loadedUserId !== userId) return;
       if (error || !data) return;
       this.setState({ householdId: data.household_id, householdInviteCode: data.households ? data.households.invite_code : '' });
       this.watchSharedCategories(data.household_id);
@@ -3797,8 +3890,11 @@ class Component extends DCLogic {
   }
 
   loadHouseholdMembers(householdId) {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     const userId = this.state.session?.user?.id;
     supabaseClient.from('household_members').select('user_id, display_name').eq('household_id', householdId).then(({ data, error }) => {
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
       if (!userId || this.state.session?.user?.id !== userId || this.state.householdId !== householdId) return;
       if (error || !data) return;
       const partner = data.find(m => m.user_id !== this.state.session.user.id);
@@ -3812,11 +3908,15 @@ class Component extends DCLogic {
   }
 
   loadSharedData(householdId) {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     if (this._sharedSyncBusy) return;
+    const accountEpoch = this._accountEpoch;
     const userId = this.state.session?.user?.id;
     const revision = this._localRevision;
     supabaseClient.from('grip_shared_dashboards').select('data').eq('household_id', householdId).maybeSingle().then(({ data, error }) => {
-      if (this.state.householdId !== householdId || this.state.session?.user?.id !== userId) return;
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
+      if (accountEpoch !== this._accountEpoch || this.state.householdId !== householdId || this.state.session?.user?.id !== userId) return;
       if (error) { console.error('Shared load error', error); return; }
       if (data && data.data) {
         if (this._sharedSyncBusy) return;
@@ -3897,12 +3997,16 @@ class Component extends DCLogic {
   setJoinCodeInput(e) { this.setState({ joinCodeInput: e.target.value, householdError: '' }); }
 
   generateHousehold() {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     if (!supabaseClient || !this.state.session || this.state.householdBusy || this.state.householdId) return;
     this.setState({ householdBusy: true, householdError: '' });
     const code = Math.random().toString(36).slice(2, 8).toUpperCase();
     supabaseClient.from('households').insert({ invite_code: code, owner_id: this.state.session.user.id }).select('id, invite_code').single().then(({ data, error }) => {
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
       if (error || !data) { this.setState({ householdBusy: false, householdError: error ? error.message : 'Error' }); return; }
       supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
         this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false }, () => this.syncMyMirrorsToShared());
       });
@@ -3910,12 +4014,16 @@ class Component extends DCLogic {
   }
 
   joinHousehold() {
+    const authGuardUser = this.state.session?.user?.id;
+    const authGuardEpoch = this._accountEpoch;
     const code = (this.state.joinCodeInput || '').trim().toUpperCase();
     if (!code || !supabaseClient || !this.state.session || this.state.householdBusy || this.state.householdId) return;
     this.setState({ householdBusy: true, householdError: '' });
     supabaseClient.from('households').select('id, invite_code').eq('invite_code', code).maybeSingle().then(({ data, error }) => {
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
       if (error || !data) { this.setState({ householdBusy: false, householdError: this.tf('Code not found.', 'Code niet gevonden.', 'Code nicht gefunden.', 'Code introuvable.', 'Código no encontrado.') }); return; }
       supabaseClient.from('household_members').insert({ household_id: data.id, user_id: this.state.session.user.id, display_name: this.state.name }).then(({ error: memErr }) => {
+      if (!authGuardUser || this._verifiedUserId !== authGuardUser || this.state.session?.user?.id !== authGuardUser || this._accountEpoch !== authGuardEpoch) return;
         if (memErr) { this.setState({ householdBusy: false, householdError: memErr.message }); return; }
         this.setState({ householdId: data.id, householdInviteCode: data.invite_code, householdBusy: false, joinCodeInput: '' }, () => { this.syncMyMirrorsToShared(); this.loadHouseholdMembers(data.id); });
       });
@@ -3923,7 +4031,7 @@ class Component extends DCLogic {
   }
 
   loadUserData(userId) {
-    if (this.state.session?.user?.id !== userId) return;
+    if (this.state.session?.user?.id !== userId || this._verifiedUserId !== userId) return;
     if (this._loadingUserId === userId) return;
     this._loadingUserId = userId;
     clearTimeout(this._persistTimer);
@@ -3932,12 +4040,11 @@ class Component extends DCLogic {
     this._sharedDirtyKeys.clear();
     this._sharedKeyRevisions = {};
     this._lastSyncedShared = null;
-    this.soloCalcDraft = null;
-    this.soloCalcBase = null;
+    this.setState({ soloCalcDraft: null, soloCalcBase: null, dataUserId: null });
     this.setState({ name: this.state.session.user.user_metadata?.name || '', householdId: null, householdPartnerUserId: null, householdPartnerName: '', householdInviteCode: '', mode: 'personal', workspaces: { personal: this.defaultWorkspace('personal'), shared: this.defaultWorkspace('shared') }, calcScenarios: {}, merchantCategoryRules: {} });
     const loadId = ++this._userDataLoadId;
     const revisionAtStart = this._localRevision;
-    supabaseClient.from('grip_dashboards').select('data, updated_at').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
+    supabaseClient.from('grip_dashboards').select('user_id, data, updated_at').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
       if (loadId !== this._userDataLoadId || this.state.session?.user?.id !== userId) return;
       this._loadingUserId = null;
       if (error) {
@@ -3947,6 +4054,10 @@ class Component extends DCLogic {
       }
       if (data && data.data) {
         const saved = data.data;
+        if (data.user_id !== userId || (saved._ownerUserId && saved._ownerUserId !== userId)) {
+          this.setState({ persistenceError: 'Accountgegevens hebben een afwijkende eigenaar. Laden en opslaan zijn geblokkeerd; er is niets gewijzigd.' });
+          return;
+        }
         const localSaved = this.localPersistedState();
         const serverTime = Date.parse(data.updated_at || saved._clientUpdatedAt || '') || 0;
         const localTime = Date.parse(localSaved._clientUpdatedAt || '') || 0;
@@ -3955,7 +4066,7 @@ class Component extends DCLogic {
         const source = keepLocal ? localSaved : saved;
         this._localRevision = Math.max(this._localRevision, Number(localSaved._clientRevision || 0), Number(saved._clientRevision || 0));
         this._loadedUserId = userId;
-        this.setState({ name: source.name || this.state.name, mode: localSaved.mode || source.mode || 'personal', view: localSaved.view || source.view || 'overview', language: source.language || this.state.language, workspaces: source.workspaces ? this.fillWorkspaceDefaults(source.workspaces) : this.state.workspaces, calcSelectedMonth: localSaved.calcSelectedMonth || source.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) }, persistenceError: '' }, () => {
+        this.setState({ dataUserId: userId, name: this.state.session.user.user_metadata?.name || this.state.session.user.email || '', mode: localSaved.mode || source.mode || 'personal', view: localSaved.view || source.view || 'overview', language: source.language || this.state.language, workspaces: { personal: { ...this.defaultWorkspace('personal'), ...(source.workspaces?.personal || {}) }, shared: this.defaultWorkspace('shared') }, calcSelectedMonth: localSaved.calcSelectedMonth || source.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) }, persistenceError: '' }, () => {
           if (keepLocal) this.flushPendingLocal();
           this.processDueRecurring(); this.scheduleAlertDismiss();
           this.loadHousehold(userId);
@@ -3963,7 +4074,7 @@ class Component extends DCLogic {
       } else {
         const local = this.localPersistedState();
         this._loadedUserId = userId;
-        this.setState(local.workspaces ? { name: local.name || this.state.name, workspaces: this.fillWorkspaceDefaults(local.workspaces), calcScenarios: local.calcScenarios || {}, merchantCategoryRules: local.merchantCategoryRules || {} } : {}, () => {
+        this.setState(local.workspaces ? { dataUserId: userId, name: this.state.session.user.user_metadata?.name || this.state.session.user.email || '', workspaces: { personal: { ...this.defaultWorkspace('personal'), ...(local.workspaces.personal || {}) }, shared: this.defaultWorkspace('shared') }, calcScenarios: local.calcScenarios || {}, merchantCategoryRules: local.merchantCategoryRules || {} } : { dataUserId: userId }, () => {
           this.persist();
           this.processDueRecurring(); this.scheduleAlertDismiss();
           this.loadHousehold(userId);
@@ -3994,6 +4105,7 @@ class Component extends DCLogic {
 
   submitAuth() {
     if (!supabaseClient) return;
+    const requestId = this._authRequestId = (this._authRequestId || 0) + 1;
     const email = this.state.authEmail.trim();
     const password = this.state.authPassword;
     const name = this.state.authName.trim();
@@ -4005,6 +4117,7 @@ class Component extends DCLogic {
       ? supabaseClient.auth.signInWithPassword({ email, password })
       : supabaseClient.auth.signUp({ email, password, options: { data: { name } } });
     call.then(({ data, error }) => {
+      if (requestId !== this._authRequestId) return;
       this.setState({ authSubmitting: false });
       if (error) { this._freshLoginInProgress = false; this.setState({ authError: error.message }); return; }
       if (this.state.authMode === 'signup' && data.user && !data.session) {
@@ -4013,10 +4126,17 @@ class Component extends DCLogic {
         return;
       }
       if (data.session) {
+        if (this.state.authMode === 'signin' && String(data.session.user.email || '').toLowerCase() !== email.toLowerCase()) {
+          this._freshLoginInProgress = false;
+          this.acceptAuthSession(null);
+          supabaseClient.auth.signOut({ scope: 'local' });
+          this.setState({ authError: 'Het aangemelde account komt niet overeen met het ingevoerde e-mailadres. Log opnieuw in.' });
+          return;
+        }
         this.recordSuccessfulLogin(data.session);
         this._freshLoginInProgress = false;
-        this.setState({ session: data.session, authEmail: '', authPassword: '', ...(name ? { name } : {}) });
-        this.loadUserData(data.session.user.id);
+        this.acceptAuthSession(data.session);
+        this.setState({ authEmail: '', authPassword: '' });
       }
     }).catch(() => {
       this._freshLoginInProgress = false;
@@ -4025,6 +4145,8 @@ class Component extends DCLogic {
   }
 
   signOut() {
+    this._authRequestId = (this._authRequestId || 0) + 1;
+    ++this._authEpoch;
     if (this._sharedCategoryChannel) supabaseClient.removeChannel(this._sharedCategoryChannel);
     clearInterval(this._sharedCategoryPoll);
     this._watchedHousehold = null;
@@ -4034,7 +4156,7 @@ class Component extends DCLogic {
     this._loadingUserId = null;
     if (this.state.session && this.state.session.user) localStorage.removeItem(this.loginTimestampKey(this.state.session.user.id));
     if (supabaseClient) supabaseClient.auth.signOut();
-    this.setState({ session: null });
+    this.acceptAuthSession(null);
   }
 
   migrateLegacyFlat(saved) {
@@ -4081,6 +4203,8 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    this._accountStateDefaults = JSON.parse(JSON.stringify(this.state));
+    this._authEpoch = 0;
     this._handleSidebarResize = () => {
       if (window.innerWidth < 980 && this.state.sidebarOpen) this.setState({ sidebarOpen: false });
     };
@@ -4210,27 +4334,22 @@ class Component extends DCLogic {
       }), () => { this.processDueRecurring(); this.persist(); });
       return;
     }
+    const restoreEpoch = this._authEpoch;
     supabaseClient.auth.getSession().then(({ data }) => {
+      if (restoreEpoch !== this._authEpoch) return;
       if (data.session && !this.sessionWithinLoginLimit(data.session)) {
         this.setState({ authChecked: true }, () => this.expireAuthentication());
         return;
       }
-      this.setState({ session: data.session, authChecked: true }, () => {
-        if (data.session) this.loadUserData(data.session.user.id);
-      });
+      this.acceptAuthSession(data.session);
     });
     supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') { this.setState({ session, authRecoveryMode: true }); return; }
+      ++this._authEpoch;
+      if (event === 'PASSWORD_RECOVERY') { this.acceptAuthSession(session); this.setState({ authRecoveryMode: true }); return; }
       if (session && event === 'SIGNED_IN' && this._freshLoginInProgress) this.recordSuccessfulLogin(session);
       if (session && !this.sessionWithinLoginLimit(session)) { this.expireAuthentication(); return; }
-      this.setState({ session }, () => {
-        if (!session) return;
-        if (event === 'TOKEN_REFRESHED') { this.flushPendingLocal(); return; }
-        if (event === 'SIGNED_IN') {
-          if (this._loadedUserId !== session.user.id) this.loadUserData(session.user.id);
-          else this.flushPendingLocal();
-        }
-      });
+      this.acceptAuthSession(session);
+      if (session && this._loadedUserId === session.user.id) this.flushPendingLocal();
     });
     window.addEventListener('online', () => this.flushPendingLocal());
     window.addEventListener('focus', () => this.requireFreshSession());
@@ -6900,7 +7019,7 @@ class Component extends DCLogic {
         isEditing,
         notEditing: !isEditing,
         edit: () => this.startSpendingTransactionsEdit([t]),
-        rowGridColumns: isEditing ? '112px minmax(160px,1.8fr) 120px 144px 34px' : '112px minmax(160px,1.8fr) 120px 144px',
+        rowGridColumns: isEditing ? '112px minmax(160px,1.8fr) minmax(144px,1fr) 144px 34px' : '112px minmax(160px,1.8fr) minmax(144px,1fr) 144px',
         dateCursor: 'pointer',
         dateEditHint: isRecurring
           ? this.tf('Auto-posted from a recurring payment', 'Automatisch toegevoegd vanuit een vast bedrag', 'Automatisch aus einer wiederkehrenden Zahlung hinzugefügt', "Ajouté automatiquement à partir d'un paiement récurrent", 'Añadido automáticamente desde un pago recurrente')
@@ -7552,7 +7671,7 @@ class Component extends DCLogic {
 
     return {
       showAuthScreen: !PREVIEW_AUTH_BYPASS && SUPABASE_CONFIGURED && this.state.authChecked && !this.state.session && !this.state.authRecoveryMode,
-      showApp: (PREVIEW_AUTH_BYPASS || !SUPABASE_CONFIGURED || (this.state.authChecked && !!this.state.session)) && !this.state.authRecoveryMode,
+      showApp: (PREVIEW_AUTH_BYPASS || !SUPABASE_CONFIGURED || (this.state.authChecked && !!this.state.session && this._verifiedUserId === this.state.session.user.id && this.state.dataUserId === this.state.session.user.id && this._loadedUserId === this.state.session.user.id)) && !this.state.authRecoveryMode,
       showRecoveryScreen: SUPABASE_CONFIGURED && this.state.authRecoveryMode,
       newPasswordValue: this.state.newPasswordValue,
       setNewPasswordValue: (e) => this.setNewPasswordValue(e),
@@ -7585,6 +7704,8 @@ class Component extends DCLogic {
       resetSuccessText: `We hebben een e-mail gestuurd naar ${this.state.authEmail.trim()} waarmee je je wachtwoord kunt herstellen.`,
       signOut: () => this.signOut(),
       name: this.state.name,
+      authenticatedAccountEmail: this.state.session?.user?.email || '',
+      authenticatedAccountName: this._verifiedUserId === this.state.session?.user?.id ? (this.state.session.user.user_metadata?.name || this.state.session.user.email || '') : '',
       mode: this.state.mode,
       isShared: this.state.mode === 'shared',
       isPersonal: this.state.mode === 'personal',
