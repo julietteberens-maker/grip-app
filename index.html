@@ -2,6 +2,8 @@
 <html lang="nl-NL">
 <head>
 <meta charset="utf-8">
+<!-- Bump ONLY for an official deployment, never for routine development edits. -->
+<meta name="grip-release" content="2026.10.29.1">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -944,6 +946,10 @@
     <div onClick="{{ toggleSettings }}" style="position:fixed;inset:0;background:rgba(58,42,31,.45);display:flex;align-items:center;justify-content:center;z-index:50">
       <div onClick="{{ stopPropagation }}" style="background:#F6F1E7;border-radius:16px;padding:26px 28px;width:300px;color:#634031">
         <div style="font-size:15px;font-weight:700;margin-bottom:16px">{{ t.settings }}</div>
+        <label for="grip-display-name" style="display:block;font-size:12px;font-weight:600;color:#7A5941;margin-bottom:8px">Weergavenaam</label>
+        <input id="grip-display-name" class="grip-control" style="width:100%;margin-bottom:8px" value="{{ displayNameInput }}" onChange="{{ setDisplayNameInput }}" placeholder="{{ authenticatedAccountEmail }}" maxlength="80">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><button class="grip-btn grip-btn-primary" onClick="{{ saveDisplayName }}" disabled="{{ displayNameSaving }}">Naam opslaan</button></div>
+        <div style="font-size:11.5px;line-height:1.5;margin-bottom:16px">{{ displayNameMessage }}</div>
         <div style="font-size:12px;font-weight:600;color:#7A5941;margin-bottom:8px">{{ t.language }}</div>
         <select value="{{ language }}" onChange="{{ setLanguage }}" style="width:100%;border:1px solid rgba(99,64,49,.18);border-radius:8px;padding:8px 10px;font-size:13px;background:#D8C7AB;color:#634031;margin-bottom:18px">
           <sc-for list="{{ languageOptions }}" as="lo" hint-placeholder-count="5">
@@ -2311,6 +2317,15 @@
         </sc-if>
       </div>
 
+      <sc-if value="{{ plannerCategoryRemovalOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="grip-surface" style="padding:14px 16px;margin-bottom:14px;border:1px solid rgba(99,64,49,.18)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px">Categorie verwijderen</div>
+          <div style="font-size:12px;margin-bottom:10px">Gekoppelde transacties blijven behouden. Kies een vervangende categorie; een ingesteld budget wordt daarheen overgezet.</div>
+          <select class="grip-control" value="{{ plannerCategoryReplacement }}" onChange="{{ setPlannerCategoryReplacement }}"><option value="">Kies een vervangende categorie</option><sc-for list="{{ plannerCategoryReplacementOptions }}" as="replacement"><option value="{{ replacement.id }}">{{ replacement.label }}</option></sc-for></select>
+          <div style="display:flex;gap:8px;margin-top:10px"><button class="grip-btn grip-btn-secondary" onClick="{{ cancelPlannerCategoryRemoval }}">Annuleren</button><button class="grip-btn grip-btn-primary" onClick="{{ confirmPlannerCategoryRemoval }}">Verwijderen</button></div>
+          <div style="font-size:12px;margin-top:8px">{{ plannerCategoryRemovalError }}</div>
+        </div>
+      </sc-if>
       <div class="grip-planner-categories" style="display:flex;flex-direction:column;gap:14px">
         <sc-for list="{{ plannerCategories }}" as="pc" hint-placeholder-count="5">
           <div class="grip-planner-category" style="background:#EEE6D8;border-radius:16px;padding:18px 20px">
@@ -2353,7 +2368,7 @@
         <section class="grip-calculator-result-section grip-result-variable">
           <div class="grip-calculator-result-heading"><h3 class="grip-calc-icon-heading"><span class="grip-calc-icon grip-calc-icon-variable" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg></span><span>Geplande variabele uitgaven</span></h3><strong>€ {{ calculatorSummaryVariable }}</strong></div>
           <sc-if value="{{ calcIsSharedMode }}" hint-placeholder-val="{{ false }}"><div class="grip-person-split"><div class="grip-person-split-track" role="img" aria-label="{{ calcVariableOwnershipSplit.description }}"><span style="width:{{ calcVariableOwnershipSplit.mePct }}%;background:{{ calculatorMeColor }}"></span><span style="width:{{ calcVariableOwnershipSplit.partnerPct }}%;background:{{ calculatorPartnerColor }}"></span></div><div class="grip-person-split-labels"><span style="color:{{ calculatorMeColor }}">{{ calcTableMeLabel }} · € {{ calcTableVariableMeStr }} · {{ calcVariableOwnershipSplit.mePctLabel }}%</span><span style="color:{{ calculatorPartnerColor }}">{{ calcTablePartnerLabel }} · € {{ calcTableVariablePartnerStr }} · {{ calcVariableOwnershipSplit.partnerPctLabel }}%</span></div></div></sc-if>
-          <div class="grip-calc-section-preview"><sc-for list="{{ calcVariableSectionPreview }}" as="variablePreview" hint-placeholder-count="3"><div><span>{{ variablePreview.name }}</span><span>€ {{ variablePreview.amountStr }}</span></div></sc-for></div>
+          <div class="grip-calc-section-preview"><sc-for list="{{ calcVariableAllRows }}" as="variablePreview" hint-placeholder-count="3"><div><span>{{ variablePreview.name }}</span><span>€ {{ variablePreview.amountStr }}</span></div></sc-for></div>
         </section>
       </div>
 
@@ -2990,6 +3005,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_pZIRsJwhoVZtDAuBfAG8zA_JfLlfRjM';
 const SUPABASE_CONFIGURED = true;
 const supabaseClient = (!PREVIEW_AUTH_BYPASS && SUPABASE_CONFIGURED && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 const AUTH_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+const GRIP_RELEASE = document.querySelector('meta[name="grip-release"]').content;
+const GRIP_DEPLOYED = ['https:', 'http:'].includes(window.location.protocol) && !['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname) && !PREVIEW_AUTH_BYPASS;
 
 class Component extends DCLogic {
   colorPalette = ['#634031', '#7A5941', '#7C8972', '#66715A', '#C8A66B', '#A8714F', '#BC6F52', '#7A4A44', '#C99A93'];
@@ -3088,6 +3105,9 @@ class Component extends DCLogic {
     name: 'Your name',
     language: 'en',
     showSettings: false,
+    displayNameInput: '',
+    displayNameSaving: false,
+    displayNameMessage: '',
     sidebarOpen: typeof window === 'undefined' ? true : window.innerWidth >= 980,
     mode: 'personal',
     workspaces: {
@@ -3176,6 +3196,10 @@ class Component extends DCLogic {
     dismissed: [],
     view: 'overview',
     spendingFilter: 'all',
+    plannerCategoryRemovalId: null,
+    plannerCategoryRemovalMode: null,
+    plannerCategoryReplacement: '',
+    plannerCategoryRemovalError: '',
     categoryFilters: [],
     amountMin: '',
     amountMax: '',
@@ -3353,6 +3377,92 @@ class Component extends DCLogic {
   }
 
   loginTimestampKey(userId) { return `${STORAGE_KEY}_last_login_${userId}`; }
+  async checkDeploymentRelease() {
+    if (!GRIP_DEPLOYED) return true;
+    if (this._releaseCheckBusy) return false;
+    this._releaseCheckBusy = true;
+    try {
+      let latest = GRIP_RELEASE;
+      try {
+        const url = new URL(window.location.href);
+        url.hash = '';
+        url.searchParams.set('grip-release-check', String(Date.now()));
+        const response = await fetch(url.href, { cache: 'no-store', credentials: 'same-origin' });
+        if (response.ok) {
+          const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+          latest = html.querySelector('meta[name="grip-release"]')?.content || GRIP_RELEASE;
+        }
+      } catch (_) { /* Offline: the embedded release still governs the local session. */ }
+      const key = 'grip_official_release';
+      if (latest === GRIP_RELEASE && localStorage.getItem(key) === GRIP_RELEASE) return true;
+      if (this.state.soloCalcDraft || this.state.spendingTransactionsEditing || Object.keys(this.state.calcBulkEditDrafts || {}).length) {
+        this.setState({ persistenceError: 'Nieuwe GRIP-release beschikbaar. Sla je openstaande bewerking eerst op of annuleer deze; daarna kan GRIP je veilig opnieuw laten inloggen.' });
+        return false;
+      }
+      if (this._sharedDirtyKeys.size) {
+        this.syncMyMirrorsToShared();
+        this.setState({ persistenceError: 'Nieuwe GRIP-release beschikbaar. Gedeelde wijzigingen worden eerst gesynchroniseerd. Ga daarna opnieuw naar dit tabblad om verder te gaan.' });
+        return false;
+      }
+      if ((this.state.bankImportRows || []).length && !window.confirm('Er is een nieuwe GRIP-release. De tijdelijke bankimport is nog niet opgeslagen. Annuleren laat je de import eerst afronden; doorgaan sluit de tijdelijke preview en logt je uit.')) return false;
+      const userId = this.state.session?.user?.id;
+      if (userId && this._loadedUserId === userId) {
+        // Preserve pending changes without sending an older app snapshot to the server.
+        const snapshot = this.persistedSnapshot({ _clientRevision: ++this._localRevision, _clientUpdatedAt: new Date().toISOString(), _pendingSave: true, _householdId: this.state.householdId, _sharedDirtyKeys: [...this._sharedDirtyKeys] });
+        localStorage.setItem(this.dashboardStorageKey(userId), JSON.stringify(snapshot));
+      }
+      clearTimeout(this._persistTimer);
+      this._authEpoch = (this._authEpoch || 0) + 1;
+      this._authRequestId = (this._authRequestId || 0) + 1;
+      await this.acceptAuthSession(null);
+      const result = supabaseClient ? await supabaseClient.auth.signOut({ scope: 'local' }) : { error: null };
+      if (result.error) throw result.error;
+      localStorage.setItem(key, latest);
+      if (latest !== GRIP_RELEASE) {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('grip-release') === latest) throw new Error('De hosting levert nog een oude appversie. Probeer later opnieuw.');
+        url.searchParams.delete('grip-release-check');
+        url.searchParams.set('grip-release', latest);
+        window.location.replace(url.href);
+        return false;
+      }
+      this.setState({ authError: 'GRIP is bijgewerkt. Log opnieuw in om veilig verder te gaan.' });
+      return true;
+    } catch (error) {
+      this.setState({ authChecked: true, authError: 'Releasecontrole niet afgerond: ' + (error.message || 'Probeer opnieuw. Lokale gegevens zijn behouden.') });
+      return false;
+    } finally { this._releaseCheckBusy = false; }
+  }
+  ownDisplayName(user = this.state.session?.user) {
+    return String(user?.user_metadata?.display_name || user?.user_metadata?.name || '').trim() || user?.email || '';
+  }
+
+  async saveDisplayName() {
+    const userId = this.state.session?.user?.id, epoch = this._accountEpoch;
+    if (!supabaseClient || !userId || this._verifiedUserId !== userId || this.state.displayNameSaving || !this.requireFreshSession()) return;
+    const displayName = String(this.state.displayNameInput || '').trim().slice(0, 80);
+    this.setState({ displayNameSaving: true, displayNameMessage: '' });
+    const current = () => this.state.session?.user?.id === userId && this._accountEpoch === epoch;
+    try {
+      const { data: identity, error: identityError } = await supabaseClient.auth.getUser();
+      if (!current()) return;
+      if (identityError || identity?.user?.id !== userId) throw new Error('Je account kon niet worden gecontroleerd. Log opnieuw in.');
+      const { data, error } = await supabaseClient.auth.updateUser({ data: { display_name: displayName, name: displayName } });
+      if (!current()) return;
+      if (error || data?.user?.id !== userId) throw new Error(error?.message || 'Opslaan van je naam is mislukt.');
+      const user = data.user;
+      this.setState(s => ({ session: { ...s.session, user }, name: this.ownDisplayName(user), displayNameSaving: false, displayNameMessage: 'Weergavenaam opgeslagen.' }), () => this.persist());
+      const householdId = this.state.householdId;
+      if (householdId) {
+        const { error: memberError } = await supabaseClient.from('household_members').update({ display_name: this.ownDisplayName(user) }).eq('user_id', userId).eq('household_id', householdId);
+        if (!current()) return;
+        if (memberError) { this.setState({ displayNameMessage: 'Naam opgeslagen. Bijwerken van je naam in Gedeeld is nog niet gelukt; dit wordt bij opnieuw openen geprobeerd.' }); return; }
+        if (this._sharedCategoryChannel) this._sharedCategoryChannel.send({ type: 'broadcast', event: 'workspace-updated', payload: {} }).catch(() => {});
+      }
+    } catch (error) {
+      if (current()) this.setState({ displayNameSaving: false, displayNameMessage: error.message || 'Naam opslaan mislukt. Probeer opnieuw.' });
+    }
+  }
   acceptAuthSession(session) {
     const verification = this._authVerification = (this._authVerification || 0) + 1;
     this._verifiedUserId = null;
@@ -3404,7 +3514,7 @@ class Component extends DCLogic {
       this._sharedKeyRevisions = {};
       this._lastSyncedShared = null;
       this._contextUserId = userId;
-      this.setState({ ...JSON.parse(JSON.stringify(this._accountStateDefaults || {})), session, authChecked: true, dataUserId: null, soloCalcDraft: null, soloCalcBase: null, name: session?.user?.user_metadata?.name || '', workspaces: { personal: this.defaultWorkspace('personal'), shared: this.defaultWorkspace('shared') } }, () => { if (userId) this.loadUserData(userId); });
+      this.setState({ ...JSON.parse(JSON.stringify(this._accountStateDefaults || {})), session, authChecked: true, dataUserId: null, soloCalcDraft: null, soloCalcBase: null, name: this.ownDisplayName(session?.user), workspaces: { personal: this.defaultWorkspace('personal'), shared: this.defaultWorkspace('shared') } }, () => { if (userId) this.loadUserData(userId); });
       return;
     }
     this.setState({ session, authChecked: true }, () => {
@@ -3950,6 +4060,7 @@ class Component extends DCLogic {
   }
 
   normalizeSharedExpenseCategories(ws) {
+    this.applyExpenseCategoryRemovals(ws);
     // Deduplicate repeated records of the SAME ID only. Equal names do not prove identity.
     const seen = new Set();
     ws.categoryOptions = (ws.categoryOptions || []).filter(category => {
@@ -3986,7 +4097,7 @@ class Component extends DCLogic {
     if (this._sharedCategoryChannel) supabaseClient.removeChannel(this._sharedCategoryChannel);
     clearInterval(this._sharedCategoryPoll);
     this._watchedHousehold = householdId;
-    const refresh = () => { if (this.state.session && this.state.householdId === householdId && !document.hidden) this.loadSharedData(householdId); };
+    const refresh = () => { if (this.state.session && this.state.householdId === householdId && !document.hidden) { this.loadSharedData(householdId); this.loadHouseholdMembers(householdId); } };
     this._sharedCategoryChannel = supabaseClient.channel(`grip-workspace-${householdId}`).on('broadcast', { event: 'workspace-updated' }, refresh).on('postgres_changes', { event: '*', schema: 'public', table: 'grip_shared_dashboards', filter: `household_id=eq.${householdId}` }, refresh).subscribe();
     this._sharedCategoryPoll = setInterval(refresh, 10000);
     if (this._sharedCategoryVisibility) document.removeEventListener('visibilitychange', this._sharedCategoryVisibility);
@@ -4041,7 +4152,7 @@ class Component extends DCLogic {
     this._sharedKeyRevisions = {};
     this._lastSyncedShared = null;
     this.setState({ soloCalcDraft: null, soloCalcBase: null, dataUserId: null });
-    this.setState({ name: this.state.session.user.user_metadata?.name || '', householdId: null, householdPartnerUserId: null, householdPartnerName: '', householdInviteCode: '', mode: 'personal', workspaces: { personal: this.defaultWorkspace('personal'), shared: this.defaultWorkspace('shared') }, calcScenarios: {}, merchantCategoryRules: {} });
+    this.setState({ name: this.ownDisplayName(), householdId: null, householdPartnerUserId: null, householdPartnerName: '', householdInviteCode: '', mode: 'personal', workspaces: { personal: this.defaultWorkspace('personal'), shared: this.defaultWorkspace('shared') }, calcScenarios: {}, merchantCategoryRules: {} });
     const loadId = ++this._userDataLoadId;
     const revisionAtStart = this._localRevision;
     supabaseClient.from('grip_dashboards').select('user_id, data, updated_at').eq('user_id', userId).maybeSingle().then(({ data, error }) => {
@@ -4066,7 +4177,7 @@ class Component extends DCLogic {
         const source = keepLocal ? localSaved : saved;
         this._localRevision = Math.max(this._localRevision, Number(localSaved._clientRevision || 0), Number(saved._clientRevision || 0));
         this._loadedUserId = userId;
-        this.setState({ dataUserId: userId, name: this.state.session.user.user_metadata?.name || this.state.session.user.email || '', mode: localSaved.mode || source.mode || 'personal', view: localSaved.view || source.view || 'overview', language: source.language || this.state.language, workspaces: { personal: { ...this.defaultWorkspace('personal'), ...(source.workspaces?.personal || {}) }, shared: this.defaultWorkspace('shared') }, calcSelectedMonth: localSaved.calcSelectedMonth || source.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) }, persistenceError: '' }, () => {
+        this.setState({ dataUserId: userId, name: this.ownDisplayName(), mode: localSaved.mode || source.mode || 'personal', view: localSaved.view || source.view || 'overview', language: source.language || this.state.language, workspaces: { personal: { ...this.defaultWorkspace('personal'), ...(source.workspaces?.personal || {}) }, shared: this.defaultWorkspace('shared') }, calcSelectedMonth: localSaved.calcSelectedMonth || source.calcSelectedMonth || this.state.calcSelectedMonth, calcScenarios: { ...(saved.calcScenarios || {}), ...(localSaved.calcScenarios || {}) }, merchantCategoryRules: { ...(saved.merchantCategoryRules || {}), ...(localSaved.merchantCategoryRules || {}) }, persistenceError: '' }, () => {
           if (keepLocal) this.flushPendingLocal();
           this.processDueRecurring(); this.scheduleAlertDismiss();
           this.loadHousehold(userId);
@@ -4074,7 +4185,7 @@ class Component extends DCLogic {
       } else {
         const local = this.localPersistedState();
         this._loadedUserId = userId;
-        this.setState(local.workspaces ? { dataUserId: userId, name: this.state.session.user.user_metadata?.name || this.state.session.user.email || '', workspaces: { personal: { ...this.defaultWorkspace('personal'), ...(local.workspaces.personal || {}) }, shared: this.defaultWorkspace('shared') }, calcScenarios: local.calcScenarios || {}, merchantCategoryRules: local.merchantCategoryRules || {} } : { dataUserId: userId }, () => {
+        this.setState(local.workspaces ? { dataUserId: userId, name: this.ownDisplayName(), workspaces: { personal: { ...this.defaultWorkspace('personal'), ...(local.workspaces.personal || {}) }, shared: this.defaultWorkspace('shared') }, calcScenarios: local.calcScenarios || {}, merchantCategoryRules: local.merchantCategoryRules || {} } : { dataUserId: userId }, () => {
           this.persist();
           this.processDueRecurring(); this.scheduleAlertDismiss();
           this.loadHousehold(userId);
@@ -4203,6 +4314,11 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    if (GRIP_DEPLOYED && !this._releaseStartupChecked) {
+      if (!this._accountStateDefaults) this._accountStateDefaults = JSON.parse(JSON.stringify(this.state));
+      this.checkDeploymentRelease().then(ready => { if (ready) { this._releaseStartupChecked = true; this.componentDidMount(); } });
+      return;
+    }
     this._accountStateDefaults = JSON.parse(JSON.stringify(this.state));
     this._authEpoch = 0;
     this._handleSidebarResize = () => {
@@ -4353,6 +4469,7 @@ class Component extends DCLogic {
     });
     window.addEventListener('online', () => this.flushPendingLocal());
     window.addEventListener('focus', () => this.requireFreshSession());
+    if (GRIP_DEPLOYED) window.addEventListener('focus', () => this.checkDeploymentRelease());
     document.addEventListener('visibilitychange', () => { if (!document.hidden) this.requireFreshSession(); });
   }
   setNewPasswordValue(e) { this.setState({ newPasswordValue: e.target.value, authError: '' }); }
@@ -4381,7 +4498,7 @@ class Component extends DCLogic {
   setView(view) { this.setState({ view, spendingTransactionsEditing: false, spendingTransactionDrafts: {}, spendingTransactionDeleteIds: [] }, () => this.persist()); }
   toggleSettings() {
     const latest = (this.ws().balanceAdjustments || []).slice(-1)[0];
-    this.setState(s => ({ showSettings: !s.showSettings, balanceAdjustmentInput: latest ? String(latest.actualBalance) : '', balanceAdjustmentDateInput: latest ? latest.date : this.todayStr(), balanceAdjustmentError: '' }));
+    this.setState(s => ({ showSettings: !s.showSettings, displayNameInput: String(s.session?.user?.user_metadata?.display_name || s.session?.user?.user_metadata?.name || '').trim(), displayNameMessage: '', balanceAdjustmentInput: latest ? String(latest.actualBalance) : '', balanceAdjustmentDateInput: latest ? latest.date : this.todayStr(), balanceAdjustmentError: '' }));
   }
   balanceLedgerTotal(ws, date) {
     // Use posted entries only; recurring master records and planning estimates are excluded.
@@ -4578,6 +4695,10 @@ class Component extends DCLogic {
     this.setState({ newCategoryName: '' });
   }
   removeCategory(id) {
+    if (this.expenseCategoryLabel(id, this.ws().categoryOptions) === this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre')) {
+      this.setState({ plannerCategoryRemovalId: id, plannerCategoryRemovalMode: this.state.mode, plannerCategoryReplacement: '', plannerCategoryRemovalError: '' });
+      return;
+    }
     const inUse = this.ws().transactions.some(t => t.category === id);
     if (inUse) return;
     this.setWs(w => ({ categoryOptions: w.categoryOptions.filter(c => c.id !== id) }), () => this.persist());
@@ -4586,6 +4707,51 @@ class Component extends DCLogic {
     this.setWs(w => ({ categoryOptions: w.categoryOptions.map(c => c.id === id ? { ...c, color } : c) }), () => this.persist());
   }
   setCategoryColorFromInput(id, e) { this.setCategoryColor(id, e.target.value); }
+  applyExpenseCategoryRemovals(ws) {
+    const removals = ws.expenseCategoryRemovals || [];
+    const resolve = id => {
+      const seen = new Set();
+      while (!seen.has(id)) { seen.add(id); const removal = removals.find(item => item.id === id); if (!removal?.replacementId) break; id = removal.replacementId; }
+      return id;
+    };
+    const removed = new Set(removals.map(item => item.id));
+    ws.categoryOptions = (ws.categoryOptions || []).filter(c => !removed.has(c.id)).map(c => ({ ...c, aliases: (c.aliases || []).filter(id => !removed.has(id)) }));
+    ws.transactions = (ws.transactions || []).map(tx => resolve(tx.category) !== tx.category ? { ...tx, category: resolve(tx.category) } : tx);
+    ws.spendHistory = (ws.spendHistory || []).map(month => ({ ...month, items: (month.items || []).map(item => resolve(item.category) !== item.category ? { ...item, category: resolve(item.category) } : item) }));
+    ws.calcOtherCategories = (ws.calcOtherCategories || []).filter(item => !removed.has(item.id));
+    ws.categoryBudgets = { ...(ws.categoryBudgets || {}) };
+    removals.forEach(item => (item.budgetKeys || [item.id]).forEach(key => { delete ws.categoryBudgets[key]; }));
+  }
+
+  confirmPlannerCategoryRemoval() {
+    const id = this.state.plannerCategoryRemovalId, replacementId = this.state.plannerCategoryReplacement;
+    if (!id || this.state.mode !== this.state.plannerCategoryRemovalMode) return;
+    const ws = this.ws(), catalog = ws.categoryOptions || [];
+    const source = catalog.find(c => c.id === id);
+    const ids = new Set([id, ...(source?.aliases || [])]);
+    const linked = (ws.transactions || []).some(tx => ids.has(tx.category)) || (ws.spendHistory || []).some(month => (month.items || []).some(item => ids.has(item.category)));
+    const budget = this.resolvePlannerCategoryBudget(ws, source || { id }, catalog);
+    const target = catalog.find(c => c.id === replacementId && !ids.has(c.id) && !c.canonicalId);
+    if ((linked || budget.amount > 0 || replacementId) && !target) { this.setState({ plannerCategoryRemovalError: 'Kies eerst een bestaande vervangende categorie. Maak zo nodig een categorie aan.' }); return; }
+    if (!window.confirm('Deze categorie verwijderen? Transacties blijven behouden; gekoppelde bedragen worden niet verwijderd.')) return;
+    this.setWs(current => {
+      const next = { ...current, categoryBudgets: { ...(current.categoryBudgets || {}) } };
+      const keys = [...ids];
+      const name = String(source?.label || '').trim().toLocaleLowerCase('nl-NL');
+      if (name && catalog.filter(c => String(c.label || '').trim().toLocaleLowerCase('nl-NL') === name).length === 1) keys.push(name);
+      if (target && budget.amount > 0) {
+        const targetBudget = this.resolvePlannerCategoryBudget(current, target, catalog);
+        const total = targetBudget.amount + budget.amount;
+        next.categoryBudgets[target.id] = total;
+        const targetName = String(target.label || '').trim().toLocaleLowerCase('nl-NL');
+        if (targetName && catalog.filter(c => String(c.label || '').trim().toLocaleLowerCase('nl-NL') === targetName).length === 1) next.categoryBudgets[targetName] = total;
+      }
+      next.expenseCategoryRemovals = [...(current.expenseCategoryRemovals || []).filter(item => !ids.has(item.id)), ...[...ids].map(oldId => ({ id: oldId, replacementId: target?.id || null, budgetKeys: oldId === id ? keys : [oldId] }))];
+      this.applyExpenseCategoryRemovals(next);
+      return next;
+    }, () => this.persist());
+    this.setState({ plannerCategoryRemovalId: null, plannerCategoryReplacement: '', plannerCategoryRemovalError: '' });
+  }
   renameExpenseCategory(id, e) {
     const label = String(e.target.value || '').trim();
     const normalized = this.normalizedCategoryName(label);
@@ -7128,7 +7294,7 @@ class Component extends DCLogic {
         id: cat.id,
         label: cat.label,
         color: cat.color,
-        canRemove: !ws.transactions.some(t => t.category === cat.id),
+        canRemove: cat.label === this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre') || !ws.transactions.some(t => t.category === cat.id),
         remove: () => this.removeCategory(cat.id),
         spentStr: this.fmt(spent),
         spentColor: '#BC6F52',
@@ -7705,7 +7871,12 @@ class Component extends DCLogic {
       signOut: () => this.signOut(),
       name: this.state.name,
       authenticatedAccountEmail: this.state.session?.user?.email || '',
-      authenticatedAccountName: this._verifiedUserId === this.state.session?.user?.id ? (this.state.session.user.user_metadata?.name || this.state.session.user.email || '') : '',
+      displayNameInput: this.state.displayNameInput,
+      displayNameSaving: this.state.displayNameSaving,
+      displayNameMessage: this.state.displayNameMessage,
+      setDisplayNameInput: e => this.setState({ displayNameInput: e.target.value, displayNameMessage: '' }),
+      saveDisplayName: () => this.saveDisplayName(),
+      authenticatedAccountName: this._verifiedUserId === this.state.session?.user?.id ? (this.ownDisplayName()) : '',
       mode: this.state.mode,
       isShared: this.state.mode === 'shared',
       isPersonal: this.state.mode === 'personal',
@@ -7925,6 +8096,7 @@ class Component extends DCLogic {
       calcDistributableStr: this.fmt(calcDistributable),
       calcFixedSectionPreview: (calcIsSharedMode ? calcTableFixedRows.map(row => ({ name: row.name, amount: this.safeNumber(row.total) })) : [...calcFixedAutoItems.map(row => ({ name: row.name, amount: this.safeNumber(row.amount) })), ...calcFixedGroups.flatMap(group => group.items.map(row => ({ name: row.name, amount: this.safeNumber(row.amount) }))), ...calcFixedHistoryRows.filter(row => !row.joint).map(row => ({ name: row.label, amount: this.safeNumber(row.amount) }))]).sort((a, b) => b.amount - a.amount).slice(0, 3).map(row => ({ ...row, amountStr: this.fmt(row.amount) })),
       calcVariableSectionPreview: (calcIsSharedMode ? calcTableVariableRows : calcMonthlyVariableRows).map(row => ({ name: row.name, amount: this.safeNumber(row.total) })).sort((a, b) => b.amount - a.amount).slice(0, 3).map(row => ({ ...row, amountStr: this.fmt(row.amount) })),
+      calcVariableAllRows: (calcIsSharedMode ? calcTableVariableRows : calcMonthlyVariableRows).map(row => ({ name: row.name, amount: this.safeNumber(row.total) })).sort((a, b) => b.amount - a.amount).map(row => ({ ...row, amountStr: this.fmt(row.amount) })),
       calcAllocationSectionTitle: calcIsSharedMode ? this.tf('Available to allocate', 'Vrij te verdelen', 'Frei zu verteilen', 'Disponible à répartir', 'Disponible para distribuir') : 'Verdelen over spaardoelen',
       soloCalcEditing: this.soloCalculatorEditing(),
       soloCalcNotEditing: !this.soloCalculatorEditing(),
@@ -8461,6 +8633,13 @@ class Component extends DCLogic {
       onRecurringIncomeKeyDown: (e) => this.onRecurringIncomeKeyDown(e),
       addRecIncomeDisabled: !(this.state.newRecIncomeName && this.parseAmt(this.state.newRecIncomeAmount) > 0 && (this.state.newRecIncomeFrequency === 'every4weeks' ? this.state.newRecIncomeStartDate : parseInt(this.state.newRecIncomeDay, 10) >= 1)),
       plannerCategories,
+      plannerCategoryRemovalOpen: !!this.state.plannerCategoryRemovalId && this.state.plannerCategoryRemovalMode === this.state.mode,
+      plannerCategoryReplacement: this.state.plannerCategoryReplacement || '',
+      plannerCategoryRemovalError: this.state.plannerCategoryRemovalError || '',
+      plannerCategoryReplacementOptions: (ws.categoryOptions || []).filter(c => c.id !== this.state.plannerCategoryRemovalId && !c.canonicalId && this.expenseCategoryLabel(c.id, ws.categoryOptions) !== this.tf('Unnamed category', 'Categorie zonder naam', 'Unbenannte Kategorie', 'Catégorie sans nom', 'Categoría sin nombre')).map(c => ({ id: c.id, label: this.expenseCategoryLabel(c.id, ws.categoryOptions) })),
+      setPlannerCategoryReplacement: e => this.setState({ plannerCategoryReplacement: e.target.value, plannerCategoryRemovalError: '' }),
+      cancelPlannerCategoryRemoval: () => this.setState({ plannerCategoryRemovalId: null, plannerCategoryRemovalError: '' }),
+      confirmPlannerCategoryRemoval: () => this.confirmPlannerCategoryRemoval(),
       plannerAllocatedStr: this.fmt(plannerAllocated),
       plannerUnallocatedStr: this.fmt(Math.abs(plannerUnallocated)),
       plannerUnallocatedLabel: plannerUnallocated < 0 ? this.tf('over-allocated', 'over-toegewezen', 'über-zugewiesen', 'sur-alloué', 'sobre-asignado') : this.tf('unallocated', 'niet-toegewezen', 'nicht zugewiesen', 'non alloué', 'no asignado'),
